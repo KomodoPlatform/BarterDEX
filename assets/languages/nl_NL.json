@@ -1,0 +1,134 @@
+{
+  "langinfo": {
+    "name": "Dutch (NL)",
+    "tag": "en_US",
+    "version": "0.8.0",
+    "creationDate": "25 Dec 2017",
+    "author": "bartwr",
+    "authorEmail": "mail@bartroorda.nl"
+  },
+  "Common": {
+    "loading_wait": "Bezig met laden...",
+    "btn_send": "Zend",
+    "btn_receive": "Ontvang",
+    "btn_enable_native": "Activeer Native",
+    "btn_enable_electrum": "Activeer Electrum",
+    "btn_disable": "Deactiveer",
+    "btn_set_goal": "Stel een doel in",
+    "btn_exchange": "Handel"
+  },
+  "loading": {
+    "starting_barterdex": "BarterDEX wordt gestart..."
+  },
+  "login": {
+    "welcome_to_barterdex": "Welkom bij BarterDEX",
+    "please_login": "Login alsjeblieft",
+    "passphrase": "Wachtwoordzin / Passphrase",
+    "login_passphrase_label": "Log in",
+    "login_btn": "Log in",
+    "generate_a_new_passphrase": "Genereer een nieuwe wachtwoordzin",
+    "login_passphrase_input_placeholder": "Wachtwoordzin"
+  },
+  "Navigation": {
+    "nav_dashboard": "Dashboard",
+    "nav_trade_history": "Handelgeschiedenis",
+    "nav_close" : "Sluiten",
+    "nav_debug": "Fouten opsporen",
+    "nav_settings": "Instellingen/Settings",
+    "nav_logout": "Uitloggen"
+  },
+  "Debug": {
+    "debug_payload": "Payload",
+    "debug_execute": "Execute",
+    "debug_response": "Response",
+    "debug_playload_input_placeholder": "Provide payload"
+  },
+  "Portfolio": {
+    "portfolio_portfolio_chart": "Portfolio Grafiek",
+    "portfolio_add_coins": "VOEG COINS TOE",
+    "exchange_set_small": "Verkopen",
+    "exchange_goal_percent_for_your_portfolio": "Doelpercentage voor je portfolio",
+    "portfolio_portfolio_coins": "Portfolio Coins",
+    "portfolio_auto_goal_all_active_coins": "AUTO GOAL ALL ACTIVE COINS",
+    "portfolio_th_coin": "Coin",
+    "portfolio_th_balance": "Balans",
+    "portfolio_th_price": "Prijs",
+    "portfolio_th_current_percent": "Huidig %",
+    "portfolio_th_goal_percent": "Doel %",
+    "portfolio_th_kmdvalue": "KMD-waarde",
+    "portfolio_th_action": "Actie",
+    "portfolio_goal": "Doel",
+    "portfolio_goal_now": "Nu",
+    "portfolio_goal_target": "Doelwaarde"
+
+  },
+  "Inventory": {
+    "inventory_tab_inventory": "Inventaris"
+  },
+  "Exchange": {
+    "exchange_your_balance": "Jouw Balans",
+    "exchange_switch_pairs": "WISSEL PAAR",
+    "exchange_trading_pair": "Handelspaar",
+    "exchange_speed_mode_settings": "Speed Mode Settings",
+    "exchange_btn_buy_caps": "KOOP",
+    "exchange_btn_sell_caps": "VERKOOP",
+    "exchange_btn_trade_bot": "HANDELS BOT",
+    "exchange_btn_manual_trade": "HANDMATIGE TRADE",
+    "exchange_btn_portfolio": "PORTFOLIO",
+    "exchange_lbl_one_max": "Max",
+    "exchange_lbl_one_price_to":  "Price to",
+    "exchange_lbl_buy_small": "Koop",
+    "exchange_trade_with_selected_trader": "Handel uitsluitend met geselecteerde handelaar (optioneel)",
+    "exchange_coin_price_max": "Max",
+    "exchange_destpubkey_yes": " Ja",
+    "exchange_lbl_two_max": "Max",
+    "exchange_lbl_amount_to": "Amount to",
+    "exchange_dont_auto_repeat_order": "Herhaal deze order niet automatisch",
+    "exchange_enable_auto_repeat_this_trade": "Activeer 'auto-repeat' voor deze trade",
+    "exchange_enable_auto_repeat_coinmarketcap": "Activeer 'auto-repeat' + CoinMarketCap prijzen",
+    "exchange_itll_cost_you": "It zal je kosten",
+    "exchange_set_small": "Verkoop",
+    "exchange_goal_percent_for_your_portfolio": "Doelpercentage voor je portfolio",
+    "exchange_set_gaol_caps": "STEL DOEL IN",
+    "exchange_0conf_settings_text_one": "De High Speed Mode feature laat je handelen in enkele seconden, zonder te hoeven wachten op blockchain-bevestigingen.",
+    "exchange_0conf_settings_text_two": "Alsjeblieft",
+    "exchange_0conf_settings_a": "klik hier",
+    "exchange_0conf_settings_text_three": "om meer te lezen.",
+    "exchange_0conf_deposit_high_speed_mode_sec": "Deposit High Speed Mode Security",
+    "exchange_0conf_make_sec_deposit": "MAKE SECURITY DEPOSIT",
+    "exchange_0conf_see_deposit_history": "SEE DEPOSIT HISTORY",
+    "exchange_0conf_claim_deposit": "CLAIM DEPOSIT",
+    "exchange_my_prices": "Mijn Prijzen",
+    "exchange_auto_bot_list": "Auto Bots Lijst",
+    "exchange_trade_status": "Handelsstatus",
+    "exchange_th_my_orders_base": "Base",
+    "exchange_th_my_orders_rel": "Rel",
+    "exchange_th_my_orders_bid": "Bid",
+    "exchange_th_my_orders_ask": "Ask",
+    "exchange_th_bot_list_tradebot_info": "TradeBot Info",
+    "exchange_th_bot_list_progress_info": "Progress Info",
+    "exchange_th_bot_list_actions": "Acties",
+    "exchange_th_swap_status_status": "Status",
+    "exchange_th_swap_status_info": "Info",
+    "exchange_th_swap_status_action": "Actie",
+    "exchange_sellers_caps": "VERKOPERS",
+    "exchange_buyers_caps": "KOPERS",
+    "exchange_th_orderbook_price_in": "Prijs in",
+    "exchange_th_orderbook_avg_volume": "Gem. Volume",
+    "exchange_th_orderbook_depth": "Depth",
+    "exchange_th_orderbook_trader_pubkey": "Handelaar Pubkey",
+    "exchange_th_orderbook_age": "Leeftijd",
+    "exchange_th_orderbook_utxos": "UTXOs",
+    "exchange_th_orderbook_zcredits": "ZCredits"
+  }
+}
+
+
+
+
+
+
+
+
+
+
