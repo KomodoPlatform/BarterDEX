@@ -1,3 +1,16 @@
+# Official BarterDEX README
+
+The BarterDEX application created by Komodo Platform allows trading cryptocurrency coins without a counterparty risk.
+ The protocol is open-source and trading is available for any coin that any developers choose to connect to The BarterDEX.
+ The parent project, Komodo Platform, freely provides BarterDEX technology through open-source philosophy. BarterDEX fully realizes decentralized order matching, trade clearing, and settlement. The order
+-matching aspect uses a low-level pubkey-to-pubkey messaging protocol, and the final settlement is executed through an atomic cross-chain swap. 
+
+Komodo Platform Official Site:  https://komodoplatform.com
+Komodo BarterDEX Page :  https://www.komodoplatform.com/en/technology/barterdex
+BarterDEX Whitepaper :  https://www.komodoplatform.com/en/technology/whitepapers/BarterDEX-Whitepaper-v0.4.pdf
+
+
+
 # BarterDEX App
 
 Before starting make sure you have `marketmaker` daemon compiled and running on your machine.
@@ -87,3 +100,13 @@ electron-packager . --platform=win32 --arch=ia32 --icon=assets/icons/barterdex/b
 electron-packager . --platform=win32 --arch=all --icon=assets/icons/barterdex/barterdex.ico --out=build/ --buildVersion=VERSION_NUMBER_HERE --ignore=assets/bin/osx --ignore=assets/bin/linux64 --overwrite
 ```
 change architecture build parameter to ```--arch=x64``` for 64 bit build
+
+##License
+MIT License                                        
+Copyright (c) 2017 Komodo Platform
+                                        
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell        copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The aforementioned copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.    
+
+##Disclaimer
+THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
