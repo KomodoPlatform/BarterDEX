@@ -36,6 +36,7 @@ coin_select_options = `<optgroup label="Crytpo Coins">
       <option data-content="<img src='img/cryptologo/game.png' width='30px'/> Gamecredits (GAME)" data-tokens="Gamecredits GAME">GAME</option>
       <option data-content="<img src='img/cryptologo/gbx.png' width='30px'/> GoByte (GBX)" data-tokens="GoByte GBX">GBX</option>
       <option data-content="<img src='img/cryptologo/glt.png' width='30px'/> GlobalToken (GLT)" data-tokens="GlobalToken GLT">GLT</option>
+      <option data-content="<img src='img/cryptologo/hodlc.png' width='30px'/> HODLCoin (HODLC)" data-tokens="HODLCoin HODLC">HODLC</option>
       <option data-content="<img src='img/cryptologo/huc.png' width='30px'/> Huntercoin (HUC)" data-tokens="Huntercoin HUC">HUC</option>
       <option data-content="<img src='img/cryptologo/hush.png' width='30px'/> Hush (HUSH)" data-tokens="Hush HUSH">HUSH</option>
       <option data-content="<img src='img/cryptologo/i0c.png' width='30px'/> I0Coin (I0C)" data-tokens="I0Coin I0C">I0C</option>
@@ -83,7 +84,6 @@ coin_select_options = `<optgroup label="Crytpo Coins">
       <option data-content="<img src='img/cryptologo/etomic.png' width='30px'/> ETOMIC (ETOMIC)" data-tokens="ETOMIC ETOMIC">ETOMIC</option>
       <option data-content="<img src='img/cryptologo/dex.png' width='30px;'/> InstantDEX (DEX)" data-tokens="InstantDEX DEX">DEX</option>
       <option data-content="<img src='img/cryptologo/hodl.png' width='30px'/> HODL (HODL)" data-tokens="HODL HODL">HODL</option>
-      <option data-content="<img src='img/cryptologo/hodlc.png' width='30px'/> HODLCoin (HODL)" data-tokens="HODLCoin HODL">HODLCoin</option>
       <option data-content="<img src='img/cryptologo/jumblr.png' width='30px;'/> Jumblr (JUMBLR)" data-tokens="Jumblr JUMBLR">JUMBLR</option>
       <option data-content="<img src='img/cryptologo/kv.png' width='30px'/> KeyValue (KV)" data-tokens="KeyValue KV">KV</option>
       <option data-content="<img src='img/cryptologo/mesh.png' width='30px'/> SuperMesh (MESH)" data-tokens="SuperMesh MESH">MESH</option>
