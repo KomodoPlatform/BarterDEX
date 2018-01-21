@@ -1,12 +1,12 @@
 {
   "name": "BarterDEX",
-  "version": "0.8.4-rc",
+  "version": "0.8.5-rc",
   "description": "Full BarterDEX implimentation with powertools for Traders",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/SuperNETorg/BarterDEX.git",
+  "repository": "https://github.com/KomodoPlatform/BarterDEX.git",
   "keywords": [
     "barterdex",
     "jumblr",
