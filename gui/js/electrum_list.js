@@ -31,6 +31,7 @@ var electrum_servers_list = {
   "MONA": [{"173.212.225.176": 50002},{"136.243.45.140": 50002}],
   "MSHARK": [{"electrum2.cipig.net": 10013},{"electrum1.cipig.net": 10013}],
   "NMC": [{"173.212.225.176": 50036},{"136.243.45.140": 50036}],
+  "OOT": [{"159.89.186.81": 10088},{"159.89.186.81": 10088}]
   "PANGEA": [{"electrum2.cipig.net": 10010},{"electrum1.cipig.net": 10010}],
   "QTUM": [{"s1.qtum.info":50001},{"s2.qtum.info":50001},{"s3.qtum.info":50001},{"s4.qtum.info":50001}],
   "REVS": [{"electrum2.cipig.net": 10003},{"electrum1.cipig.net": 10003}],
@@ -41,7 +42,6 @@ var electrum_servers_list = {
   "WLC": [{"electrum2.cipig.net": 10014},{"electrum1.cipig.net": 10014}],
   "ZCL": [{"electrum2.cipig.net": 10055},{"electrum1.cipig.net": 10055}],
   "ZEC": [{"173.212.225.176": 50032},{"136.243.45.140": 50032}]
-  "OOT": [{"159.89.186.81": 10088},{"159.89.186.81": 10088}]
 }
 
 
