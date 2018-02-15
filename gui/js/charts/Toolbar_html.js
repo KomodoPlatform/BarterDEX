@@ -421,7 +421,7 @@ var Toolbar_html = `
 
     <div class="scxToolbar-btn scxToolbarSaveImage" title="Save as Image..."></div>
 
-    <div class="scxToolbarViewMode scxToolbarButton scxToolbarButtonWithDropdown scxToolbarCanFireFromHead" data-type="scxToolbarViewMode" title="View Mode">
+    <div class="scxToolbarViewMode scxToolbarButton scxToolbarButtonWithDropdown scxToolbarCanFireFromHead" data-type="scxToolbarViewMode" title="View Mode" style="display: none;">
         <div class="scxToolbarButton-buttonWrapper">
             <div class="scxToolbarButton-activateBtn" data-scxValue="toggleFullWindow"></div>
             <button class="scxToolbarButton-toggleDropdownBtn"></button>

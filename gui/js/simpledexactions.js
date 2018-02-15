@@ -82,7 +82,7 @@ $(document).ready(function() {
 				check_coin_balance(false);
 				CheckOrderBookFn();
 				CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-				check_swap_status_Interval = setInterval(check_swap_status,20000);
+				//check_swap_status_Interval = setInterval(check_swap_status,20000);
 				check_swap_status();
 				check_bot_list_Interval = setInterval(check_bot_list, 10000);
 				check_bot_list();
@@ -253,7 +253,7 @@ $('.porfolio_coins_list tbody').on('click', '.btn-portfoliogo', function() {
 	CheckPortfolioFn(false);
 	CheckOrderBookFn();
 	CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-	check_swap_status_Interval = setInterval(check_swap_status,20000);
+	//check_swap_status_Interval = setInterval(check_swap_status,20000);
 	check_swap_status();
 	check_bot_list_Interval = setInterval(check_bot_list, 10000);
 	check_bot_list();
@@ -383,7 +383,7 @@ $('.btn-inventoryclose').click(function(e) {
 	check_coin_balance(false);
 	CheckOrderBookFn();
 	CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-	check_swap_status_Interval = setInterval(check_swap_status,20000);
+	//check_swap_status_Interval = setInterval(check_swap_status,20000);
 	check_swap_status();
 	check_bot_list_Interval = setInterval(check_bot_list, 10000);
 	check_bot_list();
@@ -571,7 +571,7 @@ $('.btn_coindashboard_exchange').click(function(e) {
 	check_coin_balance(false);
 	CheckOrderBookFn();
 	CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-	check_swap_status_Interval = setInterval(check_swap_status,20000);
+	//check_swap_status_Interval = setInterval(check_swap_status,20000);
 	check_swap_status();
 	check_bot_list_Interval = setInterval(check_bot_list, 10000);
 	check_bot_list();
@@ -3094,6 +3094,24 @@ function setOrderPrice(trade_data) {
 
 }
 
+function infoOrderPrice(trade_data) {
+	console.log(trade_data);
+	bootbox.dialog({
+		//title: 'A custom dialog with init',
+		onEscape: true,
+		backdrop: true,
+		message: `<table class="table table-striped orderbook_row_data" width="100%" style="margin-bottom: 0;">
+                          <tbody>
+                          	<tr>
+                          	<td>Address</td>
+                          	<td>${trade_data.address}</td>
+                          	</tr>
+                          </tbody>
+                        </table>`
+	});
+}
+
+
 function CheckOrderBookFn(sig) {
 	if (sig == false) {
 		clearInterval(CheckOrderbook_Interval);
@@ -3176,20 +3194,23 @@ function CheckOrderBookFn(sig) {
 				row_trade_data.depth = val.depth;
 				row_trade_data.maxbuy = val.avevolume / val.price;
 				row_trade_data.pubkey = val.pubkey;
+				row_trade_data.address = val.address;
 				row_trade_data.type = 'bids';
 				//row_trade_data.totalbuy = (val.avevolume / val.price) * val.numutxos;
 
 				var orderbook_bids_tr = '';
-				orderbook_bids_tr += '<tr ' + mytrade_true + ' onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>';
-				orderbook_bids_tr += '<td>' + val.price + '</td>';
-				//orderbook_bids_tr += '<td>' + val.minvolume + '</td>';
-				//orderbook_bids_tr += '<td>' + val.maxvolume + '</td>';
-				orderbook_bids_tr += '<td>' + ((val.avevolume == 0) ? '-' : val.avevolume) + '</td>';
-				orderbook_bids_tr += '<td>' + val.depth + '</td>';
-				orderbook_bids_tr += '<td>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
-				orderbook_bids_tr += '<td>' + val.age + '</td>';
-				orderbook_bids_tr += '<td>' + val.numutxos + '</td>';
-				orderbook_bids_tr += '<td><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
+				orderbook_bids_tr += '<tr ' + mytrade_true + '>';
+					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.price + '</td>';
+					//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.minvolume + '</td>';
+					//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.maxvolume + '</td>';
+					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.avevolume == 0) ? '-' : val.avevolume) + '</td>';
+					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.depth + '</td>';
+					//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
+					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.age + '</td>';
+					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.numutxos + '</td>';
+					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
+					orderbook_bids_tr += '<td><button class="btn btn-xs" onclick=infoOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>';
+				orderbook_bids_tr += '</tr>';
 				$('.orderbook_bids tbody').append(orderbook_bids_tr);
 			})
 
@@ -3218,19 +3239,21 @@ function CheckOrderBookFn(sig) {
 				row_trade_data.depth = val.depth;
 				row_trade_data.maxbuy = val.avevolume / val.price;
 				row_trade_data.pubkey = val.pubkey;
+				row_trade_data.address = val.address;
 				row_trade_data.type = 'asks';
 				//row_trade_data.totalbuy = (val.avevolume / val.price) * val.numutxos;
 				var orderbook_asks_tr = '';
-				orderbook_asks_tr += '<tr ' + mytrade_true + ' onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>';
-				orderbook_asks_tr += '<td>' + val.price + '</td>';
-				//orderbook_asks_tr += '<td>' + val.minvolume + ' - ' + val.maxvolume + '</td>';
-				//orderbook_asks_tr += '<td>' + row_trade_data.totalbuy.toFixed(8) + '</td>';
-				orderbook_asks_tr += '<td>' + ((val.avevolume == 0) ? '-' : val.avevolume) + '</td>';
-				orderbook_asks_tr += '<td>' + val.depth + '</td>';
-				orderbook_asks_tr += '<td>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
-				orderbook_asks_tr += '<td>' + val.age + '</td>';
-				orderbook_asks_tr += '<td>' + val.numutxos + '</td>';
-				orderbook_asks_tr += '<td><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
+				orderbook_asks_tr += '<tr ' + mytrade_true + '>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.price + '</td>';
+				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.minvolume + ' - ' + val.maxvolume + '</td>';
+				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + row_trade_data.totalbuy.toFixed(8) + '</td>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.avevolume == 0) ? '-' : val.avevolume) + '</td>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.depth + '</td>';
+				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.age + '</td>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.numutxos + '</td>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
+				orderbook_asks_tr += '<td><button class="btn btn-xs" onclick=infoOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>';
 				orderbook_asks_tr += '</tr>';
 				$('.orderbook_asks tbody').append(orderbook_asks_tr);
 			})
@@ -5339,7 +5362,7 @@ function check_swap_status_details(swap_status_data) {
 
 					CheckOrderBookFn();
 					CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-					check_swap_status_Interval = setInterval(check_swap_status,20000);
+					//check_swap_status_Interval = setInterval(check_swap_status,20000);
 					check_swap_status();
 					check_bot_list_Interval = setInterval(check_bot_list, 10000);
 					check_bot_list();
@@ -5984,6 +6007,7 @@ function ZeroConfDeposit(deposit_weeks, deposit_amount) {
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
 	var ajax_data = {"userpass":userpass,"method":"instantdex_deposit","weeks":deposit_weeks,"amount":deposit_amount,"broadcast": 1};
 	var url = "http://127.0.0.1:7783";
+	console.log(ajax_data);
 
 	$.ajax({
 		async: true,
