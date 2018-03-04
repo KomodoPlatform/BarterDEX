@@ -1798,7 +1798,7 @@ function mk_inv_sendrawtx(mk_inv_rawtx_data,mk_inv_rawtx_coin) {
 		console.log(mk_inv_sendrawtx_output_data);
 		var parsed_mk_inv_sendrawtx_output_data = '';
 		try {
-			parsed_mk_inv_sendrawtx_output_data = JSON.parse(bot_output_data);
+			parsed_mk_inv_sendrawtx_output_data = JSON.parse(mk_inv_sendrawtx_output_data);
 			console.log(parsed_mk_inv_sendrawtx_output_data);
 
 			if ( !parsed_mk_inv_sendrawtx_output_data.hasOwnProperty('error') === false && parsed_mk_inv_sendrawtx_output_data.error === false) {
