@@ -42,6 +42,7 @@ var electrum_servers_list = {
   "VIA": [{"173.212.225.176": 50033},{"136.243.45.140": 50033}],
   "VTC": [{"173.212.225.176": 50088},{"136.243.45.140": 50088}],
   "WLC": [{"electrum2.cipig.net": 10014},{"electrum1.cipig.net": 10014}],
+  "XZC": [{"45.63.92.224": 50002}],
   "ZCL": [{"electrum2.cipig.net": 10055},{"electrum1.cipig.net": 10055}],
   "ZEC": [{"173.212.225.176": 50032},{"136.243.45.140": 50032}],
   "BEER": [{"electrum1.cipig.net": 10022},{"electrum2.cipig.net": 10022}],
