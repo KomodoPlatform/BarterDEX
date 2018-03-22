@@ -35,6 +35,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/dsr.png' width='30px'/> Desire (DSR)" data-tokens="Desire dsr">DSR</option>
       <option data-content="<img src='img/cryptologo/efl.png' width='30px'/> e-Gulden (EFL)" data-tokens="e-Gulden EFL">EFL</option>
       <option data-content="<img src='img/cryptologo/eli.png' width='30px'/> Elicoin (ELI)" data-tokens="Elicoin ELI">ELI</option>
+      <option data-content="<img src='img/cryptologo/bits.png' width='30px'/> Bitstar (BITS)" data-tokens="Bitstar BITS">BITS</option>
       <option data-content="<img src='img/cryptologo/elp.png' width='30px'/> Ellerium (ELP)" data-tokens="Ellerium ELP">ELP</option>
       <option data-content="<img src='img/cryptologo/emc2.png' width='30px'/> Einsteinium (EMC2)" data-tokens="emc2 einsteinium">EMC2</option>
       <option data-content="<img src='img/cryptologo/erc.png' width='30px'/> EuropeCoin (ERC)" data-tokens="EuropeCoin ERC">ERC</option>
