@@ -19,6 +19,10 @@ function return_coin_details(coin) {
                         coin_details.name = 'BitBay';
                         coin_details.explorer = 'https://chainz.cryptoid.info/bay/tx.dws?';
                         break;
+		case 'XMG':
+			coin_details.name = 'Magi';
+			coin_details.explorer = 'https://chainz.cryptoid.info/xmg//tx.dws?';
+			break;
 		case 'FTC':
 			coin_details.name = 'Feathercoin';
 			coin_details.explorer = 'https://fsight.chain.tips/tx/';
