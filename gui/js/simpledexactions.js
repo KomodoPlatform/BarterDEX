@@ -105,16 +105,16 @@ $(document).ready(function() {
 				$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
 
 				var charts_instruments_data = {}
-				charts_instruments_data.symbol = selected_dICO_coin+'/KMD'
-				charts_instruments_data.company = 'Komodo Platform';
-				ChartsInstruments(charts_instruments_data)
-				UpdateDexChart(selected_dICO_coin, 'KMD');
+				//charts_instruments_data.symbol = selected_dICO_coin+'/KMD'
+				//charts_instruments_data.company = 'Komodo Platform';
+				//ChartsInstruments(charts_instruments_data)
+				//UpdateDexChart(selected_dICO_coin, 'KMD');
 				
 				var trading_chart_status = sessionStorage.getItem('mm_tradingchart');
 				if (trading_chart_status == 'show') {
 					$('.trading_chart_div').show();
-					Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-					Refresh_active_StockChart();
+				//	Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
+				//	Refresh_active_StockChart();
 				} else {
 					$('.trading_chart_div').hide();
 				}
@@ -280,29 +280,30 @@ $('.porfolio_coins_list tbody').on('click', '.btn-portfoliogo', function() {
 	if ($(this).data('coin') == 'KMD') {
 		charts_instruments_data.symbol = $(this).data('coin')+'/BTC'
 		charts_instruments_data.company = 'Komodo Platform';
-		ChartsInstruments(charts_instruments_data)
-		UpdateDexChart($(this).data('coin'),'BTC');
+		//ChartsInstruments(charts_instruments_data)
+		//UpdateDexChart($(this).data('coin'),'BTC');
 	} else {
 		charts_instruments_data.symbol = $(this).data('coin')+'/KMD'
 		charts_instruments_data.company = 'Komodo Platform';
-		ChartsInstruments(charts_instruments_data)
-		UpdateDexChart($(this).data('coin'),'KMD');
+		//ChartsInstruments(charts_instruments_data)
+		//UpdateDexChart($(this).data('coin'),'KMD');
 	}
 	
 	var trading_chart_status = sessionStorage.getItem('mm_tradingchart');
 	if (trading_chart_status == 'show') {
 		$('.trading_chart_div').show();
-		Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
+		//Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
 	} else {
 		$('.trading_chart_div').hide();
 	}
 
 	// Fix width of chart
-	gChart.size = {width: $('#chartContainer').parent().width()};
-	gChart.update();
+	//gChart.size = {width: $('#chartContainer').parent().width()};
+	//gChart.update();
 	setTimeout(function(){
 		PopulateDefaultLanguage();
 		$('input:radio[name="trading_manual_buy_sell_options"]').filter('[value="disabled"]').trigger('click');
+		doTradingView($('.trading_pair_coin2').selectpicker('val')+'-'+$('.trading_pair_coin').selectpicker('val'));
 	}, 100);
 });
 
@@ -412,8 +413,8 @@ $('.btn-inventoryclose').click(function(e) {
 	var trading_chart_status = sessionStorage.getItem('mm_tradingchart');
 	if (trading_chart_status == 'show') {
 		$('.trading_chart_div').show();
-		Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-		Refresh_active_StockChart();
+		//Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
+		//Refresh_active_StockChart();
 	} else {
 		$('.trading_chart_div').hide();
 	}
@@ -607,8 +608,8 @@ $('.btn_coindashboard_exchange').click(function(e) {
 	var trading_chart_status = sessionStorage.getItem('mm_tradingchart');
 	if (trading_chart_status == 'show') {
 		$('.trading_chart_div').show();
-		Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-		Refresh_active_StockChart();
+		//Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
+		//Refresh_active_StockChart();
 	} else {
 		$('.trading_chart_div').hide();
 	}
@@ -628,7 +629,7 @@ $('.btn-exchangeclose').click(function(e){
 	check_my_prices(false);
 	bot_screen_coin_balance(false);
 	bot_screen_sellcoin_balance(false);
-	Refresh_active_StockChart(false);
+	//Refresh_active_StockChart(false);
 	//check_coin_balance_Interval = setInterval(check_coin_balance(),3000);
 	//check_coin_balance();
 
@@ -982,8 +983,9 @@ $('.btn_switch_trading_coin_pairs').click(function(e){
 	var charts_instruments_data = {}
 	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val')+'/'+$('.trading_pair_coin').selectpicker('val');
 	charts_instruments_data.company = 'Komodo Platform';
-	ChartsInstruments(charts_instruments_data)
-	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	//ChartsInstruments(charts_instruments_data)
+	//UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	doTradingView($('.trading_pair_coin2').selectpicker('val')+'-'+$('.trading_pair_coin').selectpicker('val'));
 
 });
 
@@ -3473,8 +3475,9 @@ $('.trading_pair_coin').on('change', function (e) {
 	var charts_instruments_data = {}
 	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val')+'/'+$('.trading_pair_coin').selectpicker('val');
 	charts_instruments_data.company = 'Komodo Platform';
-	ChartsInstruments(charts_instruments_data)
-	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	//ChartsInstruments(charts_instruments_data)
+	//UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	doTradingView($('.trading_pair_coin2').selectpicker('val')+'-'+$('.trading_pair_coin').selectpicker('val'));
 });
 
 
@@ -3507,9 +3510,9 @@ $('.trading_pair_coin2').on('change', function (e) {
 	var charts_instruments_data = {}
 	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val')+'/'+$('.trading_pair_coin').selectpicker('val');
 	charts_instruments_data.company = 'Komodo Platform';
-	ChartsInstruments(charts_instruments_data)
-	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
-
+	//ChartsInstruments(charts_instruments_data)
+	//UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	doTradingView($('.trading_pair_coin2').selectpicker('val')+'-'+$('.trading_pair_coin').selectpicker('val'));
 });
 
 $('.btn-refreshtrading_pair').click(function(e){
@@ -3947,7 +3950,7 @@ $('.your_coins_balance_info').on('click', '.coin_balance_inventory', function() 
 	check_my_prices(false);
 	bot_screen_coin_balance(false);
 	bot_screen_sellcoin_balance(false);
-	Refresh_active_StockChart(false);
+	//Refresh_active_StockChart(false);
 
 	$('.inventory-title').html('Manage Inventory ('+balance+' '+coin+')');
 	$('.inventory-title').data('coin', coin);
@@ -5116,7 +5119,7 @@ function check_swap_status_details(swap_status_data) {
 	check_swap_status(false);
 	check_bot_list(false);
 	check_my_prices(false);
-	Refresh_active_StockChart(false);
+	//Refresh_active_StockChart(false);
 	//bot_screen_coin_balance(false);
 	//bot_screen_sellcoin_balance(false);
 
