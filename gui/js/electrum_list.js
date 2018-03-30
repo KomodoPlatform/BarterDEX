@@ -7,6 +7,7 @@ var electrum_servers_list = {
   "BTC": [{"node1.komodo.rocks":50001},{"e-x.not.fyi":50001},{"helicarrier.bauerj.eu":50001},{"electrum.hsmiths.com":50001}],
   "BTCZ": [{"electrum2.cipig.net":10056},{"electrum1.cipig.net":10056}],
   "BTCH": [{"electrum2.cipig.net":10020},{"electrum1.cipig.net":10020}],
+  "BTCP": [{"electrum.btcprivate.org":5222}],
   "BTG": [{"94.130.224.11":10052},{"173.212.225.176":10052}],
   "BTX": [{"electrum2.cipig.net":10057},{"electrum1.cipig.net":10057}],
   "CHIPS": [{"electrum2.cipig.net":10053},{"electrum1.cipig.net":10053}],
