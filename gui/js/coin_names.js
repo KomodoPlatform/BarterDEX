@@ -808,6 +808,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'http://pizza.explorer.supernet.org/tx/';
 			coin_details.eth = false;
 			break;
+		case 'AXE':
+			coin_details.name = 'Axe';
+			coin_details.explorer = 'http://207.246.65.114:3001/tx/';
+			coin_details.eth = false;
+			break;
 
 		case 'ETH':
 			coin_details.name = 'Ethereum';

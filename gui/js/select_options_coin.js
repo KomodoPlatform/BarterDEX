@@ -9,7 +9,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
 
       <option data-content="<img src='img/cryptologo/beer.png' width='30px;'/> BEER (BEER TESTCOIN)" data-tokens="BEER BEER TESTCOIN">BEER</option>
       <option data-content="<img src='img/cryptologo/pizza.png' width='30px;'/> PIZZA (PIZZA TESTCOIN)" data-tokens="PIZZA PIZZA TESTCOIN">PIZZA</option>
-      
+
       <option data-content="<img src='img/cryptologo/888.png' width='30px'/> OctoCoin (888)" data-tokens="OctoCoin 888">888</option>
       <option data-content="<img src='img/cryptologo/aby.png' width='30px'/> ArtByte (ABY)" data-tokens="ArtByte ABY">ABY</option>
       <option data-content="<img src='img/cryptologo/arc.png' width='30px'/> ArcticCoin (ARC)" data-tokens="ArcticCoin ARC">ARC</option>
@@ -105,6 +105,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/zet.png' width='30px'/> Zetacoin (ZET)" data-tokens="Zetacoin ZET">ZET</option>
       <option data-content="<img src='img/cryptologo/zec.png' width='30px'/> Zcash (ZEC)" data-tokens="Zcash ZEC">ZEC</option>
       <option data-content="<img src='img/cryptologo/zoi.png' width='30px'/> Zoin (ZOI)" data-tokens="Zoin ZOI">ZOI</option>
+      <option data-content="<img src='img/cryptologo/axe.png' width='30px'/> Axe (AXE)" data-tokens="Axe AXE">AXE</option>
     </optgroup>
     <optgroup label="ETH/ERC20 Coins">
       <option data-content="<img src='img/cryptologo/jst.png' width='30px;'/> JST (TESTCOIN)" data-tokens="JST JST ">JST</option>
