@@ -49,6 +49,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/fjc.png' width='30px'/> Fujicoin (FJC)" data-tokens="Fujicoin FJC">FJC</option>
       <option data-content="<img src='img/cryptologo/gbx.png' width='30px'/> GoByte (GBX)" data-tokens="GoByte GBX">GBX</option>
       <option data-content="<img src='img/cryptologo/glt.png' width='30px'/> GlobalToken (GLT)" data-tokens="GlobalToken GLT">GLT</option>
+      <option data-content="<img src='img/cryptologo/grlc.png' width='30px'/> Garlicoin (GRLC)" data-tokens="Garlicoin GRLC">GRLC</option>
       <option data-content="<img src='img/cryptologo/grs.png' width='30px'/> Groestlcoin (GRS)" data-tokens="Groestlcoin GRS">GRS</option>
       <option data-content="<img src='img/cryptologo/hodlc.png' width='30px'/> HODLCoin (HODLC)" data-tokens="HODLCoin HODLC">HODLC</option>
       <option data-content="<img src='img/cryptologo/html.png' width='30px'/> HTMLCOIN (HTML)" data-tokens="HTMLCOIN HTML">HTML</option>

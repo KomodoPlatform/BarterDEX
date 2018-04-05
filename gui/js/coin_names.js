@@ -38,6 +38,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://chainz.cryptoid.info/blk//tx.dws?';
 			coin_details.eth = false;
 			break;
+		case 'GRLC':
+			coin_details.name = 'Garlicoin';
+			coin_details.explorer = 'https://garli.co.in/tx/';
+			coin_details.eth = false;
+			break;
 		case 'DIN':
 			coin_details.name = 'Dinero';
 			coin_details.explorer = 'https://explorer.dinerocoin.org/tx/';
