@@ -33,11 +33,16 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://blockchair.com/bitcoin-cash/transaction/';
 			coin_details.eth = false;
 			break;
-                case 'BCBC':
-                        coin_details.name = 'Bitcoin@CBC';
-                        coin_details.explorer = 'http://be.cleanblockchain.org/tx/';
-                        coin_details.eth = false;
-                        break;
+		case 'PEW':
+			coin_details.name = 'BroFist';
+			coin_details.explorer = 'https://pew.overemo.com/tx/';
+			coin_details.eth = false;
+			break;
+		case 'BCBC':
+			coin_details.name = 'Bitcoin@CBC';
+			coin_details.explorer = 'http://be.cleanblockchain.org/tx/';
+			coin_details.eth = false;
+			break;
 		case 'BLK':
 			coin_details.name = 'BlackCoin';
 			coin_details.explorer = 'https://chainz.cryptoid.info/blk//tx.dws?';
@@ -103,11 +108,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'http://explorer.v2.bitstarcoin.com/tx/';
 			coin_details.eth = false;
 			break;
-                case 'FTC':
-                        coin_details.name = 'Feathercoin';
-                        coin_details.explorer = 'https://fsight.chain.tips/tx/';
-                        coin_details.eth = false;
-                        break;
+		case 'FTC':
+			coin_details.name = 'Feathercoin';
+			coin_details.explorer = 'https://fsight.chain.tips/tx/';
+			coin_details.eth = false;
+			break;
 		case 'FJC':
 			coin_details.name = 'Fujicoin';
 			coin_details.explorer = 'http://explorer.fujicoin.org/tx/';
@@ -253,11 +258,16 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://chainz.cryptoid.info/uno/tx.dws?';
 			coin_details.eth = false;
 			break;
-                case 'VRT':
-                        coin_details.name = 'Virtus';
-                        coin_details.explorer = 'http://213.183.45.119:3001/tx/';
-                        coin_details.eth = false;
-                        break;
+		case 'VRT':
+			coin_details.name = 'Virtus';
+			coin_details.explorer = 'http://213.183.45.119:3001/tx/';
+			coin_details.eth = false;
+			break;
+		case 'XCG':
+			coin_details.name = 'Xchange';
+			coin_details.explorer = '';
+			coin_details.eth = false;
+			break;
 		case 'ZER':
 			coin_details.name = 'Zero';
 			coin_details.explorer = 'http://zeroexplorer.forgetop.com/tx/';
@@ -864,31 +874,31 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
-                case 'BTCL':
-                        coin_details.name = 'BTC Lite';
-                        coin_details.explorer = 'https://etherscan.io/tx/';
-                        coin_details.eth = true;
-                        break;
+		case 'BTCL':
+			coin_details.name = 'BTC Lite';
+			coin_details.explorer = 'https://etherscan.io/tx/';
+			coin_details.eth = true;
+			break;
 		case 'DGD':
 			coin_details.name = 'DigixDAO';
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
-                case 'DRT':
-                        coin_details.name = 'DomRaider';
-                        coin_details.explorer = 'https://etherscan.io/tx/';
-                        coin_details.eth = true;
-                        break;
+		case 'DRT':
+			coin_details.name = 'DomRaider';
+			coin_details.explorer = 'https://etherscan.io/tx/';
+			coin_details.eth = true;
+			break;
 		case 'PPT':
 			coin_details.name = 'Populous';
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
-                case 'LYS':
-                        coin_details.name = 'Lightyears';
-                        coin_details.explorer = 'https://etherscan.io/tx/';
-                        coin_details.eth = true;
-                        break;
+		case 'LYS':
+			coin_details.name = 'Lightyears';
+			coin_details.explorer = 'https://etherscan.io/tx/';
+			coin_details.eth = true;
+			break;
 		case 'MKR':
 			coin_details.name = 'Maker';
 			coin_details.explorer = 'https://etherscan.io/tx/';
@@ -954,11 +964,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
-                case 'OCC':
-                        coin_details.name = 'Original Crypto Coin';
-                        coin_details.explorer = 'https://etherscan.io/tx/';
-                        coin_details.eth = true;
-                        break;
+		case 'OCC':
+			coin_details.name = 'Original Crypto Coin';
+			coin_details.explorer = 'https://etherscan.io/tx/';
+			coin_details.eth = true;
+			break;
 		case 'PAY':
 			coin_details.name = 'TenX';
 			coin_details.explorer = 'https://etherscan.io/tx/';

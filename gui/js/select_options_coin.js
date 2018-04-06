@@ -74,6 +74,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/xmy.png' width='30px'/> Myriad (XMY)" data-tokens="Myriad (XMY)">XMY</option>
       <option data-content="<img src='img/cryptologo/nav.png' width='30px'/> Navcoin (NAV)" data-tokens="Navcoin NAV">NAV</option>
       <option data-content="<img src='img/cryptologo/nmc.png' width='30px'/> Namecoin (NMC)" data-tokens="Namecoin NMC">NMC</option>
+      <option data-content="<img src='img/cryptologo/pew.png' width='30px'/> BroFist (PEW)" data-tokens="PEW">PEW</option>
       <option data-content="<img src='img/cryptologo/pivx.png' width='30px'/> PIVX (PIVX)" data-tokens="PIVX">PIVX</option>
       <option data-content="<img src='img/cryptologo/pura.png' width='30px'/> Pura (PURA)" data-tokens="PURA">PURA</option>
       <option data-content="<img src='img/cryptologo/qtum.png' width='30px'/> Qtum (QTUM)" data-tokens="Qtum">QTUM</option>
@@ -99,6 +100,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/vrt.png' width='30px'/> Virtus (VRT)" data-tokens="Virtus VRT">VRT</option>
       <option data-content="<img src='img/cryptologo/vivo.png' width='30px'/> VIVO (VIVO)" data-tokens="VIVO VIVO">VIVO</option>
       <option data-content="<img src='img/cryptologo/vot.png' width='30px'/> VoteCoin (VOT)" data-tokens="VoteCoin VOT">VOT</option>
+      <option data-content="<img src='img/cryptologo/xcg.png' width='30px'/> Xchange (XCG)" data-tokens="Xchange XCG">XCG</option>
       <option data-content="<img src='img/cryptologo/xcoin.png' width='30px'/> xCoin (XCOIN)" data-tokens="xCoin XCOIN">XCOIN</option>
       <option data-content="<img src='img/cryptologo/xzc.png' width='30px'/> ZCoin (XZC)" data-tokens="ZCoin XZC">XZC</option>
       <option data-content="<img src='img/cryptologo/zcl.png' width='30px'/> ZClassic (ZCL)" data-tokens="ZClassic ZCL">ZCL</option>
