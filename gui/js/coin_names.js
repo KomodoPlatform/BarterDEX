@@ -33,6 +33,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://blockchair.com/bitcoin-cash/transaction/';
 			coin_details.eth = false;
 			break;
+                case 'BCBC':
+                        coin_details.name = 'Bitcoin@CBC';
+                        coin_details.explorer = 'http://be.cleanblockchain.org/tx/';
+                        coin_details.eth = false;
+                        break;
 		case 'BLK':
 			coin_details.name = 'BlackCoin';
 			coin_details.explorer = 'https://chainz.cryptoid.info/blk//tx.dws?';
