@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "निवेश सूची चित्र",
     "portfolio_add_coins": "सिक्के सक्रिय करो",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "portfolio_portfolio_coins": "निवेश सूची सिक्के",
     "portfolio_auto_goal_all_active_coins": "सभी सक्रिय सिक्के को ऑटो लक्ष्य करो",
     "portfolio_th_coin": "सिक्का",
@@ -194,6 +197,7 @@
     "exchange_btn_back": "वापस",
     "exchange_th_orderbook_price_in": "मूल्य",
     "exchange_th_orderbook_avg_volume": "औसत मात्रा",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "गहराई",
     "exchange_th_orderbook_trader_pubkey": "व्यापारी Pubkey",
     "exchange_th_orderbook_age": "आयु",
@@ -393,7 +397,11 @@
     "settings_reset_settings": "सेटिंग रीसेट करें",
     "settings_save_settings": "सेटिंग लागू करें",
     "settings_toastr_settings_update_processed": "सेटिंग लागू हो गई।",
-    "settings_toastr_title": "BarterDEX सेटिंग"
+    "settings_toastr_title": "BarterDEX सेटिंग",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }
 

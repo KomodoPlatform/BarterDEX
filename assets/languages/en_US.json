@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "Portfolio Chart",
     "portfolio_add_coins": "ADD COINS",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "Ask",
     "exchange_goal_percent_for_your_portfolio": "Percentage goal for your portfolio",
     "portfolio_portfolio_coins": "Portfolio Coins",
@@ -164,9 +167,9 @@
     "exchange_lbl_two_buy_small": "Buy",
     "exchange_lbl_two_sell_small": "Sell",
     "exchange_lbl_amount_to": "Amount to",
-    "exchange_dont_auto_repeat_order": "Do not auto-repeat order",
-    "exchange_enable_auto_repeat_this_trade": "Enable auto-repeat for this trade",
-    "exchange_enable_auto_repeat_coinmarketcap": "Enable auto-repeat & CoinMarketCap prices",
+    "exchange_dont_auto_repeat_order": "Limit price order - Immediate",
+    "exchange_enable_auto_repeat_this_trade": "Limit price order - Good 'til canceled",
+    "exchange_enable_auto_repeat_coinmarketcap": "Enable auto-price market maker mode",
     "exchange_itll_cost_you": "Total Cost",
     "exchange_set_small": "Ask",
     "exchange_youll_get": "Amount Receiving",
@@ -197,9 +200,10 @@
     "exchange_buyers_caps": "BUYERS",
     "exchange_btn_back": "BACK",
     "exchange_th_orderbook_price_in": "Price in",
-    "exchange_th_orderbook_avg_volume": "Avg. Volume",
-    "exchange_th_orderbook_depth": "Depth",
-    "exchange_th_orderbook_trader_pubkey": "Trader Pubkey",
+    "exchange_th_orderbook_avg_volume": "Avg. UTXO size",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
+    "exchange_th_orderbook_depth": "UTXO sum",
+    "exchange_th_orderbook_trader_pubkey": "Trader Pubk",
     "exchange_th_orderbook_age": "Age",
     "exchange_th_orderbook_utxos": "UTXOs",
     "exchange_th_orderbook_zcredits": "ZCredits",
@@ -381,7 +385,7 @@
     "zeroconf_claim_td_wait_time": "Wait Time",
     "zeroconf_info_dialog_title": "What is \"Speed Mode\"?",
     "zeroconf_info_dialog_p_01": "Use of this feature requires a security deposit, equal to or greater than the amount you wish to actively trade. This deposit is placed in a special multisig address for safe keeping. The following conditions apply",
-    "zeroconf_info_dialog_li_01": "The minimum deposit amount is 10 KMD.",
+    "zeroconf_info_dialog_li_01": "The minimum deposit amount is 10.01 KMD.",
     "zeroconf_info_dialog_li_02": "The minimum deposit period is 1 week, and the maximum period is 52 weeks.",
     "zeroconf_info_dialog_li_03": "The expiration date is permanently set and recorded within your blockchain transaction at the time of sending the deposit.",
     "zeroconf_info_dialog_li_04": "Choose your time period appropriately, as you can only reclaim your deposit after the expiration date.",
@@ -398,7 +402,11 @@
     "settings_reset_settings": "Reset Settings",
     "settings_save_settings": "Save Settings",
     "settings_toastr_settings_update_processed": "Settings update processed.",
-    "settings_toastr_title": "BarterDEX Settings"
+    "settings_toastr_title": "BarterDEX Settings",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }
 

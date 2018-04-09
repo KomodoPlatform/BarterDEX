@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "Графика на портфолиото",
     "portfolio_add_coins": "ДОБАВИ ВАЛУТА",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "Продажба",
     "exchange_goal_percent_for_your_portfolio": "Желано разпределение на портфолиото",
     "portfolio_portfolio_coins": "Валути в портфолиото",
@@ -192,6 +195,7 @@
     "exchange_btn_back": "НАЗАД",
     "exchange_th_orderbook_price_in": "Цена в",
     "exchange_th_orderbook_avg_volume": "Среден обем",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "Дълбочина",
     "exchange_th_orderbook_trader_pubkey": "Публ. ключ",
     "exchange_th_orderbook_age": "Възраст",
@@ -392,7 +396,11 @@
     "settings_reset_settings": "Върни настройките",
     "settings_save_settings": "Запази настройките",
     "settings_toastr_settings_update_processed": "Обновените настройки са запазени.",
-    "settings_toastr_title": "BarterDEX настройки"
+    "settings_toastr_title": "BarterDEX настройки",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }
 

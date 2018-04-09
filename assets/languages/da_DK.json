@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "Portfolio",
     "portfolio_add_coins": "TILFØJ MØNTENHED",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "Sælg",
     "exchange_goal_percent_for_your_portfolio": "Procentvise mål for portfolio",
     "portfolio_portfolio_coins": "Portfolio Mønter",
@@ -198,6 +201,7 @@
     "exchange_btn_back": "TILBAGE",
     "exchange_th_orderbook_price_in": "Pris i",
     "exchange_th_orderbook_avg_volume": "Gns. Volumen",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "Dybde",
     "exchange_th_orderbook_trader_pubkey": "Handlende Pubkey",
     "exchange_th_orderbook_age": "Alder",
@@ -398,7 +402,11 @@
     "settings_reset_settings": "Gendan Standard Indstillinger",
     "settings_save_settings": "Gem Indstillinger",
     "settings_toastr_settings_update_processed": "Indstillinger Opdateret.",
-    "settings_toastr_title": "BarterDEX Indstillinger"
+    "settings_toastr_title": "BarterDEX Indstillinger",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }
 

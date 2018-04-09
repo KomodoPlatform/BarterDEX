@@ -10,542 +10,17 @@ var bot_screen_coin_balance_Interval = null;
 var bot_screen_sellcoin_balance_Interval = null;
 var shell = require('electron').shell;
 
-$(window).resize(function() {
-	$('.loginbody').css('height',$(window).height());
-	$('#exchange_coin_asks_togl').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-	$('#exchange_coin_bids_togl').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-	$('#exchange_coin_asks').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-	$('#exchange_coin_bids').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-	$('.exchange_trade_status_body').css('height',$(window).height() - ($('.col1').height() + $('.col2').height() + 135))
+$(window).resize(function () {
+	$('.loginbody').css('height', $(window).height());
+	$('#exchange_coin_asks_togl').css('max-height', $('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
+	$('#exchange_coin_bids_togl').css('max-height', $('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
+	$('#exchange_coin_asks').css('max-height', $('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
+	$('#exchange_coin_bids').css('max-height', $('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
+	$('.exchange_trade_status_body').css('height', $(window).height() - ($('.col1').height() + $('.col2').height() + 135))
 	console.log($(window).height());
 })
 
-$(document).ready(function() {
-	document.addEventListener('drop', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-	});
-	document.addEventListener('dragover', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-	});
-
-	$('.loginbody').css('height',$(window).height())
-	var mmstatus = ShepherdIPC({"command":"mmstatus"});
-	if (mmstatus !== 'closed') {
-		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-		var mypubkey = sessionStorage.getItem('mm_mypubkey');
-		var loginstate = sessionStorage.getItem('mm_loginstate');
-		if (loginstate !== null && loginstate == 'loggedin') {
-			$('.mainbody').show();
-			$('.loginbody').hide();
-			CheckPortfolio_Interval = setInterval(CheckPortfolioFn,300000);
-			CheckPortfolioFn();
-
-			//check_coin_balance_Interval = setInterval(check_coin_balance,3000);
-			//check_coin_balance();
-
-	//---- dICO App Settings START ----//
-			//CheckPortfolio_Interval = setInterval(CheckPortfolioFn,300000);
-			//CheckPortfolioFn();
-
-			var dexmode = sessionStorage.getItem('mm_dexmode');
-			var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
-
-			if (dexmode == 'BarterDEX') {
-				$('.navbar-brandname').html('BarterDEX');
-				$('#trading_mode_options_trademanual').trigger('click');
-				$('#trading_mode_options_tradebot').removeAttr("checked");
-				$('#trading_mode_options_trademanual').attr('checked','checked');
-				$('.trading_pair_coin_autoprice_mode_span').hide();
-				$('#trading_pair_coin_autoprice_mode').bootstrapToggle('on')
-				$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-			}
-			if (dexmode == 'dICO') {
-				$('.navbar-brandname').html(return_coin_details(selected_dICO_coin).name + ' dICO');
-				selected_coin = {}
-				selected_coin.coin = selected_dICO_coin;
-				selected_coin.coin_name = return_coin_details(selected_dICO_coin).name;
-				console.log(selected_coin);
-				sessionStorage.setItem('mm_selectedcoin', JSON.stringify(selected_coin));
-
-				$('.dexdashboard-btn').hide();
-				$('.screen-portfolio').hide();
-				$('.screen-coindashboard').hide();
-				$('.btn-exchangeclose').hide();
-				$('.screen-exchange').show();
-				$('.coin_ticker').html(selected_dICO_coin);
-				$.each($('.coinexchange[data-coin]'), function(index, value) {
-					$('.coinexchange[data-coin]').data('coin', selected_dICO_coin);
-				});
-
-				check_coin_balance(false);
-				CheckOrderBookFn();
-				CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-				//check_swap_status_Interval = setInterval(check_swap_status,20000);
-				check_swap_status();
-				check_bot_list_Interval = setInterval(check_bot_list, 10000);
-				check_bot_list();
-				check_my_prices_Interval = setInterval(check_my_prices, 60000);
-				check_my_prices();
-				bot_screen_coin_balance_Interval = setInterval(bot_screen_coin_balance, 30000);
-				bot_screen_coin_balance();
-				bot_screen_sellcoin_balance_Interval = setInterval(bot_screen_sellcoin_balance, 30000);
-				bot_screen_sellcoin_balance();
-				get_coin_info(selected_dICO_coin);
-
-				//Enableing Manual Trade by auto clicking Manual trade option via JS code.
-				$('#trading_mode_options_trademanual').trigger('click');
-				$('#trading_mode_options_tradebot').removeAttr("checked");
-				$('#trading_mode_options_trademanual').attr('checked','checked');
-				$('.trading_method_options').hide();
-				$('.trading_buysell_options').hide();
-				$('.trading_pair_coin_autoprice_mode_span').hide();
-				$('#trading_pair_coin_autoprice_mode').bootstrapToggle('on')
-				$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-
-				var charts_instruments_data = {}
-				charts_instruments_data.symbol = selected_dICO_coin+'/KMD'
-				charts_instruments_data.company = 'Komodo Platform';
-				ChartsInstruments(charts_instruments_data)
-				UpdateDexChart(selected_dICO_coin, 'KMD');
-				Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-			}
-
-	//---- dICO App Settings END ----//
-
-			//$('.trading_selected_trader_label').hide();
-			//$('.trading_selected_trader').hide();
-			$('.relvol_basevol_coin').html($('.trading_pair_coin').selectpicker('val'));
-
-
-			BarterDEXSettingsFn();
-		}
-	} else {
-		$('.mainbody').hide();
-		//$('.loginbody').show();
-	}
-	//$('.set_goal_label_portfolio').html($('.sell_coin_p').selectpicker('val'));
-});
-
-
-$('.porfolio_coins_list tbody').on('click', '.btn_portfolio_coingoal', function() {
-	console.log('portfolio set goal button clicked')
-	console.log($(this).data());
-	console.log($(this).data('coin'));
-
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	var coin = $(this).data('coin');
-
-	var set_coingoal_bootbox = bootbox.dialog({
-		backdrop: true,
-		onEscape: true,
-		message: `<div class="form-group coingoal_label_div" style="margin-top: 15px; margin-bottom: 0px;">
-                      <span style="font-size: 18px;">${$(this).data('coin')}: ${default_lang.Portfolio.portfolio_set_goal_percentage_for_your_portfolio}</span>
-                    </div>
-                    <div class="input-group col-sm-12 coingoal_div">
-                      <span class="input-group-addon coin_ticker" style="font-size: 20px;">`+$(this).data('coin')+`</span>
-                      <input type="number" class="form-control coingoal_percentage_bootbox" placeholder="e.g. 12.5" style="height: 64px; font-size: 20px;">
-                    </div>`,
-		closeButton: true,
-		size: 'medium',
-
-		buttons: {
-			cancel: {
-				label: `${default_lang.Common.btn_close_smallcaps}`,
-				className: 'btn-default',
-				callback: function(){
-				}
-			},
-			ok: {
-				label: `${default_lang.Portfolio.portfolio_set_goal}`,
-				className: 'btn-primary btn_set_coin_goal_bootbox',
-				callback: function(){
-					var goal_data = {}
-					goal_data.coin = coin;
-					goal_data.auto = false;
-					goal_data.percent = $('.coingoal_percentage_bootbox').val();
-
-					console.log(goal_data);
-					set_coin_goal(goal_data);
-				}
-			}
-		}
-	});
-	set_coingoal_bootbox.init(function(){
-		console.log('set_coingoal_bootbox dialog opened.')
-	});
-
-
-});
-
-
-$('.porfolio_coins_list tbody').on('click', '.btn-portfoliogo', function() {
-	console.log('portfolio coin button clicked')
-	console.log($(this).data());
-	console.log($(this).data('coin'));
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	$('.screen-portfolio').hide();
-	setTimeout(function(){
-		if ($(window).height() - ($('.col1').height() + $('.col2').height() + 135) <= 285) {
-			var trade_status_body_height = '285px';
-		} else {
-			var trade_status_body_height = $(window).height() - ($('.col1').height() + $('.col2').height() + 135);
-		}
-		$('.exchange_trade_status_body').css('height',trade_status_body_height);
-		$('#exchange_coin_asks_togl').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-		$('#exchange_coin_bids_togl').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-		$('#exchange_coin_asks').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-		$('#exchange_coin_bids').css('max-height',$('.col1').height() + $('.col2').height() + $('.col3').height() - 470);
-	}, 10);
-	$('#trading_mode_options_trademanual').trigger('click');
-	$('#trading_mode_options_tradebot').removeAttr("checked");
-	$('#trading_mode_options_trademanual').attr('checked','checked');
-	$('#trading_pair_options_buying').trigger('click');
-	$('#trading_pair_options_selling').removeAttr("checked");
-	$('#trading_pair_options_buying').attr('checked','checked');
-	$('.trading_pair_coin').selectpicker('val', 'KMD');
-	$('.relvol_basevol_coin').html('KMD');
-	$('.trading_pair_coin_price').val('');
-	$('.trading_pair_destpubkey').val('');
-	$('.trading_pair_coin_volume').val('');
-	$('.relvol_basevol').html('');
-	$('.navbar-right').children().removeClass('active');
-	$('.trading_pair_coin_autoprice_mode_span').hide();
-	$('#trading_pair_coin_autoprice_mode').bootstrapToggle('on')
-	$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-
-	$('.trading_sellcoin_ticker_name').empty();
-	$('.trading_sellcoin_balance').empty();
-
-	$('.trading_coin_ticker_name').empty();
-	$('.trading_coin_balance').empty();
-	$('#balance-spinner').show();
-
-	coin = $(this).data('coin');
-
-	if (coin == 'KMD') {
-		$('.trading_pair_coin').selectpicker('val', 'BTC');
-		$('.relvol_basevol_coin').html('BTC');
-		setTimeout(function(){ $('.trading_pair_coin2').selectpicker('val', 'KMD'); }, 10);
-	}
-
-	selected_coin = {}
-	selected_coin.coin = $(this).data('coin');
-	selected_coin.coin_name = $(this).data('coinname');
-	selected_coin.addr = $(this).data('addr');
-	selected_coin.balance = $(this).data('balance');
-	console.log(selected_coin);
-	sessionStorage.setItem('mm_selectedcoin', JSON.stringify(selected_coin));
-
-	//check_coin_balance_Interval = setInterval(check_coin_balance($(this).data()),3000);
-
-	$('.screen-portfolio').hide();
-	$('.screen-coindashboard').hide()
-	$('.screen-exchange').show();
-	$('.coin_ticker').html(coin);
-	$.each($('.coinexchange[data-coin]'), function(index, value) {
-		$('.coinexchange[data-coin]').data('coin', coin);
-	});
-	$('.trading_pair_coin2').selectpicker('val',coin);
-	$('.coingoal_label_coin_name').html(return_coin_details(coin).name + ' ('+coin+')');
-
-	CheckPortfolioFn(false);
-	CheckOrderBookFn();
-	CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-	//check_swap_status_Interval = setInterval(check_swap_status,20000);
-	check_swap_status();
-	check_bot_list_Interval = setInterval(check_bot_list, 10000);
-	check_bot_list();
-	check_my_prices_Interval = setInterval(check_my_prices, 60000);
-	check_my_prices();
-	bot_screen_coin_balance_Interval = setInterval(bot_screen_coin_balance, 30000);
-	bot_screen_coin_balance();
-	bot_screen_sellcoin_balance_Interval = setInterval(bot_screen_sellcoin_balance, 30000);
-	bot_screen_sellcoin_balance();
-
-	//getZeroConfDepositHistory();
-
-	sessionStorage.setItem('mm_chartinterval', JSON.stringify({"periodicity":"h","interval":1}));
-
-	var charts_instruments_data = {}
-	if ($(this).data('coin') == 'KMD') {
-		charts_instruments_data.symbol = $(this).data('coin')+'/BTC'
-		charts_instruments_data.company = 'Komodo Platform';
-		ChartsInstruments(charts_instruments_data)
-		UpdateDexChart($(this).data('coin'),'BTC');
-	} else {
-		charts_instruments_data.symbol = $(this).data('coin')+'/KMD'
-		charts_instruments_data.company = 'Komodo Platform';
-		ChartsInstruments(charts_instruments_data)
-		UpdateDexChart($(this).data('coin'),'KMD');
-	}
-	Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-
-	// Fix width of chart
-	gChart.size = {width: $('#chartContainer').parent().width()};
-	gChart.update();
-	setTimeout(function(){
-		PopulateDefaultLanguage();
-		$('input:radio[name="trading_manual_buy_sell_options"]').filter('[value="disabled"]').trigger('click');
-	}, 100);
-});
-
-
-$('.btn-activatecoins').click(function(e){
-	e.preventDefault();
-	console.log('btn-activatecoins clicked');
-	console.log($(this).data());
-
-	addcoins_dialog();
-
-	//$('.screen-portfolio').hide();
-	//$('.screen-addcoins').show();
-
-	//CheckPortfolioFn(false);
-	//get_coins_list();
-
-
-
-})
-
-/*$('.btn-addcoinsclose').click(function(e){
-	e.preventDefault();
-	console.log('btn-addcoinsclose clicked');
-	console.log($(this).data());
-
-	$('.screen-portfolio').show();
-	$('.screen-addcoins').hide();
-
-	CheckPortfolioFn();
-	CheckPortfolio_Interval = setInterval(CheckPortfolioFn,300000);
-});
-
-$('.btn-addcoinsrefresh').click(function(e){
-	e.preventDefault();
-	console.log('btn-addcoinsrefresh clicked');
-	console.log($(this).data());
-
-	get_coins_list()
-});*/
-
-$('.addcoins_tbl tbody').on('click', '.addcoins_tbl_disable_btn', function() {
-	console.log('Disable this coin:' + $(this).data('coin'));
-	var refresh_data = {"coin":$(this).data('coin'), "status": "disable"};
-	//enable_disable_coin(refresh_data)
-	//$('.selectpicker option').filter(function () { return $(this).html() == $(this).data('coin'); }).attr("disabled","disabled");
-	//$('.selectpicker').selectpicker('refresh');
-
-
-});
-
-$('.addcoins_tbl tbody').on('click', '.addcoins_tbl_enable_btn', function() {
-	console.log('Enable this coin:' + $(this).data('coin'));
-	var refresh_data = {"coin":$(this).data('coin'), "status": "enable"};
-	//enable_disable_coin(refresh_data)
-	//$('.selectpicker option').filter(function () { return $(this).html() == $(this).data('coin'); }).removeAttr('disabled');
-	//$('.selectpicker').selectpicker('refresh');
-});
-
-$('#debug-exec').click(function(e) {
-	var ajax_data = $('#debug-payload').val();
-	var url = "http://127.0.0.1:7783";
-
-	console.warn(ajax_data.indexOf('\\"'));
-
-	$.ajax({
-		async: true,
-		data: ajax_data.indexOf('\\"') > -1 ? JSON.parse(ajax_data) : JSON.parse(JSON.stringify(ajax_data)),
-		dataType: 'json',
-		type: 'POST',
-		url: url
-	}).done(function(data) {
-		console.warn('debug exec', data);
-		$('#debug-payload-response').html(JSON.stringify(data, null, '\t'));
-	});
-});
-
-
-$('.btn-inventoryclose').click(function(e) {
-	e.preventDefault();
-	console.log('btn-inventoryclose clicked');
-	console.log($(this).data());
-	$('.screen-exchange').show()
-	$('.screen-inventory').hide();
-	$('.dex_showinv_alice_tbl tbody').empty();
-	$('.dex_showlist_unspents_tbl tbody').empty();
-	$('.RawJSONInventory-output').empty();
-	//$('.coin_ticker').html($(this).attr('data-coin'));
-	//$.each($('.coinexchange[data-coin]'), function(index, value) {
-		//$('.coinexchange[data-coin]').data('coin', $(this).attr('data-coin'));
-	//});
-
-	check_coin_balance(false);
-	CheckOrderBookFn();
-	CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-	//check_swap_status_Interval = setInterval(check_swap_status,20000);
-	check_swap_status();
-	check_bot_list_Interval = setInterval(check_bot_list, 10000);
-	check_bot_list();
-	check_my_prices_Interval = setInterval(check_my_prices, 60000);
-	check_my_prices();
-	bot_screen_coin_balance_Interval = setInterval(bot_screen_coin_balance, 30000);
-	bot_screen_coin_balance();
-	bot_screen_sellcoin_balance_Interval = setInterval(bot_screen_sellcoin_balance, 30000);
-	bot_screen_sellcoin_balance();
-	Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-	Refresh_active_StockChart();
-
-	var dexmode = sessionStorage.getItem('mm_dexmode');
-	var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
-			if (dexmode == 'dICO') {
-				get_coin_info(selected_dICO_coin);
-			}
-});
-
-$('.btn-inventoryrefresh').click(function(e) {
-	e.preventDefault();
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	console.log('btn-inventoryrefresh clicked');
-	console.log($(this).data());
-	$('.dex_showinv_alice_tbl tbody').html(`<th><div style="text-align: center;">${default_lang.Common.loading_wait}</div></th>`);
-	$('.dex_showlist_unspents_tbl tbody').html(`<th><div style="text-align: center;">${default_lang.Common.loading_wait}</div></th>`);
-
-	check_coin_inventory($(this).data('coin'));
-	check_coin_listunspent($(this).data());
-});
-
-
-
-$('.dex_showinv_alice_tbl tbody').on('click', '.btn_coiniventory_detail', function() {
-	//console.log($(this).data());
-	var index = $(this).data('index');
-	var coininventory = sessionStorage.getItem('mm_coininventory');
-	coininventory = JSON.parse(coininventory);
-	console.log(coininventory.alice[index]);
-
-	bootbox.dialog({
-		onEscape: true,
-		backdrop: true,
-		message: `
-			<table class="table table-striped">
-				<tbody>
-					<tr>
-					<th rowspan="13" style="width: 30px;">` + index + `</th>
-					<th>method</th>
-					<th>` + coininventory.alice[index].method + `</th>
-					</tr>
-					<tr>
-					<td>gui</td>
-					<td>` + coininventory.alice[index].gui + `</td>
-					</tr>
-					<tr>
-					<td>coin</td>
-					<td>` + coininventory.alice[index].coin + `</td>
-					</tr>
-					<tr>
-					<td>iambob</td>
-					<td>` + coininventory.alice[index].iambob + `</td>
-					</tr>
-					<tr>
-					<td>address</td>
-					<td>` + coininventory.alice[index].address + `</td>
-					</tr>
-					<tr>
-					<td>txid</td>
-					<td>` + coininventory.alice[index].txid + `</td>
-					</tr>
-					<tr>
-					<td>vout</td>
-					<td>` + coininventory.alice[index].vout + `</td>
-					</tr>
-					<tr>
-					<td>value</td>
-					<td>` + (parseFloat(coininventory.alice[index].value)/100000000).toFixed(8) + ` ` + coininventory.alice[index].coin + `</td>
-					</tr>
-					<tr>
-					<td>satoshis</td>
-					<td>` + coininventory.alice[index].satoshis + `</td>
-					</tr>
-					<tr>
-					<td>txid2</td>
-					<td>` + coininventory.alice[index].txid2 + `</td>
-					</tr>
-					<tr>
-					<td>vout2</td>
-					<td>` + coininventory.alice[index].vout2 + `</td>
-					</tr>
-					<tr>
-					<td>value2</td>
-					<td>` + (parseFloat(coininventory.alice[index].value2)/100000000).toFixed(8) + ` ` + coininventory.alice[index].coin + `</td>
-					</tr>
-					<tr>
-					<td>desthash</td>
-					<td>` + coininventory.alice[index].desthash + `</td>
-					</tr>
-				</tbody>
-			</table>`,
-		closeButton: true,
-		size: 'large'
-	});
-});
-
-
-
-$('.btn-makeinventory').click(function(e) {
-	e.preventDefault();
-	console.log('btn-makeinventory clicked');
-	//console.log($(this).data());
-
-	utxo_input1 = $("#inventory_slider_input1").val();
-	utxo_input2 = $("#inventory_slider_input2").val();
-	utxo_input3 = $("#inventory_slider_input3").val();
-	//console.log(utxo_input1);
-	//console.log(utxo_input2);
-	//console.log(utxo_input3);
-
-	var slider_input1 = $('#inventory-slider1').val();
-	var slider_input2 = $('#inventory-slider2').val();
-	var slider_input3 = $('#inventory-slider3').val();
-	//console.log(slider_input1);
-	//console.log(slider_input2);
-	//console.log(slider_input3);
-
-	var selected_coin = JSON.parse(sessionStorage.getItem('mm_selectedcoin'));
-	var coin_addr = selected_coin.addr;
-	console.log(coin_addr);
-
-	var withdraw_outputs = []
-
-	for(var i=0; i < slider_input1; i++){
-		var tmp_json = {}
-		tmp_json[coin_addr] = utxo_input1
-		//console.log(tmp_json)
-		withdraw_outputs.push(tmp_json)
-	}
-	for(var i=0; i < slider_input2; i++){
-		var tmp_json = {}
-		tmp_json[coin_addr] = utxo_input2
-		withdraw_outputs.push(tmp_json)
-	}
-	for(var i=0; i < slider_input3; i++){
-		var tmp_json = {}
-		tmp_json[coin_addr] = utxo_input3
-		withdraw_outputs.push(tmp_json)
-	}
-	//console.log(withdraw_outputs);
-
-	inventory_data = {};
-	inventory_data['coin'] = $(this).data('coin');
-	inventory_data['outputs'] = withdraw_outputs;
-	console.log(inventory_data);
-	make_inventory_withdraw(inventory_data);
-
-});
-
-
-
-$('.btn_coindashboard_exchange').click(function(e) {
+$('.btn_coindashboard_exchange').click(function (e) {
 	e.preventDefault();
 	console.log('btn_coindashboard_exchange clicked');
 	console.log($(this).data());
@@ -558,7 +33,7 @@ $('.btn_coindashboard_exchange').click(function(e) {
 	$('.screen-exchange').show();
 	$('.coin_ticker').html(coin);
 
-	$.each($('.coinexchange[data-coin]'), function(index, value) {
+	$.each($('.coinexchange[data-coin]'), function (index, value) {
 		//$('.coinexchange[data-coin]').attr('data-coin', coin);
 		$('.coinexchange[data-coin]').data('coin', coin);
 	});
@@ -570,8 +45,8 @@ $('.btn_coindashboard_exchange').click(function(e) {
 	$('.btn-refreshtrading_pair').attr('data-coin', coin);*/
 	check_coin_balance(false);
 	CheckOrderBookFn();
-	CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-	//check_swap_status_Interval = setInterval(check_swap_status,20000);
+	CheckOrderbook_Interval = setInterval(CheckOrderBookFn, 30000);
+	check_swap_status_Interval = setInterval(check_swap_status, 20000);
 	check_swap_status();
 	check_bot_list_Interval = setInterval(check_bot_list, 10000);
 	check_bot_list();
@@ -581,11 +56,18 @@ $('.btn_coindashboard_exchange').click(function(e) {
 	bot_screen_coin_balance();
 	bot_screen_sellcoin_balance_Interval = setInterval(bot_screen_sellcoin_balance, 30000);
 	bot_screen_sellcoin_balance();
-	Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
-	Refresh_active_StockChart();
+
+	var trading_chart_status = sessionStorage.getItem('mm_tradingchart');
+	if (trading_chart_status == 'show') {
+		$('.trading_chart_div').show();
+		Refresh_active_StockChart_Interval = setInterval(Refresh_active_StockChart, 60000);
+		Refresh_active_StockChart();
+	} else {
+		$('.trading_chart_div').hide();
+	}
 });
 
-$('.btn-exchangeclose').click(function(e){
+$('.btn-exchangeclose').click(function (e) {
 	e.preventDefault();
 	console.log('btn-exchangeclose clicked');
 	console.log($(this).data());
@@ -606,48 +88,51 @@ $('.btn-exchangeclose').click(function(e){
 	$('.porfolio_coins_list tbody').empty();
 	var actiavte_portfolio_coins_list_spinner = ''
 	actiavte_portfolio_coins_list_spinner += '<th colspan="7">';
-      actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
-        actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-        actiavte_portfolio_coins_list_spinner += '</svg>';
-      actiavte_portfolio_coins_list_spinner += '</div>';
-    actiavte_portfolio_coins_list_spinner += '</th>';
-    $('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
+	actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
+	actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '</svg>';
+	actiavte_portfolio_coins_list_spinner += '</div>';
+	actiavte_portfolio_coins_list_spinner += '</th>';
+	$('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
 	CheckPortfolioFn();
-	CheckPortfolio_Interval = setInterval(CheckPortfolioFn,300000);
+	CheckPortfolio_Interval = setInterval(CheckPortfolioFn, 300000);
 });
 
 
-$('.btn-exchangerefresh').click(function(e){
+$('.btn-exchangerefresh').click(function (e) {
 	e.preventDefault();
 	console.log('btn-exchangerefresh clicked');
 	console.log($(this).data());
 
 	CheckOrderBookFn();
+	toastr.info('Updating Orderbooks')
 });
 
 
-$('.btn-myordersrefresh').click(function(e){
+$('.btn-myordersrefresh').click(function (e) {
 	e.preventDefault();
 	console.log('btn-myordersrefresh clicked');
 	console.log($(this).data());
 
 	check_my_prices();
+	toastr.info('Updating My Offers/Prices');
 });
 
-$('.btn-botlistrefresh').click(function(e){
+$('.btn-botlistrefresh').click(function (e) {
 	e.preventDefault();
 	console.log('btn-botlistrefresh clicked');
 	console.log($(this).data());
 
 	check_bot_list();
+	toastr.info('Updating Trade Status')
 });
 
 
-$('.btn-bot_action').click(function(e){
+$('.btn-bot_action').click(function (e) {
 	e.preventDefault();
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 	console.log('btn-botlistrefresh clicked');
@@ -729,7 +214,6 @@ $('.btn-bot_action').click(function(e){
 
 		if (trading_options == 'disabled') {
 			if (trade_data.volume <= 0.01) {
-				console.log(bot_data.volume)
 				console.log('Order is too small. Please try again.');
 				toastr.warning(`${default_lang.Exchange.exchange_toastr_order_is_too_small}`, `${default_lang.Exchange.exchange_toastr_order_title}`)
 			} else {
@@ -767,7 +251,7 @@ $('.btn-bot_action').click(function(e){
 	}
 });
 
-$('input[name=trading_manual_buy_sell_options]').change(function() {
+$('input[name=trading_manual_buy_sell_options]').change(function () {
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 	var trading_options = $('input[name=trading_manual_buy_sell_options]:checked').val();
 
@@ -788,9 +272,9 @@ $('input[name=trading_manual_buy_sell_options]').change(function() {
 		$('#trading_pair_coin_autoprice_mode').parent().addClass(' disabled');
 		$('#trading_pair_coin_autoprice_mode').attr('disabled', 'disabled');
 		$('#trading_pair_coin_price_max_min').html('%');
-		if(buying_or_selling == 'buying') {
+		if (buying_or_selling == 'buying') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			if(margin_or_fixed == true){
+			if (margin_or_fixed == true) {
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_buy_margin_percent);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_margin_will_make);
 			} else {
@@ -799,8 +283,8 @@ $('input[name=trading_manual_buy_sell_options]').change(function() {
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_on_fixed_price_will_make);
 			}
 		}
-		if(buying_or_selling == 'selling') {
-			if(margin_or_fixed == true){
+		if (buying_or_selling == 'selling') {
+			if (margin_or_fixed == true) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_sell_margin_percent);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_sell_margin_will_make);
@@ -815,8 +299,8 @@ $('input[name=trading_manual_buy_sell_options]').change(function() {
 		$('.trading_pair_coin2').hide();
 		$('.trading_pair_coin_volume').hide();
 		$('.btn-bot_action').addClass(' btn-block');
-		$('.btn-bot_action').css('border-top-left-radius','4px');
-		$('.btn-bot_action').css('border-bottom-left-radius','4px');
+		$('.btn-bot_action').css('border-top-left-radius', '4px');
+		$('.btn-bot_action').css('border-bottom-left-radius', '4px');
 		$('.buy_sell_button_div').css('margin-top', '20px');
 		$('.relvol_basevol_amount').hide();
 		$('.relvol_basevol_label').hide();
@@ -827,13 +311,13 @@ $('input[name=trading_manual_buy_sell_options]').change(function() {
 		//$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_min}`);
 		$('.trading_pair_lable_text_one').html('');
 		//$('.trading_pair_lable_text_two').html('Sell');
-		if(buying_or_selling == 'buying') {
+		if (buying_or_selling == 'buying') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			$('.btn-bot_action').html(default_lang.Exchange.exchange_btn_buy_caps);
 			$('.relvol_basevol_label').html(default_lang.Exchange.exchange_itll_cost_you)
 			$('.btn-bot_action').attr('data-action', 'buy');
 		}
-		if(buying_or_selling == 'selling') {
+		if (buying_or_selling == 'selling') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			$('.btn-bot_action').html(default_lang.Exchange.exchange_btn_sell_caps);
 			$('.relvol_basevol_label').html(default_lang.Exchange.exchange_youll_get);
@@ -850,8 +334,8 @@ $('input[name=trading_manual_buy_sell_options]').change(function() {
 		$('.trading_pair_coin2').show();
 		$('.trading_pair_coin_volume').show();
 		$('.btn-bot_action').removeAttr('btn-block');
-		$('.btn-bot_action').css('border-top-left-radius','0');
-		$('.btn-bot_action').css('border-bottom-left-radius','0');
+		$('.btn-bot_action').css('border-top-left-radius', '0');
+		$('.btn-bot_action').css('border-bottom-left-radius', '0');
 		$('.buy_sell_button_div').css('margin-top', '0');
 		$('.relvol_basevol_amount').show();
 		$('.relvol_basevol_label').show();
@@ -861,7 +345,7 @@ $('input[name=trading_manual_buy_sell_options]').change(function() {
 	}
 })
 
-$('.trading_pair_coin_price').keyup(function(){
+$('.trading_pair_coin_price').keyup(function () {
 	pair_price = $('.trading_pair_coin_price').val();
 
 	base_volume = $('.trading_pair_coin_volume').val();
@@ -871,7 +355,7 @@ $('.trading_pair_coin_price').keyup(function(){
 	$('.relvol_basevol').html(pair_volume.toFixed(8));
 });
 
-$('.trading_pair_coin_volume').keyup(function(){
+$('.trading_pair_coin_volume').keyup(function () {
 	pair_price = $('.trading_pair_coin_price').val();
 
 	base_volume = $('.trading_pair_coin_volume').val();
@@ -882,45 +366,46 @@ $('.trading_pair_coin_volume').keyup(function(){
 });
 
 
-$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_status', function() {
+$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_status', function () {
 	console.log('bot status button clicked')
 	console.log($(this).data());
 
 	bot_status($(this).data());
 });
 
-$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_resume', function() {
+$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_resume', function () {
 	console.log('bot resume button clicked')
 	console.log($(this).data());
 
 	bot_stop_pause_resume($(this).data());
 });
 
-$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_pause', function() {
+$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_pause', function () {
 	console.log('bot pause button clicked')
 	console.log($(this).data());
 
 	bot_stop_pause_resume($(this).data());
 });
 
-$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_stop', function() {
+$('.exchange_bot_list_tbl tbody').on('click', '.btn_bot_stop', function () {
 	console.log('bot stop button clicked')
 	console.log($(this).data());
 
 	bot_stop_pause_resume($(this).data());
 });
 
-$('.btn-trading_coin_balance_refresh').click(function(e){
+$('.btn-trading_coin_balance_refresh').click(function (e) {
 	e.preventDefault();
 	console.log('btn-trading_coin_balance_refresh clicked');
 	console.log($(this).data());
 
 	bot_screen_sellcoin_balance();
 	bot_screen_coin_balance();
+	toastr.info('Updating balance info')
 })
 
 
-$('.btn_switch_trading_coin_pairs').click(function(e){
+$('.btn_switch_trading_coin_pairs').click(function (e) {
 	e.preventDefault();
 	console.log('btn_switch_trading_coin_pairs clicked');
 
@@ -930,15 +415,15 @@ $('.btn_switch_trading_coin_pairs').click(function(e){
 	console.log(coin_pair1);
 	console.log(coin_pair2);
 
-	$('.trading_pair_coin').selectpicker('val',coin_pair2);
-	$('.trading_pair_coin2').selectpicker('val',coin_pair1);
+	$('.trading_pair_coin').selectpicker('val', coin_pair2);
+	$('.trading_pair_coin2').selectpicker('val', coin_pair1);
 
 
 	$('.relvol_basevol_coin').html(coin_pair2);
 
 	coin = $('.trading_pair_coin2').selectpicker('val');
 	$('.coin_ticker').html(coin);
-	$.each($('.coinexchange[data-coin]'), function(index, value) {
+	$.each($('.coinexchange[data-coin]'), function (index, value) {
 		$('.coinexchange[data-coin]').data('coin', coin);
 	});
 
@@ -948,10 +433,10 @@ $('.btn_switch_trading_coin_pairs').click(function(e){
 	CheckOrderBookFn();
 
 	var charts_instruments_data = {}
-	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val')+'/'+$('.trading_pair_coin').selectpicker('val');
+	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val') + '/' + $('.trading_pair_coin').selectpicker('val');
 	charts_instruments_data.company = 'Komodo Platform';
 	ChartsInstruments(charts_instruments_data)
-	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'), $('.trading_pair_coin').selectpicker('val'));
 
 });
 
@@ -983,22 +468,23 @@ function check_coin_balance(chk_coin_data) {
 	$('.coindashboard-coin').empty();
 	$('.coindashboard-balance').empty();
 	$('.coindashboard-address[data-coin="' + coin + '"]').empty();
-	$(".coindashboard-coinicon").attr("src","img/cryptologo/" + coin.toLowerCase() + ".png");
+	$(".coindashboard-coinicon").attr("src", "img/cryptologo/" + coin.toLowerCase() + ".png");
 
 	var coin_name = return_coin_details(coin).name;
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoin","coin": coin};
+	var ajax_data = { "userpass": userpass, "method": "getcoin", "coin": coin };
 	var url = "http://127.0.0.1:7783";
 
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
 		data: JSON.stringify(ajax_data),
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(chk_coin_output_data) {
+	}).done(function (chk_coin_output_data) {
 		// If successful
 		//console.log(data);
 		if (!chk_coin_output_data.userpass === false) {
@@ -1017,7 +503,7 @@ function check_coin_balance(chk_coin_data) {
 		if (!chk_coin_output_data.error === false && chk_coin_output_data.error == 'coin is disabled') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			console.log(chk_coin_output_data.coin);
-			console.log('coin '+ chk_coin_output_data.coin.coin + ' is disabled');
+			console.log('coin ' + chk_coin_output_data.coin.coin + ' is disabled');
 			$('.btn_coindashboard_send[data-coin="' + chk_coin_output_data.coin.coin + '"]').hide();
 			$('.btn_coindashboard_receive[data-coin="' + chk_coin_output_data.coin.coin + '"]').hide();
 			$('.btn_coindashboard_exchange[data-coin="' + chk_coin_output_data.coin.coin + '"]').hide();
@@ -1026,7 +512,7 @@ function check_coin_balance(chk_coin_data) {
 			$('.btn_coindashboard_disable[data-coin="' + chk_coin_output_data.coin.coin + '"]').hide();
 
 			$('.coindashboard-balance').html(default_lang.Exchange.exchange_coin_is_disabled_enable_before_trading)
-			$('.coindashboard-balance').css( "font-size", "35px" );
+			$('.coindashboard-balance').css("font-size", "35px");
 
 		} else {
 			//console.log(data);
@@ -1045,7 +531,7 @@ function check_coin_balance(chk_coin_data) {
 			$('.coindashboard-coin').html(chk_coin_output_data.coin.coin);
 
 
-			$('.coindashboard-balance').css( "font-size", "55px" );
+			$('.coindashboard-balance').css("font-size", "55px");
 			$('.coindashboard-balance').html(chk_coin_output_data.coin.balance);
 			$('.coindashboard-height').html(chk_coin_output_data.coin.height);
 			$('.coindashboard-kmdvalue').html(chk_coin_output_data.coin.KMDvalue);
@@ -1053,9 +539,9 @@ function check_coin_balance(chk_coin_data) {
 		}
 
 		//if (chk_coin_output_data.error == 'coin is disabled') {
-			//console.log('coin '+ val + ' is disabled');
+		//console.log('coin '+ val + ' is disabled');
 		//}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
@@ -1066,19 +552,20 @@ function check_coin_balance(chk_coin_data) {
 function get_coin_info(coin) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoin","coin":coin};
+	var ajax_data = { "userpass": userpass, "method": "getcoin", "coin": coin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(get_coin_info_output_data) {
-	    // If successful
-	   console.log(get_coin_info_output_data);
-	   if (!get_coin_info_output_data.userpass === false) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (get_coin_info_output_data) {
+		// If successful
+		console.log(get_coin_info_output_data);
+		if (!get_coin_info_output_data.userpass === false) {
 			console.log('first marketmaker api call execution after marketmaker started.')
 			sessionStorage.setItem('mm_usercoins', JSON.stringify(get_coin_info_output_data.coins));
 			sessionStorage.setItem('mm_userpass', get_coin_info_output_data.userpass);
@@ -1100,9 +587,53 @@ function get_coin_info(coin) {
 			console.log(selected_coin);
 			sessionStorage.setItem('mm_selectedcoin', JSON.stringify(selected_coin));
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
+	});
+}
+
+function get_coin_info_spv_inv(coin_data) {
+
+	var userpass = sessionStorage.getItem('mm_userpass');
+	var ajax_data = { "userpass": userpass, "method": "balance", "coin": coin_data.coin, "address": coin_data.addr };
+	var url = "http://127.0.0.1:7783";
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
+	$.ajax({
+		async: true,
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 5000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (coin_balance_output_data) {
+		// If successful
+		console.log(coin_balance_output_data);
+
+		$('.inventory-title').html('Manage Inventory (' + coin_balance_output_data.balance + ' ' + coin_data.coin + ')');
+		$('.inventory-title').data('coin', coin_data.coin);
+		$('.inventory-title').data('balance', coin_balance_output_data.balance);
+		$('.btn-makeinventory').data('coin', coin_data.coin);
+		$('.coininventory[data-coin]').attr('data-coin', coin_data.coin);
+		$('.coininventory[data-coin]').attr('data-addr', coin_data.addr);
+		$('.inventory-sliderTotalCoin').html(' ' + coin_data.coin);
+
+		calc_data = { "coin": coin_data.coin, "balance": coin_balance_output_data.balance };
+		clac_coin_inventory(calc_data);
+
+		if (!coin_balance_output_data.error == true) {
+			selected_coin = {}
+			selected_coin.coin = coin_data.coin;
+			selected_coin.coin_name = return_coin_details(coin_data.coin).name;
+			selected_coin.addr = coin_data.addr;
+			selected_coin.balance = coin_balance_output_data.balance;
+			console.log(selected_coin);
+			sessionStorage.setItem('mm_selectedcoin', JSON.stringify(selected_coin));
+		}
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -1110,20 +641,21 @@ function get_coins() {
 	//console.log(data);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoins"};
+	var ajax_data = { "userpass": userpass, "method": "getcoins" };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
-	    // If successful
-	   console.log(data);
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
+		// If successful
+		console.log(data);
 
-		$.each(data, function(index, val) {
+		$.each(data, function (index, val) {
 			//console.log(index);
 			//console.log(val);
 			if (val.status == 'active') {
@@ -1131,23 +663,23 @@ function get_coins() {
 				console.log(val);
 			}
 		});
-	   if (!data.userpass === false) {
-				console.log('first marketmaker api call execution after marketmaker started.')
-				sessionStorage.setItem('mm_usercoins', JSON.stringify(data.coins));
-				sessionStorage.setItem('mm_userpass', data.userpass);
-				sessionStorage.setItem('mm_mypubkey', data.mypubkey);
+		if (!data.userpass === false) {
+			console.log('first marketmaker api call execution after marketmaker started.')
+			sessionStorage.setItem('mm_usercoins', JSON.stringify(data.coins));
+			sessionStorage.setItem('mm_userpass', data.userpass);
+			sessionStorage.setItem('mm_mypubkey', data.mypubkey);
 
-				var dexmode = sessionStorage.getItem('mm_dexmode');
-				var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
+			var dexmode = sessionStorage.getItem('mm_dexmode');
+			var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
 			if (dexmode == 'dICO') {
 				get_coin_info(selected_dICO_coin);
 			}
-			}
-	   //toastr.success('Auto goal setup executed!', 'Portfolio Info')
-	   //$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+		}
+		//toastr.success('Auto goal setup executed!', 'Portfolio Info')
+		//$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -1156,7 +688,7 @@ let electrumCoinsKeepAlive = {};
 function enable_disable_coin(enable_disable_coin_data) {
 	if (!enable_disable_coin_data.electrum) {
 		if (electrumCoinsKeepAlive[enable_disable_coin_data.coin] &&
-				enable_disable_coin_data.method === 'disable') {
+			enable_disable_coin_data.method === 'disable') {
 			clearInterval(electrumCoinsKeepAlive[enable_disable_coin_data.coin]);
 			delete electrumCoinsKeepAlive[enable_disable_coin_data.coin];
 		} else {
@@ -1180,15 +712,16 @@ function enable_disable_coin(enable_disable_coin_data) {
 
 	if (enable_disable_coin_data.method === 'disable') {
 		console.warn('disable coin called');
-		var ajax_data = {"userpass":userpass,"method":"electrum","coin":enable_disable_coin_data.coin};
-
+		var ajax_data = { "userpass": userpass, "method": "electrum", "coin": enable_disable_coin_data.coin };
+		var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+		console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 		$.ajax({
 			async: true,
 			data: JSON.stringify(ajax_data),
 			dataType: 'json',
 			type: 'POST',
 			url: url
-		}).done(function(disable_coin_output_data) {
+		}).done(function (disable_coin_output_data) {
 			console.log('enable_disable_coin', 'electrum removed');
 		});
 	}
@@ -1197,22 +730,29 @@ function enable_disable_coin(enable_disable_coin_data) {
 		console.log(electrum_option);
 		console.log("electrum selected for " + enable_disable_coin_data.coin);
 		//var rand_electrum_srv = get_random_electrum_server(data.coin);
-		$.each(electrum_servers_list[enable_disable_coin_data.coin], function(index,val){
+
+		if (electrum_servers_list[enable_disable_coin_data.coin] == undefined) {
+			console.log('no electrum servers found for: ' + enable_disable_coin_data.coin);
+			toastr.warning('No Electrum Servers found for ' + enable_disable_coin_data.coin + '<br> Please use Native Mode for ' + enable_disable_coin_data.coin, 'Coin Status');
+		}
+
+		$.each(electrum_servers_list[enable_disable_coin_data.coin], function (index, val) {
 			var ipaddr = _.keys(val);
 			var return_data_ipaddr = ipaddr[0];
 			var return_data_port = val[ipaddr[0]];
 			console.log(return_data_ipaddr);
 			console.log(return_data_port);
 
-			var ajax_data = {"userpass":userpass,"method":"electrum","coin":enable_disable_coin_data.coin,"ipaddr":return_data_ipaddr,"port":return_data_port};
+			var ajax_data = { "userpass": userpass, "method": "electrum", "coin": enable_disable_coin_data.coin, "ipaddr": return_data_ipaddr, "port": return_data_port };
 
+			console.warn(new Date().toLocaleTimeString() + " MM_CALL: enable " + enable_disable_coin_data.coin);;
 			$.ajax({
 				async: true,
 				data: JSON.stringify(ajax_data),
 				dataType: 'json',
 				type: 'POST',
 				url: url
-			}).done(function(enable_electrum_coin_output_data) {
+			}).done(function (enable_electrum_coin_output_data) {
 				// If successful
 				console.log(enable_electrum_coin_output_data);
 				if (!enable_electrum_coin_output_data.userpass === false) {
@@ -1223,17 +763,17 @@ function enable_disable_coin(enable_disable_coin_data) {
 
 					var dexmode = sessionStorage.getItem('mm_dexmode');
 					var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
-			if (dexmode == 'dICO') {
-				get_coin_info(selected_dICO_coin);
-			}
+					if (dexmode == 'dICO') {
+						get_coin_info(selected_dICO_coin);
+					}
 
 					if (ajax_data.status === 'enable') {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-						toastr.success(ajax_data.coin+default_lang.CoinControl.coincontrol_enabled,default_lang.CoinControl.coincontrol_toastr_title_coin_status);
+						toastr.success(ajax_data.coin + default_lang.CoinControl.coincontrol_enabled, default_lang.CoinControl.coincontrol_toastr_title_coin_status);
 					}
 					if (ajax_data.status === 'disable') {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-						toastr.success(ajax_data.coin+default_lang.CoinControl.coincontrol_disabled,default_lang.CoinControl.coincontrol_toastr_title_coin_status);
+						toastr.success(ajax_data.coin + default_lang.CoinControl.coincontrol_disabled, default_lang.CoinControl.coincontrol_toastr_title_coin_status);
 					}
 					//get_coins_list(data.coins);
 				} else {
@@ -1249,14 +789,14 @@ function enable_disable_coin(enable_disable_coin_data) {
 				if (!enable_electrum_coin_output_data.error === false) {
 					//console.log(data.error);
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-					toastr.info(enable_electrum_coin_output_data.error,default_lang.CoinControl.coincontrol_toastr_title_coin_status);
+					toastr.info(enable_electrum_coin_output_data.error, default_lang.CoinControl.coincontrol_toastr_title_coin_status);
 					if (enable_electrum_coin_output_data.error == 'couldnt find coin locally installed') { //{error: "couldnt find coin locally installed", coin: "BTC"}
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 						bootbox.alert({
 							onEscape: true,
 							backdrop: true,
 							title: default_lang.CoinControl.coincontrol_couldnt_find_coin_locally_installed,
-							message: `<p>`+enable_disable_coin_data.coin+`: ${default_lang.CoinControl.coincontrol_it_seems_you_dont_have_p1}</p>
+							message: `<p>` + enable_disable_coin_data.coin + `: ${default_lang.CoinControl.coincontrol_it_seems_you_dont_have_p1}</p>
 							<ol>
 								<li>${default_lang.CoinControl.coincontrol_it_seems_you_dont_have_check_points_li_01}</li>
 								<li>${default_lang.CoinControl.coincontrol_it_seems_you_dont_have_check_points_li_02}</li>
@@ -1271,25 +811,26 @@ function enable_disable_coin(enable_disable_coin_data) {
 						});
 					}
 				}
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-			    // If fail
-			    console.log(textStatus + ': ' + errorThrown);
+			}).fail(function (jqXHR, textStatus, errorThrown) {
+				// If fail
+				console.log(textStatus + ': ' + errorThrown);
 			});
 		});
 	} else {
 		console.log(electrum_option);
 		console.log("native selected for " + enable_disable_coin_data.coin);
-		var ajax_data = {"userpass":userpass,"method":enable_disable_coin_data.method,"coin":enable_disable_coin_data.coin};
+		var ajax_data = { "userpass": userpass, "method": enable_disable_coin_data.method, "coin": enable_disable_coin_data.coin };
 
 		console.log(ajax_data);
-
+		var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+		console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 		$.ajax({
 			async: true,
-		    data: JSON.stringify(ajax_data),
-		    dataType: 'json',
-		    type: 'POST',
-		    url: url
-		}).done(function(enable_native_coin_output_data) {
+			data: JSON.stringify(ajax_data),
+			dataType: 'json',
+			type: 'POST',
+			url: url
+		}).done(function (enable_native_coin_output_data) {
 			// If successful
 			console.log(enable_native_coin_output_data);
 			if (!enable_native_coin_output_data.userpass === false) {
@@ -1300,15 +841,15 @@ function enable_disable_coin(enable_disable_coin_data) {
 
 				var dexmode = sessionStorage.getItem('mm_dexmode');
 				var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
-			if (dexmode == 'dICO') {
-				get_coin_info(selected_dICO_coin);
-			}
+				if (dexmode == 'dICO') {
+					get_coin_info(selected_dICO_coin);
+				}
 
 				if (ajax_data.status === 'enable') {
-					toastr.success(ajax_data.coin+' Enabled','Coin Status');
+					toastr.success(ajax_data.coin + ' Enabled', 'Coin Status');
 				}
 				if (ajax_data.status === 'disable') {
-					toastr.success(ajax_data.coin+' Disabled','Coin Status');
+					toastr.success(ajax_data.coin + ' Disabled', 'Coin Status');
 				}
 				//get_coins_list(enable_native_coin_output_data.coins);
 			} else {
@@ -1323,7 +864,7 @@ function enable_disable_coin(enable_disable_coin_data) {
 
 			if (!enable_native_coin_output_data.error === false) {
 				//console.log(enable_native_coin_output_data.error);
-				toastr.info(enable_native_coin_output_data.error,'Coin Status');
+				toastr.info(enable_native_coin_output_data.error, 'Coin Status');
 				if (enable_native_coin_output_data.error == 'couldnt find coin locally installed') { //{error: "couldnt find coin locally installed", coin: "BTC"}
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					bootbox.alert({
@@ -1345,9 +886,9 @@ function enable_disable_coin(enable_disable_coin_data) {
 					});
 				}
 			}
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-		    // If fail
-		    console.log(textStatus + ': ' + errorThrown);
+		}).fail(function (jqXHR, textStatus, errorThrown) {
+			// If fail
+			console.log(textStatus + ': ' + errorThrown);
 		});
 	}
 
@@ -1362,16 +903,17 @@ function check_coin_inventory(coin) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"inventory","coin":coin};
+	var ajax_data = { "userpass": userpass, "method": "inventory", "coin": coin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
 		data: JSON.stringify(ajax_data),
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -1423,9 +965,9 @@ function check_coin_inventory(coin) {
 			})*/
 
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -1435,16 +977,17 @@ function check_coin_listunspent(coin_listunspent_data) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"listunspent","coin":coin_listunspent_data.coin,"address":coin_listunspent_data.addr};
+	var ajax_data = { "userpass": userpass, "method": "listunspent", "coin": coin_listunspent_data.coin, "address": coin_listunspent_data.addr };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
 		data: JSON.stringify(ajax_data),
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(coin_listunspent_output_data) {
+	}).done(function (coin_listunspent_output_data) {
 		// If successful
 		console.log(coin_listunspent_output_data);
 		console.log(coin_listunspent_output_data[0].hasOwnProperty('account'));
@@ -1453,20 +996,20 @@ function check_coin_listunspent(coin_listunspent_data) {
 		$('.dex_showlist_unspents_tbl tbody').empty();
 		var show_list_unspents_tbl_tr = '';
 		show_list_unspents_tbl_tr += '<tr>';
-			show_list_unspents_tbl_tr += `<th style="width: 30px;">${default_lang.Inventory.inventory_th_index}</th>`;
-			if (coin_listunspent_output_data[0].hasOwnProperty('account') == true) {
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_coin_info}</th>`;
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_value_info}</th>`;
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_transaction_info}</th>`;
-			} else {
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_height}</th>`;
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_tx_hash}</th>`;
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_tx_pos}</th>`;
-				show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_value}</th>`;
-			}
-			show_list_unspents_tbl_tr += '</tr>';
+		show_list_unspents_tbl_tr += `<th style="width: 30px;">${default_lang.Inventory.inventory_th_index}</th>`;
+		if (coin_listunspent_output_data[0].hasOwnProperty('account') == true) {
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_coin_info}</th>`;
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_value_info}</th>`;
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_transaction_info}</th>`;
+		} else {
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_height}</th>`;
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_tx_hash}</th>`;
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_tx_pos}</th>`;
+			show_list_unspents_tbl_tr += `<th>${default_lang.Inventory.inventory_th_value}</th>`;
+		}
+		show_list_unspents_tbl_tr += '</tr>';
 		$('.dex_showlist_unspents_tbl tbody').append(show_list_unspents_tbl_tr);
-		$.each(coin_listunspent_output_data, function(index, val) {
+		$.each(coin_listunspent_output_data, function (index, val) {
 			//console.log(index);
 			//console.log(val);
 
@@ -1480,47 +1023,47 @@ function check_coin_listunspent(coin_listunspent_data) {
 
 			show_list_unspents_tbl_tr = '';
 			show_list_unspents_tbl_tr += '<tr>';
-				show_list_unspents_tbl_tr += '<td>' + index + '</td>';
-				if (coin_listunspent_output_data[0].hasOwnProperty('account') == true) {
-					show_list_unspents_tbl_tr += `<td>
-													<b>${default_lang.Inventory.inventory_td_coin}:</b> `+ coin_listunspent_data.coin +`<br>
-													<b>${default_lang.Inventory.inventory_td_account}:</b> `+ val.account +`<br>
-													<b>${default_lang.Inventory.inventory_td_address}:</b> `+ val.address +`<br>
+			show_list_unspents_tbl_tr += '<td>' + index + '</td>';
+			if (coin_listunspent_output_data[0].hasOwnProperty('account') == true) {
+				show_list_unspents_tbl_tr += `<td>
+													<b>${default_lang.Inventory.inventory_td_coin}:</b> ` + coin_listunspent_data.coin + `<br>
+													<b>${default_lang.Inventory.inventory_td_account}:</b> ` + val.account + `<br>
+													<b>${default_lang.Inventory.inventory_td_address}:</b> ` + val.address + `<br>
 													</td>`;
-					show_list_unspents_tbl_tr += `<td>
-													<b>${default_lang.Inventory.inventory_td_amount}:</b> `+ (parseFloat(val.amount)).toFixed(8) + ' ' + coin_listunspent_data.coin +`<br>
-													<b>${default_lang.Inventory.inventory_td_confirmations}:</b> `+ val.confirmations +`<br>
-													<b>${default_lang.Inventory.inventory_td_interest}:</b> `+ utxo_interest +`<br>
+				show_list_unspents_tbl_tr += `<td>
+													<b>${default_lang.Inventory.inventory_td_amount}:</b> ` + (parseFloat(val.amount)).toFixed(8) + ' ' + coin_listunspent_data.coin + `<br>
+													<b>${default_lang.Inventory.inventory_td_confirmations}:</b> ` + val.confirmations + `<br>
+													<b>${default_lang.Inventory.inventory_td_interest}:</b> ` + utxo_interest + `<br>
 													</td>`;
-					show_list_unspents_tbl_tr += `<td>
-													<b>${default_lang.Inventory.inventory_td_scriptpubkey}:</b> `+ val.scriptPubKey +`<br>
-													<b>${default_lang.Inventory.inventory_td_txid}:</b> `+ val.txid +`<br>
+				show_list_unspents_tbl_tr += `<td>
+													<b>${default_lang.Inventory.inventory_td_scriptpubkey}:</b> ` + val.scriptPubKey + `<br>
+													<b>${default_lang.Inventory.inventory_td_txid}:</b> ` + val.txid + `<br>
 													</td>`;
-				} else {
-					show_list_unspents_tbl_tr += `<td>` + val.height + `</td>`;
-					show_list_unspents_tbl_tr += `<td>` + val.tx_hash + `</td>`;
-					show_list_unspents_tbl_tr += `<td>` + val.tx_pos + `</td>`;
-					show_list_unspents_tbl_tr += `<td>` + (parseFloat(val.value) / 100000000).toFixed(8) + ' ' + coin_listunspent_data.coin + `</td>`;
-				}
-				
+			} else {
+				show_list_unspents_tbl_tr += `<td>` + val.height + `</td>`;
+				show_list_unspents_tbl_tr += `<td>` + val.tx_hash + `</td>`;
+				show_list_unspents_tbl_tr += `<td>` + val.tx_pos + `</td>`;
+				show_list_unspents_tbl_tr += `<td>` + (parseFloat(val.value) / 100000000).toFixed(8) + ' ' + coin_listunspent_data.coin + `</td>`;
+			}
+
 			show_list_unspents_tbl_tr += '</tr>';
 
 			$('.dex_showlist_unspents_tbl tbody').append(show_list_unspents_tbl_tr);
 		})
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
 
 
 
-$("#inventory_slider_input1").keyup(function(){
+$("#inventory_slider_input1").keyup(function () {
 	var utxo_input = $("#inventory_slider_input1").val();
 	var slider1_value = $("#inventory-slider1").val();
-	$("#inventory-slider1Total").text((slider1_value*utxo_input).toFixed(8));
+	$("#inventory-slider1Total").text((slider1_value * utxo_input).toFixed(8));
 
 	var slider1_total = parseFloat($('#inventory-slider1Total').text());
 	var slider2_total = parseFloat($('#inventory-slider2Total').text());
@@ -1533,7 +1076,7 @@ $("#inventory_slider_input1").keyup(function(){
 	console.log(coin_balance);
 
 
-	if(slider_total >= coin_balance) {
+	if (slider_total >= coin_balance || slider_total < 0) {
 		$('.inventory-sliderTotal').css('color', 'red');
 		$('.inventory-sliderTotalCoin').css('color', 'red');
 		$('.btn-makeinventory').attr("disabled", "disabled");
@@ -1544,10 +1087,10 @@ $("#inventory_slider_input1").keyup(function(){
 	}
 });
 
-$("#inventory_slider_input2").keyup(function(){
+$("#inventory_slider_input2").keyup(function () {
 	utxo_input = $("#inventory_slider_input2").val();
 	var slider2_value = $("#inventory-slider2").val();
-	$("#inventory-slider2Total").text((slider2_value*utxo_input).toFixed(8));
+	$("#inventory-slider2Total").text((slider2_value * utxo_input).toFixed(8));
 
 	var slider1_total = parseFloat($('#inventory-slider1Total').text());
 	var slider2_total = parseFloat($('#inventory-slider2Total').text());
@@ -1559,7 +1102,7 @@ $("#inventory_slider_input2").keyup(function(){
 	var coin_balance = $('.inventory-title').data('balance');
 	console.log(coin_balance);
 
-	if(slider_total >= coin_balance) {
+	if (slider_total >= coin_balance || slider_total < 0) {
 		$('.inventory-sliderTotal').css('color', 'red');
 		$('.inventory-sliderTotalCoin').css('color', 'red');
 		$('.btn-makeinventory').attr("disabled", "disabled");
@@ -1570,10 +1113,10 @@ $("#inventory_slider_input2").keyup(function(){
 	}
 });
 
-$("#inventory_slider_input3").keyup(function(){
+$("#inventory_slider_input3").keyup(function () {
 	utxo_input = $("#inventory_slider_input3").val();
 	var slider3_value = $("#inventory-slider3").val();
-	$("#inventory-slider3Total").text((slider3_value*utxo_input).toFixed(8));
+	$("#inventory-slider3Total").text((slider3_value * utxo_input).toFixed(8));
 
 	var slider1_total = parseFloat($('#inventory-slider1Total').text());
 	var slider2_total = parseFloat($('#inventory-slider2Total').text());
@@ -1585,7 +1128,7 @@ $("#inventory_slider_input3").keyup(function(){
 	var coin_balance = $('.inventory-title').data('balance');
 	console.log(coin_balance);
 
-	if(slider_total >= coin_balance) {
+	if (slider_total >= coin_balance || slider_total < 0) {
 		$('.inventory-sliderTotal').css('color', 'red');
 		$('.inventory-sliderTotalCoin').css('color', 'red');
 		$('.btn-makeinventory').attr("disabled", "disabled");
@@ -1599,11 +1142,11 @@ $("#inventory_slider_input3").keyup(function(){
 
 
 $("#inventory-slider1").slider();
-$("#inventory-slider1").on("slide", function(slideEvt) {
+$("#inventory-slider1").on("slide", function (slideEvt) {
 	$("#inventory-slider1Val").text(slideEvt.value);
 
 	utxo_input = $("#inventory_slider_input1").val();
-	$("#inventory-slider1Total").text((slideEvt.value*utxo_input).toFixed(8));
+	$("#inventory-slider1Total").text((slideEvt.value * utxo_input).toFixed(8));
 
 	var slider1_total = parseFloat($('#inventory-slider1Total').text());
 	var slider2_total = parseFloat($('#inventory-slider2Total').text());
@@ -1615,7 +1158,7 @@ $("#inventory-slider1").on("slide", function(slideEvt) {
 	var coin_balance = $('.inventory-title').data('balance');
 	console.log(coin_balance);
 
-	if(slider_total >= coin_balance) {
+	if (slider_total >= coin_balance || slider_total < 0) {
 		$('.inventory-sliderTotal').css('color', 'red');
 		$('.inventory-sliderTotalCoin').css('color', 'red');
 		$('.btn-makeinventory').attr("disabled", "disabled");
@@ -1627,11 +1170,11 @@ $("#inventory-slider1").on("slide", function(slideEvt) {
 });
 
 $("#inventory-slider2").slider();
-$("#inventory-slider2").on("slide", function(slideEvt) {
+$("#inventory-slider2").on("slide", function (slideEvt) {
 	$("#inventory-slider2Val").text(slideEvt.value);
 
 	utxo_input = $("#inventory_slider_input2").val();
-	$("#inventory-slider2Total").text((slideEvt.value*utxo_input).toFixed(8));
+	$("#inventory-slider2Total").text((slideEvt.value * utxo_input).toFixed(8));
 
 	var slider1_total = parseFloat($('#inventory-slider1Total').text());
 	var slider2_total = parseFloat($('#inventory-slider2Total').text());
@@ -1643,7 +1186,7 @@ $("#inventory-slider2").on("slide", function(slideEvt) {
 	var coin_balance = $('.inventory-title').data('balance');
 	console.log(coin_balance);
 
-	if(slider_total >= coin_balance) {
+	if (slider_total >= coin_balance || slider_total < 0) {
 		$('.inventory-sliderTotal').css('color', 'red');
 		$('.inventory-sliderTotalCoin').css('color', 'red');
 		$('.btn-makeinventory').attr("disabled", "disabled");
@@ -1655,11 +1198,11 @@ $("#inventory-slider2").on("slide", function(slideEvt) {
 });
 
 $("#inventory-slider3").slider();
-$("#inventory-slider3").on("slide", function(slideEvt) {
+$("#inventory-slider3").on("slide", function (slideEvt) {
 	$("#inventory-slider3Val").text(slideEvt.value);
 
 	utxo_input = $("#inventory_slider_input3").val();
-	$("#inventory-slider3Total").text((slideEvt.value*utxo_input).toFixed(8));
+	$("#inventory-slider3Total").text((slideEvt.value * utxo_input).toFixed(8));
 
 	var slider1_total = parseFloat($('#inventory-slider1Total').text());
 	var slider2_total = parseFloat($('#inventory-slider2Total').text());
@@ -1671,7 +1214,7 @@ $("#inventory-slider3").on("slide", function(slideEvt) {
 	var coin_balance = $('.inventory-title').data('balance');
 	console.log(coin_balance);
 
-	if(slider_total >= coin_balance) {
+	if (slider_total >= coin_balance || slider_total < 0) {
 		$('.inventory-sliderTotal').css('color', 'red');
 		$('.inventory-sliderTotalCoin').css('color', 'red');
 		$('.btn-makeinventory').attr("disabled", "disabled");
@@ -1687,9 +1230,9 @@ $("#inventory-slider3").on("slide", function(slideEvt) {
 function clac_coin_inventory(data) {
 	console.log(data);
 
-	utxo_input1 = (parseFloat(data.balance)*0.12).toFixed(8);
-	utxo_input2 = (parseFloat(data.balance)*0.01).toFixed(8);
-	utxo_input3 = (parseFloat(data.balance)*0.1).toFixed(8);
+	utxo_input1 = (parseFloat(data.balance) * 0.12).toFixed(8);
+	utxo_input2 = (parseFloat(data.balance) * 0.01).toFixed(8);
+	utxo_input3 = (parseFloat(data.balance) * 0.1).toFixed(8);
 	///console.log(utxo_input1);
 	//console.log(utxo_input2);
 	//console.log(utxo_input3);
@@ -1701,11 +1244,11 @@ function clac_coin_inventory(data) {
 	var slider_input1 = $('#inventory-slider1').val();
 	var slider_input2 = $('#inventory-slider2').val();
 	var slider_input3 = $('#inventory-slider3').val();
-	$("#inventory-slider1Total").text(parseFloat(slider_input1*utxo_input1).toFixed(8));
-	$("#inventory-slider2Total").text(parseFloat(slider_input2*utxo_input2).toFixed(8));
-	$("#inventory-slider3Total").text(parseFloat(slider_input3*utxo_input3).toFixed(8));
+	$("#inventory-slider1Total").text(parseFloat(slider_input1 * utxo_input1).toFixed(8));
+	$("#inventory-slider2Total").text(parseFloat(slider_input2 * utxo_input2).toFixed(8));
+	$("#inventory-slider3Total").text(parseFloat(slider_input3 * utxo_input3).toFixed(8));
 
-	var slider_total = parseFloat(slider_input1*utxo_input1) + parseFloat(slider_input2*utxo_input2) + parseFloat(slider_input3*utxo_input3);
+	var slider_total = parseFloat(slider_input1 * utxo_input1) + parseFloat(slider_input2 * utxo_input2) + parseFloat(slider_input3 * utxo_input3);
 	console.log(slider_total);
 
 	$('.inventory-sliderTotal').text(slider_total.toFixed(8));
@@ -1717,24 +1260,25 @@ function make_inventory_withdraw(mk_inv_data) {
 	coin = mk_inv_data.coin;
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"withdraw","coin": mk_inv_data.coin, "outputs": mk_inv_data.outputs};
+	var ajax_data = { "userpass": userpass, "method": "withdraw", "coin": mk_inv_data.coin, "outputs": mk_inv_data.outputs };
 	var url = "http://127.0.0.1:7783";
 
 	console.log(ajax_data);
 	console.log(JSON.stringify(ajax_data));
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    //dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(mk_inv_withdraw_data) {
+		data: JSON.stringify(ajax_data),
+		//dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (mk_inv_withdraw_data) {
 		console.log(mk_inv_withdraw_data);
 		var paprsed_mk_inv_withdraw_data = JSON.parse(mk_inv_withdraw_data);
 
 		if (paprsed_mk_inv_withdraw_data.complete == false) {
-			toastr.error('Unsuccessful Transaction. Please try again.','Tansaction info');
+			toastr.error('Unsuccessful Transaction. Please try again.', 'Tansaction info');
 		}
 		if (paprsed_mk_inv_withdraw_data.complete == true) {
 			var mk_inv_confirm_bootbox = bootbox.dialog({
@@ -1749,59 +1293,60 @@ function make_inventory_withdraw(mk_inv_data) {
 					cancel: {
 						label: "Cancel",
 						className: 'btn-default',
-						callback: function(){
+						callback: function () {
 						}
 					},
 					ok: {
 						label: "Confirm",
 						className: 'btn-primary btn_mk_inv_confirm_bootbox',
-						callback: function(){
+						callback: function () {
 							mk_inv_sendrawtx(paprsed_mk_inv_withdraw_data, mk_inv_data.coin);
 						}
 					}
 				}
 			});
-			mk_inv_confirm_bootbox.init(function(){
+			mk_inv_confirm_bootbox.init(function () {
 				console.log('mk_inv_confirm_bootbox dialog opened.')
 			});
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
 
-function mk_inv_sendrawtx(mk_inv_rawtx_data,mk_inv_rawtx_coin) {
+function mk_inv_sendrawtx(mk_inv_rawtx_data, mk_inv_rawtx_coin) {
 	console.log(mk_inv_rawtx_data);
 	console.log(mk_inv_rawtx_coin);
-	
-	
-	
+
+
+
 	if (mk_inv_rawtx_data.hasOwnProperty('withdraw')) { console.log(mk_inv_rawtx_data.withdraw.hex); }
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"sendrawtransaction","coin": mk_inv_rawtx_coin, "signedtx": (mk_inv_rawtx_data.hasOwnProperty('withdraw') ? mk_inv_rawtx_data.withdraw.hex : mk_inv_rawtx_data.hex) };
+	var ajax_data = { "userpass": userpass, "method": "sendrawtransaction", "coin": mk_inv_rawtx_coin, "signedtx": (mk_inv_rawtx_data.hasOwnProperty('withdraw') ? mk_inv_rawtx_data.withdraw.hex : mk_inv_rawtx_data.hex) };
 	var url = "http://127.0.0.1:7783";
 
 	console.log(ajax_data);
 	console.log(JSON.stringify(ajax_data));
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    //dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(mk_inv_sendrawtx_output_data) {
+		data: JSON.stringify(ajax_data),
+		//dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (mk_inv_sendrawtx_output_data) {
 		// If successful
 		console.log(mk_inv_sendrawtx_output_data);
 		var parsed_mk_inv_sendrawtx_output_data = '';
 		try {
-			parsed_mk_inv_sendrawtx_output_data = JSON.parse(bot_output_data);
+			parsed_mk_inv_sendrawtx_output_data = JSON.parse(mk_inv_sendrawtx_output_data);
 			console.log(parsed_mk_inv_sendrawtx_output_data);
 
-			if ( !parsed_mk_inv_sendrawtx_output_data.hasOwnProperty('error') === false && parsed_mk_inv_sendrawtx_output_data.error === false) {
+			if (!parsed_mk_inv_sendrawtx_output_data.hasOwnProperty('error') === false && parsed_mk_inv_sendrawtx_output_data.error === false) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				toastr.error(parsed_mk_inv_sendrawtx_output_data.error.message, default_lang.Portfolio.portfolio_toastr_title_tx_info);
 			} else if (parsed_mk_inv_sendrawtx_output_data.result == null) {
@@ -1809,15 +1354,15 @@ function mk_inv_sendrawtx(mk_inv_rawtx_data,mk_inv_rawtx_coin) {
 			} else if (parsed_mk_inv_sendrawtx_output_data.result == 'success') {
 				toastr.info('Low no. of UTXOs<br>Please try again in 1 Minute.', 'Transaction Status');
 			}
-		} catch(e) {
+		} catch (e) {
 			console.log(e);
 
 			bootbox.alert(`Transaction Sent Successfully. Here's the Transaction ID:<br>
-				<a href="#" onclick="shell.openExternal('`+return_coin_details(mk_inv_rawtx_coin).explorer+mk_inv_sendrawtx_output_data+`'); return false;">` + mk_inv_sendrawtx_output_data + `</a>`);
+				<a href="#" onclick="shell.openExternal('`+ return_coin_details(mk_inv_rawtx_coin).explorer + mk_inv_sendrawtx_output_data + `'); return false;">` + mk_inv_sendrawtx_output_data + `</a>`);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -1829,36 +1374,37 @@ function addcoin_enable_disable_coin(data) {
 	var userpass = sessionStorage.getItem('mm_userpass');
 
 
-	if (data.coin !== ' ' ) {
+	if (data.coin !== ' ') {
 		console.log('coin value is not empty');
 	} else {
 		console.log('coin value is empty');
 	}
 	if (data.coin !== ' ' && data.status == 'enable') {
 		if (electrum_option == false) {
-		console.log(electrum_option);
-		console.log("electrum selected for " + data.coin);
-		var ajax_data = {"userpass":userpass,"method":"electrum","coin":data.coin,"ipaddr":"46.4.125.2","port":50001};
+			console.log(electrum_option);
+			console.log("electrum selected for " + data.coin);
+			var ajax_data = { "userpass": userpass, "method": "electrum", "coin": data.coin, "ipaddr": "46.4.125.2", "port": 50001 };
 		} else {
 			console.log(electrum_option);
 			console.log("native selected for " + data.coin);
-			var ajax_data = {"userpass":userpass,"method":data.status,"coin":data.coin};
+			var ajax_data = { "userpass": userpass, "method": data.status, "coin": data.coin };
 		}
 	} else if (data.coin !== ' ' && data.status == 'disable') {
-		var ajax_data = {"userpass":userpass,"method":data.status,"coin":data.coin};
+		var ajax_data = { "userpass": userpass, "method": data.status, "coin": data.coin };
 	} else if (data.coin == ' ') {
-		var ajax_data = {"userpass":userpass,"method":"getcoins"};
+		var ajax_data = { "userpass": userpass, "method": "getcoins" };
 	}
 	var url = "http://127.0.0.1:7783";
 
 	console.log(ajax_data);
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		//console.log(data);
 		if (!data.userpass === false) {
@@ -1873,10 +1419,10 @@ function addcoin_enable_disable_coin(data) {
 				get_coin_info(selected_dICO_coin);
 			}
 			if (ajax_data.status === 'enable') {
-				toastr.success(ajax_data.coin+' Enabled','Coin Status');
+				toastr.success(ajax_data.coin + ' Enabled', 'Coin Status');
 			}
 			if (ajax_data.status === 'disable') {
-				toastr.success(ajax_data.coin+' Disabled','Coin Status');
+				toastr.success(ajax_data.coin + ' Disabled', 'Coin Status');
 			}
 			get_coins_list(data.coins);
 		} else {
@@ -1885,13 +1431,14 @@ function addcoin_enable_disable_coin(data) {
 			if (electrum_option == false) {
 				//get_coins_list('');
 				$('.refresh_dex_balances').trigger('click');
+				toastr.info('Coins List updating');
 			} else {
 				get_coins_list(data);
 			}
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -1900,17 +1447,18 @@ function get_coins_list() {
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
 
-	var ajax_data = {"userpass":userpass,"method":"getcoins"};
+	var ajax_data = { "userpass": userpass, "method": "getcoins" };
 	console.log(ajax_data)
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
 		data: JSON.stringify(ajax_data),
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -1930,7 +1478,7 @@ function get_coins_list() {
 		} else {
 			$('.addcoins_tbl tbody').empty();
 
-			$.each(data, function(index, val) {
+			$.each(data, function (index, val) {
 				console.log(index);
 				console.log(val);
 
@@ -1939,13 +1487,13 @@ function get_coins_list() {
 				var addcoins_tbl_tr = '';
 
 				addcoins_tbl_tr += '<tr>';
-					addcoins_tbl_tr += '<td><img src="img/cryptologo/' + val.coin.toLowerCase() + '.png" width="30px;"/> '+ coin_name + ' (' + val.coin + ')</td>';
-					addcoins_tbl_tr += '<td>' + val.balance + '</td>';
-					addcoins_tbl_tr += '<td>' + val.smartaddress + '</td>';
-					addcoins_tbl_tr += '<td><span class="label label-uppercase label-' + (( val.status == 'active' ) ? 'grey' : 'default') + '">' + val.status + '</span></td>';
-					addcoins_tbl_tr += '<td>' + (parseFloat(val.txfee)/100000000).toFixed(8) + '</td>';
-					addcoins_tbl_tr += '<td><input class="toggle_checkbox" type="checkbox" checked data-toggle="toggle" data-on="Native" data-off="Electrum" data-onstyle="grey" data-offstyle="info" data-width="100px" data-coin="' + val.coin + '" disabled></td>';
-					addcoins_tbl_tr += '<td style="width: 165px;"> <div class="btn-group" role="group">' + (( val.status == 'active' ) ? '<button class="btn btn-xs btn-warning addcoins_tbl_disable_btn" data-coin="' + val.coin + '">Disable</button>' : '<button class="btn btn-xs btn-success addcoins_tbl_enable_btn" data-coin="' + val.coin + '">Enable</button>') + '</div></td>';
+				addcoins_tbl_tr += '<td><img src="img/cryptologo/' + val.coin.toLowerCase() + '.png" width="30px;"/> ' + coin_name + ' (' + val.coin + ')</td>';
+				addcoins_tbl_tr += '<td>' + val.balance + '</td>';
+				addcoins_tbl_tr += '<td>' + val.smartaddress + '</td>';
+				addcoins_tbl_tr += '<td><span class="label label-uppercase label-' + ((val.status == 'active') ? 'grey' : 'default') + '">' + val.status + '</span></td>';
+				addcoins_tbl_tr += '<td>' + (parseFloat(val.txfee) / 100000000).toFixed(8) + '</td>';
+				addcoins_tbl_tr += '<td><input class="toggle_checkbox" type="checkbox" checked data-toggle="toggle" data-on="Native" data-off="Electrum" data-onstyle="grey" data-offstyle="info" data-width="100px" data-coin="' + val.coin + '" disabled></td>';
+				addcoins_tbl_tr += '<td style="width: 165px;"> <div class="btn-group" role="group">' + ((val.status == 'active') ? '<button class="btn btn-xs btn-warning addcoins_tbl_disable_btn" data-coin="' + val.coin + '">Disable</button>' : '<button class="btn btn-xs btn-success addcoins_tbl_enable_btn" data-coin="' + val.coin + '">Enable</button>') + '</div></td>';
 				addcoins_tbl_tr += '</tr>';
 
 				$('.addcoins_tbl tbody').append(addcoins_tbl_tr);
@@ -1966,14 +1514,14 @@ function get_coins_list() {
 				}
 			})
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
 };
 
 
-function addcoins_dialog(){
+function addcoins_dialog() {
 
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 	var bot_update_bootbox = bootbox.dialog({
@@ -2007,14 +1555,14 @@ function addcoins_dialog(){
 			cancel: {
 				label: `${default_lang.Common.btn_cancel}`,
 				className: 'btn-default',
-				callback: function(){
+				callback: function () {
 
 				}
 			},
 			ok: {
 				label: `${default_lang.CoinControl.coincontrol_enable}`,
 				className: 'btn-success btn-addcoins_enable',
-				callback: function(){
+				callback: function () {
 					var addcoin_data = {}
 					addcoin_data.coin = $('.addcoin_enable_disable_selection').selectpicker('val');
 					addcoin_data.electrum = $('#addcoin_toggle_native_electrum').prop('checked');
@@ -2025,14 +1573,14 @@ function addcoins_dialog(){
 					$('.porfolio_coins_list tbody').empty();
 					var actiavte_portfolio_coins_list_spinner = ''
 					actiavte_portfolio_coins_list_spinner += '<th colspan="7">';
-						actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
-							actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
-								actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-								actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-								actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-								actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-							actiavte_portfolio_coins_list_spinner += '</svg>';
-						actiavte_portfolio_coins_list_spinner += '</div>';
+					actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
+					actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
+					actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+					actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+					actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+					actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+					actiavte_portfolio_coins_list_spinner += '</svg>';
+					actiavte_portfolio_coins_list_spinner += '</div>';
 					actiavte_portfolio_coins_list_spinner += '</th>';
 					$('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
 					CheckPortfolioFn();
@@ -2041,7 +1589,7 @@ function addcoins_dialog(){
 			}
 		}
 	});
-	bot_update_bootbox.init(function(){
+	bot_update_bootbox.init(function () {
 		$('.addcoin_enable_disable_selection').html(coin_select_options);
 		$('.addcoin_enable_disable_selection').selectpicker('render');
 
@@ -2059,7 +1607,7 @@ function addcoins_dialog(){
 /* Portfolio section functions START */
 
 
-$('.porfolio_coins_list').on('click', '.btn_portfolio_disable', function() {
+$('.porfolio_coins_list').on('click', '.btn_portfolio_disable', function () {
 	console.log('btn_portfolio_disable clicked');
 	console.log($(this).data());
 
@@ -2067,26 +1615,26 @@ $('.porfolio_coins_list').on('click', '.btn_portfolio_disable', function() {
 	$('.porfolio_coins_list tbody').empty();
 	var actiavte_portfolio_coins_list_spinner = ''
 	actiavte_portfolio_coins_list_spinner += '<th colspan="7">';
-      actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
-        actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-        actiavte_portfolio_coins_list_spinner += '</svg>';
-      actiavte_portfolio_coins_list_spinner += '</div>';
-    actiavte_portfolio_coins_list_spinner += '</th>';
-    $('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
+	actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
+	actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '</svg>';
+	actiavte_portfolio_coins_list_spinner += '</div>';
+	actiavte_portfolio_coins_list_spinner += '</th>';
+	$('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
 	CheckPortfolioFn();
 });
 
-$('.porfolio_coins_list').on('click', '.btn_portfolio_receive', function() {
+$('.porfolio_coins_list').on('click', '.btn_portfolio_receive', function () {
 	console.log('btn_portfolio_receive clicked');
 	console.log($(this).data());
 	coinBalanceReceiveAddr($(this).data('coin'));
 })
 
-$('.porfolio_coins_list').on('click', '.btn_portfolio_send', function() {
+$('.porfolio_coins_list').on('click', '.btn_portfolio_send', function () {
 	console.log('btn_portfolio_send clicked');
 	console.log($(this).data());
 	coinBalanceSendFn($(this).data('coin'));
@@ -2104,18 +1652,19 @@ function CheckPortfolioFn(sig) {
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
 
-	var ajax_data = {"userpass":userpass,"method":"portfolio"};
+	var ajax_data = { "userpass": userpass, "method": "portfolio" };
 	console.log(ajax_data)
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    timeout: 61000, // sets timeout to 61 seconds
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 61000, // sets timeout to 61 seconds
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -2136,10 +1685,10 @@ function CheckPortfolioFn(sig) {
 
 		PortfolioTblDataFn(data);
 		PortfolioChartUpdate(data.portfolio);
-	   //$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+		//$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -2148,7 +1697,7 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 	console.log(portfolio_tbl_data.portfolio.length);
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 	if (portfolio_tbl_data.portfolio &&
-			portfolio_tbl_data.portfolio.length) {
+		portfolio_tbl_data.portfolio.length) {
 		$('#portfolio-coins-spinner').hide();
 	}
 
@@ -2161,7 +1710,7 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 	$('.portfolio_rel').html(portfolio_tbl_data.rel);
 	$('.portfolio_relvolume').html(portfolio_tbl_data.relvolume);
 
-	var barterDEX_settings = ShepherdIPC({"command":"read_settings"});
+	var barterDEX_settings = ShepherdIPC({ "command": "read_settings" });
 	//console.log(barterDEX_settings);
 	if (barterDEX_settings.experimentalFeatures == false) {
 		var coingoal_style_showhide = 'display: none;';
@@ -2169,10 +1718,17 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 		var coingoal_style_showhide = '';
 	}
 
+	if (barterDEX_settings.charts == 'show') {
+		sessionStorage.setItem('mm_tradingchart', 'show');
+	}
+	if (barterDEX_settings.charts == 'hide') {
+		sessionStorage.setItem('mm_tradingchart', 'hide');
+	}
+
 	$('.dex_portfolio_coins_tbl tbody').empty();
 
 	$('.porfolio_coins_list tbody').empty();
-	$.each(portfolio_tbl_data.portfolio, function(index, val) {
+	$.each(portfolio_tbl_data.portfolio, function (index, val) {
 		//console.log(index);
 		console.log(val);
 
@@ -2181,30 +1737,30 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 		var dex_portfolio_coins_tbl_tr = '';
 
 		dex_portfolio_coins_tbl_tr += '<tr>';
-			dex_portfolio_coins_tbl_tr += '<td><img src="img/cryptologo/' + val.coin.toLowerCase() + '.png" width="30px;"/> '+ coin_name +' ('+val.coin + ')</td>';
-			//dex_portfolio_coins_tbl_tr += '<td>' + val.address + '</td>';
-			dex_portfolio_coins_tbl_tr += '<td>' + val.amount + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.price + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.goal + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.goalperc + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.kmd_equiv + '</td>';
-            dex_portfolio_coins_tbl_tr += `<td style="white-space: nowrap">
+		dex_portfolio_coins_tbl_tr += '<td><img src="img/cryptologo/' + val.coin.toLowerCase() + '.png" width="30px;"/> ' + coin_name + ' (' + val.coin + ')</td>';
+		//dex_portfolio_coins_tbl_tr += '<td>' + val.address + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.amount + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.price + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.goal + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.goalperc + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.kmd_equiv + '</td>';
+		dex_portfolio_coins_tbl_tr += `<td style="white-space: nowrap">
 											<button class="btn btn-sm btn-success btn_portfolio_send" data-coin="` + val.coin + `">${default_lang.Common.btn_send} <span class="fa fa-paper-plane-o" aria-hidden="true"></span></button>
 											<button class="btn btn-sm btn-warning btn_portfolio_receive" data-coin="` + val.coin + `">${default_lang.Common.btn_receive} <span class="fa fa-inbox" aria-hidden="true"></span></button>
 											<button class="btn btn-sm btn-info btn_portfolio_coingoal" data-coin="` + val.coin + `" data-auto=false style="${coingoal_style_showhide}">${default_lang.Common.btn_set_goal} <span class="glyphicon glyphicon-export" aria-hidden="true"></span></button>
 											<button class="btn btn-sm btn-primary btn-portfoliogo" data-coin="` + val.coin + `" data-coinname="` + coin_name + `" data-addr="` + val.address + `" data-balance="` + val.amount + `">${default_lang.Common.btn_exchange} <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
 											<button class="btn btn-sm btn-danger btn_portfolio_disable" data-electrum=true data-method="disable" data-coin="` + val.coin + `">${default_lang.Common.btn_disable} <span class="fa fa-times" aria-hidden="true"></span></button>
 											</td>`
-            //dex_portfolio_coins_tbl_tr += '<td>' + val.perc + '</td>';
-            /*dex_portfolio_coins_tbl_tr += '<td>' + val.relvolume + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.force + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.balanceA + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.valuesumA + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.aliceutil + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.balanceB + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.valuesumB + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.balance + '</td>';
-            dex_portfolio_coins_tbl_tr += '<td>' + val.bobutil + '</td>';*/
+		//dex_portfolio_coins_tbl_tr += '<td>' + val.perc + '</td>';
+		/*dex_portfolio_coins_tbl_tr += '<td>' + val.relvolume + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.force + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.balanceA + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.valuesumA + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.aliceutil + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.balanceB + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.valuesumB + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.balance + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td>' + val.bobutil + '</td>';*/
 		dex_portfolio_coins_tbl_tr += '</tr>';
 
 		$('.porfolio_coins_list tbody').append(dex_portfolio_coins_tbl_tr);
@@ -2214,174 +1770,177 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 function PortfolioChartUpdate(chart_data) {
 	console.log(chart_data)
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	var chart = AmCharts.makeChart( "portfolio_chart_current", {
-	  "type": "pie",
-	  "theme": "black",
-	  "addClassNames": true,
-	  "dataProvider": chart_data,
-	  "valueField": "perc",
-	  "titleField": "coin",
-	  "startDuration": 0,
-	  "innerRadius": 50,
-	  "pullOutRadius": 20,
-	  "marginTop": 30,
-	  "marginBottom": 15,
-	  "marginLeft": 0,
-	  "marginRight": 0,
-	  "pullOutRadius": 0,
-	  "allLabels": [
-	    {
-	      "y": "46%",
-	      "align": "center",
-	      "size": 25,
-	      "bold": true,
-	      "text": default_lang.Portfolio.portfolio_goal_now,
-	      "color": "#e2e2e2"
-	    },
-	    {
-	      "y": "40%",
-	      "align": "center",
-	      "size": 15,
-	      "text": default_lang.Portfolio.portfolio_goal,
-	      "color": "#e2e2e2"
-	    }
-	  ],
-	  "export": {
-	    "enabled": false
-	  }
+	var chart = AmCharts.makeChart("portfolio_chart_current", {
+		"type": "pie",
+		"theme": "black",
+		"addClassNames": true,
+		"dataProvider": chart_data,
+		"valueField": "perc",
+		"titleField": "coin",
+		"startDuration": 0,
+		"innerRadius": 50,
+		"pullOutRadius": 20,
+		"marginTop": 30,
+		"marginBottom": 15,
+		"marginLeft": 0,
+		"marginRight": 0,
+		"pullOutRadius": 0,
+		"allLabels": [
+			{
+				"y": "46%",
+				"align": "center",
+				"size": 25,
+				"bold": true,
+				"text": default_lang.Portfolio.portfolio_goal_now,
+				"color": "#e2e2e2"
+			},
+			{
+				"y": "40%",
+				"align": "center",
+				"size": 15,
+				"text": default_lang.Portfolio.portfolio_goal,
+				"color": "#e2e2e2"
+			}
+		],
+		"export": {
+			"enabled": false
+		}
 	});
 
-	var chart2 = AmCharts.makeChart( "portfolio_chart_target", {
-	  "type": "pie",
-	  "theme": "black",
-	  "addClassNames": true,
-	  "dataProvider": chart_data,
-	  "valueField": "goalperc",
-	  "titleField": "coin",
-	  "startDuration": 0,
-	  "innerRadius": 50,
-	  "pullOutRadius": 20,
-	  "marginTop": 30,
-	  "marginBottom": 15,
-	  "marginLeft": 0,
-	  "marginRight": 0,
-	  "pullOutRadius": 0,
-	  "allLabels": [
-	    {
-	      "y": "46%",
-	      "align": "center",
-	      "size": 25,
-	      "bold": true,
-	      "text": default_lang.Portfolio.portfolio_goal_target,
-	      "color": "#e2e2e2"
-	    },
-	    {
-	      "y": "40%",
-	      "align": "center",
-	      "size": 15,
-	      "text": default_lang.Portfolio.portfolio_goal,
-	      "color": "#e2e2e2"
-	    }
-	  ],
-	  "export": {
-	    "enabled": false
-	  }
+	var chart2 = AmCharts.makeChart("portfolio_chart_target", {
+		"type": "pie",
+		"theme": "black",
+		"addClassNames": true,
+		"dataProvider": chart_data,
+		"valueField": "goalperc",
+		"titleField": "coin",
+		"startDuration": 0,
+		"innerRadius": 50,
+		"pullOutRadius": 20,
+		"marginTop": 30,
+		"marginBottom": 15,
+		"marginLeft": 0,
+		"marginRight": 0,
+		"pullOutRadius": 0,
+		"allLabels": [
+			{
+				"y": "46%",
+				"align": "center",
+				"size": 25,
+				"bold": true,
+				"text": default_lang.Portfolio.portfolio_goal_target,
+				"color": "#e2e2e2"
+			},
+			{
+				"y": "40%",
+				"align": "center",
+				"size": 15,
+				"text": default_lang.Portfolio.portfolio_goal,
+				"color": "#e2e2e2"
+			}
+		],
+		"export": {
+			"enabled": false
+		}
 	});
 }
 
-$('.btn-refreshportfolio').click(function() {
+$('.btn-refreshportfolio').click(function () {
 	console.log('clicked refresh button at dex portfolio charts');
 	$('.porfolio_coins_list tbody').empty();
 	var actiavte_portfolio_coins_list_spinner = ''
 	actiavte_portfolio_coins_list_spinner += '<th colspan="7">';
-      actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
-        actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-          actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-        actiavte_portfolio_coins_list_spinner += '</svg>';
-      actiavte_portfolio_coins_list_spinner += '</div>';
-    actiavte_portfolio_coins_list_spinner += '</th>';
-    $('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
+	actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
+	actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '</svg>';
+	actiavte_portfolio_coins_list_spinner += '</div>';
+	actiavte_portfolio_coins_list_spinner += '</th>';
+	$('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
 	CheckPortfolioFn();
+	toastr.info('Updating Coins list');
 });
 
-$('.refresh_dex_potfolio').click(function() {
+$('.refresh_dex_potfolio').click(function () {
 	console.log('clicked refresh button at dex portfolio charts');
 	CheckPortfolioFn();
 });
 
-$('.refresh_dex_potfolio_coins').click(function() {
+$('.refresh_dex_potfolio_coins').click(function () {
 	console.log('clicked refresh button at dex portfolio charts');
 	CheckPortfolioFn();
 });
 
 
-$('.portfolio_set_price_btn').click(function() {
+$('.portfolio_set_price_btn').click(function () {
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 	var price = $('#portfolio_set_price').val();
 	var base_coin = $('.buy_coin_p').selectpicker('val');
 	var rel_coin = $('.sell_coin_p').selectpicker('val');
 
 	console.log('price ' + price);
-	console.log('base '+ base_coin);
+	console.log('base ' + base_coin);
 	console.log('rel ' + rel_coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"setprice","base":base_coin,"rel":rel_coin,"price":price};
+	var ajax_data = { "userpass": userpass, "method": "setprice", "base": base_coin, "rel": rel_coin, "price": price };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
-	    // If successful
-	   console.log(data);
-	   toastr.success(`${default_lang.Exchange.exchange_portfolio_price_for_base}: ` + base_coin + `<br> ${default_lang.Exchange.exchange_th_my_orders_rel}: ` + rel_coin + `<br> ${default_lang.Exchange.exchange_portfolio_price_set_to}: ` + price + ' ' + rel_coin, exchange_portfolio_toastr_portfolio_info_title)
-	   $('.initcoinswap-output').html(JSON.stringify(data, null, 2));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
+		// If successful
+		console.log(data);
+		toastr.success(`${default_lang.Exchange.exchange_portfolio_price_for_base}: ` + base_coin + `<br> ${default_lang.Exchange.exchange_th_my_orders_rel}: ` + rel_coin + `<br> ${default_lang.Exchange.exchange_portfolio_price_set_to}: ` + price + ' ' + rel_coin, exchange_portfolio_toastr_portfolio_info_title)
+		$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 })
 
 
-$('.portfolio_set_autoprice_btn').click(function() {
+$('.portfolio_set_autoprice_btn').click(function () {
 	var margin = $('#portfolio_set_autoprice').val();
 	var base_coin = $('.buy_coin_p').selectpicker('val');
 	var rel_coin = $('.sell_coin_p').selectpicker('val');
 
 	console.log('margin ' + margin);
-	console.log('base '+ base_coin);
+	console.log('base ' + base_coin);
 	console.log('rel ' + rel_coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"margin":margin};
+	var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "margin": margin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
-	    // If successful
-	   console.log(data);
-	   toastr.success('Margin Price for Base: ' + base_coin + ' Rel: ' + rel_coin + ' set to: ' + margin + '% ' + rel_coin, 'Portfolio Info')
-	   $('.initcoinswap-output').html(JSON.stringify(data, null, 2));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
+		// If successful
+		console.log(data);
+		toastr.success('Margin Price for Base: ' + base_coin + ' Rel: ' + rel_coin + ' set to: ' + margin + '% ' + rel_coin, 'Portfolio Info')
+		$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 })
 
 
-function set_coin_goal(goal_data){
+function set_coin_goal(goal_data) {
 	console.log(goal_data);
 
 	//console.log('AUTO GOAL: ' + goal_data.auto);
@@ -2390,52 +1949,54 @@ function set_coin_goal(goal_data){
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	if (goal_data.auto == false) {
-		var ajax_data = {"userpass":userpass,"method":"goal","coin":goal_data.coin,"val":goal_data.percent};
+		var ajax_data = { "userpass": userpass, "method": "goal", "coin": goal_data.coin, "val": goal_data.percent };
 	} else {
-		var ajax_data = {"userpass":userpass,"method":"goal"};
+		var ajax_data = { "userpass": userpass, "method": "goal" };
 	}
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
-	    // If successful
-	   console.log(data);
-	   if (goal_data.auto == false){
-			toastr.success('Goal for ' + goal_data.coin + ' set to: ' + goal_data.percent +'%', 'Portfolio Info')
-	   } else {
-	   		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			bootbox.alert({message: `${default_lang.Portfolio.portfolio_set_auto_goal_executed}`,
-			buttons: {
-				ok: {
-					label: `${default_lang.Common.btn_ok_caps}`,
-					className: 'btn-primary',
-					callback: function(){
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
+		// If successful
+		console.log(data);
+		if (goal_data.auto == false) {
+			toastr.success('Goal for ' + goal_data.coin + ' set to: ' + goal_data.percent + '%', 'Portfolio Info')
+		} else {
+			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
+			bootbox.alert({
+				message: `${default_lang.Portfolio.portfolio_set_auto_goal_executed}`,
+				buttons: {
+					ok: {
+						label: `${default_lang.Common.btn_ok_caps}`,
+						className: 'btn-primary',
+						callback: function () {
+						}
 					}
 				}
-			}
-		});
-	   }
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+			});
+		}
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 	$('.porfolio_coins_list tbody').empty();
 	var actiavte_portfolio_coins_list_spinner = ''
 	actiavte_portfolio_coins_list_spinner += '<th colspan="7">';
-		actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
-			actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
-				actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-				actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-				actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-				actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
-			actiavte_portfolio_coins_list_spinner += '</svg>';
-		actiavte_portfolio_coins_list_spinner += '</div>';
+	actiavte_portfolio_coins_list_spinner += '<div style="text-align: center; height: 100px;">';
+	actiavte_portfolio_coins_list_spinner += '<svg id="portfolio-coins-spinner">';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '<circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>';
+	actiavte_portfolio_coins_list_spinner += '</svg>';
+	actiavte_portfolio_coins_list_spinner += '</div>';
 	actiavte_portfolio_coins_list_spinner += '</th>';
 	$('.porfolio_coins_list tbody').append(actiavte_portfolio_coins_list_spinner);
 	CheckPortfolioFn();
@@ -2443,22 +2004,22 @@ function set_coin_goal(goal_data){
 
 
 
-$('#trading_pair_coin_autoprice_mode').change(function() {
+$('#trading_pair_coin_autoprice_mode').change(function () {
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
 	var bot_or_manual = $('input[name=trading_mode_options]:checked').val();
 	var margin_or_fixed = $('#trading_pair_coin_autoprice_mode').prop('checked');
-	
-	if(bot_or_manual == 'tradeportfolio') {
-		if(margin_or_fixed == true) {
+
+	if (bot_or_manual == 'tradeportfolio') {
+		if (margin_or_fixed == true) {
 			$('#trading_pair_coin_price_max_min').show();
 			$('.trading_pair_coin_price').css('border-radius', '0')
 			//$('.trading_pair_coin_price').attr("placeholder", "Margin e.g. 0.01");
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			if(buying_or_selling == 'buying') {
+			if (buying_or_selling == 'buying') {
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_buy_margin_percent);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_margin_will_make);
 			}
-			if(buying_or_selling == 'selling') {
+			if (buying_or_selling == 'selling') {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_sell_margin_percent);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_sell_margin_will_make);
@@ -2467,12 +2028,12 @@ $('#trading_pair_coin_autoprice_mode').change(function() {
 			$('#trading_pair_coin_price_max_min').hide();
 			$('.trading_pair_coin_price').css('border-radius', '4px')
 			//$('.trading_pair_coin_price').attr("placeholder", "Price e.g. 0.01");
-			if(buying_or_selling == 'buying') {
+			if (buying_or_selling == 'buying') {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_buy_price);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_on_fixed_price_will_make);
 			}
-			if(buying_or_selling == 'selling') {
+			if (buying_or_selling == 'selling') {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_sell_price);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_sell_on_fixed_price_will_make);
@@ -2481,12 +2042,12 @@ $('#trading_pair_coin_autoprice_mode').change(function() {
 	}
 });
 
-$('.btn_set_coin_goal').click(function(e){
+$('.btn_set_coin_goal').click(function (e) {
 	e.preventDefault();
 	console.log('btn_set_coin_goal clicked');
 	console.log($(this).data());
 
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	console.log(coin);
 
 	var goal_data = {}
@@ -2498,7 +2059,7 @@ $('.btn_set_coin_goal').click(function(e){
 	set_coin_goal(goal_data);
 });
 
-$('.btn-autogoalall').click(function(e){
+$('.btn-autogoalall').click(function (e) {
 	e.preventDefault();
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 	console.log('btn-autogoalall clicked');
@@ -2531,17 +2092,17 @@ $('.btn-autogoalall').click(function(e){
 
 function autoprice_buy_sell(autoprice_data) {
 	console.log(autoprice_data);
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	//console.log(coin);
 
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
 	var margin_or_fixed = $('#trading_pair_coin_autoprice_mode').prop('checked');
 
-	if(buying_or_selling == 'buying') {
+	if (buying_or_selling == 'buying') {
 		var base_coin = coin;
 		var rel_coin = $('.trading_pair_coin').selectpicker('val');
 	}
-	if(buying_or_selling == 'selling') {
+	if (buying_or_selling == 'selling') {
 		var base_coin = $('.trading_pair_coin').selectpicker('val');
 		var rel_coin = coin;
 	}
@@ -2551,16 +2112,16 @@ function autoprice_buy_sell(autoprice_data) {
 
 	console.log('BUYING or SELLING??: ' + buying_or_selling);
 	console.log('BASE: ' + base_coin);
-	console.log('REL: '+ rel_coin);
+	console.log('REL: ' + rel_coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
 
 	if (autoprice_data.mode == 'margin') {
-		var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"margin":autoprice_data.modeval};
+		var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "margin": autoprice_data.modeval };
 	}
 	if (autoprice_data.mode == 'fixed') {
-		var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"fixed":autoprice_data.modeval};
+		var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "fixed": autoprice_data.modeval };
 	}
 
 	console.log(ajax_data);
@@ -2568,13 +2129,14 @@ function autoprice_buy_sell(autoprice_data) {
 	console.log(JSON.stringify(ajax_data));
 
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -2589,19 +2151,19 @@ function autoprice_buy_sell(autoprice_data) {
 		} else if (data.result == 'success') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			toastr.success('Order Executed', default_lang.Exchange.exchange_tradingbot_toastr_trade_info_title);
-			
+
 			var autoprice_mode = '';
 			var percent_on_off = '';
 			var autoprice_modeinfo = '';
 			var autoprice_modeval = '';
-			if (autoprice_data.mode == 'margin'){
+			if (autoprice_data.mode == 'margin') {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				autoprice_mode = default_lang.Exchange.exchange_portfolio_margin;
 				percent_on_off = '%';
 				autoprice_modeinfo = default_lang.Exchange.exchange_portfolio_margin_percent;
 				autoprice_modeval = autoprice_data.modeval * 100;
 			}
-			if (autoprice_data.mode == 'fixed'){
+			if (autoprice_data.mode == 'fixed') {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				autoprice_mode = default_lang.Exchange.exchange_portfolio_fixed;
 				percent_on_off = '';
@@ -2614,159 +2176,19 @@ function autoprice_buy_sell(autoprice_data) {
 						<b>${default_lang.Exchange.exchange_portfolio_selling_currency_rel}:</b>` + rel_coin + ` <br>
 						<b>` + autoprice_modeinfo + `:</b> ` + autoprice_modeval + `` + percent_on_off);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
 /* Portfolio section functions END */
 
-
 /* Manual Tradeing */
-
-$('input[name=trading_mode_options]').change(function() {
-	console.log('trading_mode_options changed');
-
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-
-	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
-	//console.log(buying_or_selling);
-
-	var bot_or_manual = $('input[name=trading_mode_options]:checked').val();
-	//console.log(bot_or_manual);
-
-	var margin_or_fixed = $('#trading_pair_coin_autoprice_mode').prop('checked');
-
-	if(bot_or_manual == 'tradebot') {
-		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-		$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-		$('.trading_pair_lable_text_one').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-		$('.trading_pair_lable_text_two').html(default_lang.Exchange.exchange_lbl_two_buy_small);
-		$('.buy_sell_advanced_options_div').hide();
-		if(buying_or_selling == 'buying') {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			$('.btn-bot_action').html(default_lang.Exchange.exchange_btn_buy_caps);
-			$('.relvol_basevol_label').html(default_lang.Exchange.exchange_itll_cost_you);
-			$('.btn-bot_action').attr('data-action', 'buy');
-		}
-		if(buying_or_selling == 'selling') {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			$('.btn-bot_action').html(default_lang.Exchange.exchange_btn_sell_caps);
-			$('.relvol_basevol_label').html(default_lang.Exchange.exchange_youll_get);
-			$('.btn-bot_action').attr('data-action', 'sell');
-		}
-		$('.trading_selected_trader_label').hide();
-		$('.trading_selected_trader').hide();
-		$('.trading_pair_coin_autoprice_mode_span').hide();
-		$('#trading_pair_coin_autoprice_mode').bootstrapToggle('on')
-		$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-		$('#trading_pair_coin_price_max_min').show();
-		$('.buy_sell_amount_to').show();
-		$('#trading_pair_coin_ticker').show();
-		$('.trading_pair_coin2').show();
-		$('.trading_pair_coin_volume').show();
-		$('.btn-bot_action').removeClass('btn-block');
-		$('.btn-bot_action').css('border-top-left-radius','0');
-		$('.btn-bot_action').css('border-bottom-left-radius','0');
-		$('.buy_sell_button_div').css('margin-top', '0');
-		$('.relvol_basevol_amount').show();
-		$('.relvol_basevol_label').show();
-		$('.portfolio_info_text').hide();
-		$('.coingoal_label_div').hide();
-		$('.coingoal_div').hide();
-	}
-	if(bot_or_manual == 'trademanual') {
-		$('input[name=trading_manual_buy_sell_options]:nth(0)').trigger('click');
-		//$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_min}`);
-		$('.trading_pair_lable_text_one').html('');
-		$('.buy_sell_advanced_options_div').show();
-		//$('.trading_pair_lable_text_two').html('Sell');
-		if(buying_or_selling == 'buying') {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			$('.btn-bot_action').html(default_lang.Exchange.exchange_btn_buy_caps);
-			$('.relvol_basevol_label').html(default_lang.Exchange.exchange_itll_cost_you)
-			$('.btn-bot_action').attr('data-action', 'buy');
-		}
-		if(buying_or_selling == 'selling') {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			$('.btn-bot_action').html(default_lang.Exchange.exchange_btn_sell_caps);
-			$('.relvol_basevol_label').html(default_lang.Exchange.exchange_youll_get);
-			$('.btn-bot_action').attr('data-action', 'sell');
-		}
-		//$('.btn-bot_action').attr('data-action', 'sell');
-		//$('.trading_selected_trader_label').show();
-		//$('.trading_selected_trader').show();
-		$('.trading_pair_coin_autoprice_mode_span').hide();
-		$('#trading_pair_coin_price_max_min').html(`${default_lang.Exchange.exchange_lbl_one_max}`);
-		$('#trading_pair_coin_price_max_min').show();
-		$('.buy_sell_amount_to').show();
-		$('#trading_pair_coin_ticker').show();
-		$('.trading_pair_coin2').show();
-		$('.trading_pair_coin_volume').show();
-		$('.btn-bot_action').removeAttr('btn-block');
-		$('.btn-bot_action').css('border-top-left-radius','0');
-		$('.btn-bot_action').css('border-bottom-left-radius','0');
-		$('.buy_sell_button_div').css('margin-top', '0');
-		$('.relvol_basevol_amount').show();
-		$('.relvol_basevol_label').show();
-		$('.portfolio_info_text').hide();
-		$('.coingoal_label_div').hide();
-		$('.coingoal_div').hide();
-	}
-	if(bot_or_manual == 'tradeportfolio') {
-		$('.trading_pair_lable_text_one').html(`${default_lang.Exchange.exchange_portfolio_auto_price}`)
-		$('.trading_selected_trader_label').hide();
-		$('.trading_selected_trader').hide();
-		$('.trading_pair_coin_autoprice_mode_span').show();
-		$('#trading_pair_coin_autoprice_mode').bootstrapToggle('on')
-		$('#trading_pair_coin_autoprice_mode').parent().removeClass(' disabled');
-		$('#trading_pair_coin_autoprice_mode').removeAttr('disabled');
-		$('.buy_sell_advanced_options_div').hide();
-		$('#trading_pair_coin_price_max_min').html('%');
-		if(buying_or_selling == 'buying') {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			if(margin_or_fixed == true){
-				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_buy_margin_percent);
-				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_margin_will_make);
-			} else {
-				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_buy_price);
-				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_on_fixed_price_will_make);
-			}
-		}
-		if(buying_or_selling == 'selling') {
-			if(margin_or_fixed == true){
-				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_sell_margin_percent);
-				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_sell_margin_will_make);
-			} else {
-				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_sell_price);
-				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_sell_on_fixed_price_will_make);
-			}
-		}
-		$('.btn-bot_action').attr('data-action', 'autoprice');
-		$('.buy_sell_amount_to').hide();
-		$('#trading_pair_coin_ticker').hide();
-		$('.trading_pair_coin2').hide();
-		$('.trading_pair_coin_volume').hide();
-		$('.btn-bot_action').addClass(' btn-block');
-		$('.btn-bot_action').css('border-top-left-radius','4px');
-		$('.btn-bot_action').css('border-bottom-left-radius','4px');
-		$('.buy_sell_button_div').css('margin-top', '20px');
-		$('.relvol_basevol_amount').hide();
-		$('.relvol_basevol_label').hide();
-		$('.portfolio_info_text').show();
-		$('.coingoal_label_div').show();
-		$('.coingoal_div').show();
-	}
-});
-
 
 function manual_buy_sell(mt_data) {
 	console.log(mt_data);
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	//console.log(coin);
 
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
@@ -2785,7 +2207,7 @@ function manual_buy_sell(mt_data) {
 
 	console.log('BUYING or SELLING??: ' + buying_or_selling);
 	console.log('BASE: ' + base_coin);
-	console.log('REL: '+ rel_coin);
+	console.log('REL: ' + rel_coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
@@ -2795,24 +2217,24 @@ function manual_buy_sell(mt_data) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			//var base_coin = coin;
 			//var rel_coin = $('.trading_pair_coin').selectpicker('val');
-			var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"fixed":1 / mt_data.price};
+			var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "fixed": 1 / mt_data.price };
 			toastr.success(`${default_lang.Exchange.exchange_manual_auto_repeat_buy_order_executed} ${mt_data.price}`, default_lang.Exchange.exchange_toastr_trade_notification_title);
 		} else if (mt_data.trading_options == 'coinmarketcap') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
-			if(buying_or_selling == 'buying') {
+			if (buying_or_selling == 'buying') {
 				var base_coin = $('.trading_pair_coin').selectpicker('val');
 				var rel_coin = coin;
 			}
-			if(buying_or_selling == 'selling') {
+			if (buying_or_selling == 'selling') {
 				var base_coin = coin;
 				var rel_coin = $('.trading_pair_coin').selectpicker('val');
 			}
-			var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"margin":mt_data.price / 100,"refbase":base_coin.toLowerCase(),"refrel":"coinmarketcap"}
+			var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "margin": mt_data.price / 100, "refbase": base_coin.toLowerCase(), "refrel": "coinmarketcap" }
 			toastr.success(`${default_lang.Exchange.exchange_autorepat_buy_order_executed_at_margin_percent} ${mt_data.price}%`, default_lang.Exchange.exchange_toastr_trade_notification_title);
 			toastr.success(`${default_lang.Exchange.exchange_autorepeat_auto_adjust_based_on_coinmarketcap_buy}`, default_lang.Exchange.exchange_toastr_trade_notification_title);
 		} else {
-			var ajax_data = {"userpass":userpass,"method":"buy","base":base_coin,"rel":rel_coin,"price":mt_data.price,"relvolume":mt_data.volume};
+			var ajax_data = { "userpass": userpass, "method": "buy", "base": base_coin, "rel": rel_coin, "price": mt_data.price, "relvolume": mt_data.volume };
 		}
 		if (mt_data.trader_only == true) {
 			ajax_data.destpubkey = mt_data.destpubkey;
@@ -2823,24 +2245,24 @@ function manual_buy_sell(mt_data) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			var base_coin = $('.trading_pair_coin').selectpicker('val');
 			var rel_coin = coin;
-			var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"fixed":mt_data.price};
+			var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "fixed": mt_data.price };
 			toastr.success(`${default_lang.Exchange.exchange_manual_auto_repeat_sell_order_executed} ${mt_data.price}`, default_lang.Exchange.exchange_toastr_trade_notification_title);
 		} else if (mt_data.trading_options == 'coinmarketcap') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
-			if(buying_or_selling == 'buying') {
+			if (buying_or_selling == 'buying') {
 				var base_coin = $('.trading_pair_coin').selectpicker('val');
 				var rel_coin = coin;
 			}
-			if(buying_or_selling == 'selling') {
+			if (buying_or_selling == 'selling') {
 				var base_coin = coin;
 				var rel_coin = $('.trading_pair_coin').selectpicker('val');
 			}
-			var ajax_data = {"userpass":userpass,"method":"autoprice","base":base_coin,"rel":rel_coin,"margin":mt_data.price / 100,"refbase":base_coin.toLowerCase(),"refrel":"coinmarketcap"}
+			var ajax_data = { "userpass": userpass, "method": "autoprice", "base": base_coin, "rel": rel_coin, "margin": mt_data.price / 100, "refbase": base_coin.toLowerCase(), "refrel": "coinmarketcap" }
 			toastr.success(`${default_lang.Exchange.exchange_autorepat_sell_order_executed_at_margin_percent} ${mt_data.price}%`, default_lang.Exchange.exchange_toastr_trade_notification_title);
 			toastr.success(`${default_lang.Exchange.exchange_autorepeat_auto_adjust_based_on_coinmarketcap_sell}`, default_lang.Exchange.exchange_toastr_trade_notification_title);
 		} else {
-			var ajax_data = {"userpass":userpass,"method":"sell","base":base_coin,"rel":rel_coin,"price":mt_data.price,"basevolume":mt_data.volume};
+			var ajax_data = { "userpass": userpass, "method": "sell", "base": base_coin, "rel": rel_coin, "price": mt_data.price, "basevolume": mt_data.volume };
 		}
 		if (mt_data.trader_only == true) {
 			ajax_data.destpubkey = mt_data.destpubkey;
@@ -2852,13 +2274,14 @@ function manual_buy_sell(mt_data) {
 	console.log(JSON.stringify(ajax_data));
 
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(mt_output_data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (mt_output_data) {
 		// If successful
 		console.log(mt_output_data);
 
@@ -2909,14 +2332,23 @@ function manual_buy_sell(mt_data) {
 				} else {
 					toastr.error('No withdraw info found. Please try again with lower buy amount.', `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
 				}*/
+			} else {
+				if (mt_output_data.error == 'only one pending request at a time') {
+					toastr.error("Please wait " + JSON.stringify(mt_output_data.wait) + " seconds before trying to place your next order", default_lang.Exchange.exchange_tradingbot_toastr_trade_info_title);
+				} else {
+					toastr.error(mt_output_data.error, default_lang.Exchange.exchange_tradingbot_toastr_trade_info_title);
+				}
 			}
 		} else if (mt_output_data.result == 'success') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			toastr.success(default_lang.Exchange.exchange_order_executed, default_lang.Exchange.exchange_tradingbot_toastr_trade_info_title);
+			if (!mt_output_data.pending === false) {
+				toastr.info("Please wait " + JSON.stringify(mt_output_data.pending.timeleft) + " seconds before placing your next order", default_lang.Exchange.exchange_tradingbot_toastr_trade_info_title);
+			}
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -2928,20 +2360,26 @@ function manual_buy_sell(mt_data) {
 function DepositOnError(deposit_data) {
 	console.log(deposit_data);
 
-	var coin_name = return_coin_details(deposit_data.coin).name;
+	if (return_coin_details(deposit_data.coin).eth == true) {
+		deposit_data.coin = 'ETOMIC';
+		var coin_name = 'ETOMIC';
+	} else {
+		var coin_name = return_coin_details(deposit_data.coin).name;
+	}
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoin","coin": deposit_data.coin};
+	var ajax_data = { "userpass": userpass, "method": "getcoin", "coin": deposit_data.coin };
 	var url = "http://127.0.0.1:7783";
 
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
 		data: JSON.stringify(ajax_data),
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -3000,14 +2438,14 @@ function DepositOnError(deposit_data) {
 				cancel: {
 					label: default_lang.Common.btn_cancel,
 					className: 'btn-default',
-					callback: function(){
+					callback: function () {
 
 					}
 				},
 				ok: {
 					label: default_lang.Exchange.exchange_depositonerror_make_deposit_btn,
 					className: 'btn-primary deposit_size_error_send_action',
-					callback: function(){
+					callback: function () {
 						var to_addr = data.coin.smartaddress;
 						console.log(to_addr);
 
@@ -3018,7 +2456,7 @@ function DepositOnError(deposit_data) {
 						console.log(output_data);
 
 						var output_data_2nd = new Object();
-						var calc_2nd_amount = (deposit_data.amount - 0.0001*2)/777
+						var calc_2nd_amount = (deposit_data.amount - 0.0001 * 2) / 777
 						output_data_2nd[to_addr] = calc_2nd_amount.toFixed(8);
 						output_data.push(output_data_2nd);
 						console.log(output_data);
@@ -3035,14 +2473,14 @@ function DepositOnError(deposit_data) {
 				}
 			}
 		});
-		deposit_size_error_bootbox.init(function(){
+		deposit_size_error_bootbox.init(function () {
 			console.log('deposit_size_error_bootbox dialog opened.')
-			var qrcode = new QRCode("receive_addr_qrcode", {width: 128,height: 128});
+			var qrcode = new QRCode("receive_addr_qrcode", { width: 128, height: 128 });
 			qrcode.makeCode(data.coin.smartaddress); // make another code.
 			$('#receive_addr_qrcode > img').removeAttr('style');
 			$('#receive_addr_qrcode > img').css('display', 'initial');
-			$('#receive_addr_qrcode > img').css('border', '9px solid #f1f1f1','border-radius','5px','margin', '5px');
-			$('#receive_addr_qrcode > img').css('border-radius','5px');
+			$('#receive_addr_qrcode > img').css('border', '9px solid #f1f1f1', 'border-radius', '5px', 'margin', '5px');
+			$('#receive_addr_qrcode > img').css('border-radius', '5px');
 			$('#receive_addr_qrcode > img').css('margin', '5px');
 
 			if (make_deposit_btn_state == 'hidden') {
@@ -3050,7 +2488,7 @@ function DepositOnError(deposit_data) {
 			}
 		});
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
@@ -3063,7 +2501,7 @@ function setOrderPrice(trade_data) {
 	console.log(trade_data);
 	//trade_data = JSON.parse(trade_data);
 	//console.log(trade_data);
-	
+
 	if (trade_data.type == 'asks') {
 		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 		trade_price_plus = trade_data.price * 1.001;
@@ -3081,14 +2519,14 @@ function setOrderPrice(trade_data) {
 
 	var bot_or_manual = $('input[name=trading_mode_options]:checked').val();
 
-	if(bot_or_manual == 'tradebot') {
+	if (bot_or_manual == 'tradebot') {
 
 	}
-	if(bot_or_manual == 'trademanual') {
+	if (bot_or_manual == 'trademanual') {
 
 		pair_volume = trade_data.maxbuy;
 		$('.trading_pair_coin_volume').val(pair_volume.toFixed(8));
-		$('.relvol_basevol').html(trade_data.avevolume);
+		$('.relvol_basevol').html(trade_data.maxvolume);
 		$('.trading_pair_destpubkey').val(trade_data.pubkey);
 	}
 
@@ -3101,13 +2539,25 @@ function infoOrderPrice(trade_data) {
 		onEscape: true,
 		backdrop: true,
 		message: `<table class="table table-striped orderbook_row_data" width="100%" style="margin-bottom: 0;">
-                          <tbody>
-                          	<tr>
-                          	<td>Address</td>
-                          	<td>${trade_data.address}</td>
-                          	</tr>
-                          </tbody>
-                        </table>`
+						<tbody>
+							<tr>
+								<td>Address</td>
+								<td>${trade_data.address}</td>
+							</tr>
+							<tr>
+								<td>Age</td>
+								<td>${trade_data.age}</td>
+							</tr>
+							<tr>
+								<td>UTXOs</td>
+								<td>${trade_data.numutxos}</td>
+							</tr>
+							<tr>
+								<td>Average Volume</td>
+								<td>${((trade_data.avevolume == 0) ? 'n/a' : trade_data.avevolume)}</td>
+							</tr>
+						</tbody>
+					</table>`
 	});
 }
 
@@ -3120,16 +2570,16 @@ function CheckOrderBookFn(sig) {
 		console.log('checking orderbook');
 	}
 
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
-	console.log(coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
+	console.log('trading_pair_coin2 is: ' + coin);
 
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
 
-	if(buying_or_selling == 'buying') {
+	if (buying_or_selling == 'buying') {
 		var base_coin = coin;
 		var rel_coin = $('.trading_pair_coin').selectpicker('val');
 	}
-	if(buying_or_selling == 'selling') {
+	if (buying_or_selling == 'selling') {
 		// Disabled selling option to show opposite pair orderbook result.
 		//var base_coin = $('.trading_pair_coin').selectpicker('val');
 		//var rel_coin = coin;
@@ -3143,16 +2593,17 @@ function CheckOrderBookFn(sig) {
 	$('.orderbook_rel_coin').html(rel_coin);
 	$('.orderbook_base_coin').html(base_coin);
 
-	var ajax_data = {"userpass":userpass,"method":"orderbook","base":base_coin,"rel":rel_coin};
+	var ajax_data = { "userpass": userpass, "method": "orderbook", "base": base_coin, "rel": rel_coin };
 	//console.log(ajax_data)
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -3174,7 +2625,7 @@ function CheckOrderBookFn(sig) {
 			$('.orderbook_numbids').html(data.numbids);
 
 			$('.orderbook_bids tbody').empty();
-			$.each(data.bids, function(index, val) {
+			$.each(data.bids, function (index, val) {
 				//console.log(index);
 				//console.log(val);
 				var colorpbk = coloredPubkey(val.pubkey);
@@ -3188,38 +2639,39 @@ function CheckOrderBookFn(sig) {
 				row_trade_data = {};
 				row_trade_data.price = val.price;
 				//row_trade_data.minvolume = val.minvolume;
-				//row_trade_data.maxvolume = val.maxvolume;
+				row_trade_data.maxvolume = val.maxvolume;
 				row_trade_data.avevolume = val.avevolume;
 				row_trade_data.numutxos = val.numutxos;
 				row_trade_data.depth = val.depth;
-				row_trade_data.maxbuy = val.avevolume / val.price;
+				row_trade_data.maxbuy = val.maxvolume / val.price;
 				row_trade_data.pubkey = val.pubkey;
 				row_trade_data.address = val.address;
+				row_trade_data.age = val.age;
 				row_trade_data.type = 'bids';
 				//row_trade_data.totalbuy = (val.avevolume / val.price) * val.numutxos;
 
 				var orderbook_bids_tr = '';
 				orderbook_bids_tr += '<tr ' + mytrade_true + '>';
-					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.price + '</td>';
-					//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.minvolume + '</td>';
-					//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.maxvolume + '</td>';
-					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.avevolume == 0) ? '-' : val.avevolume) + '</td>';
-					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.depth + '</td>';
-					//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
-					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.age + '</td>';
-					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.numutxos + '</td>';
-					orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
-					orderbook_bids_tr += '<td><button class="btn btn-xs" onclick=infoOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>';
+				orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.price + '</td>';
+				//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.minvolume + '</td>';
+				orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.maxvolume + '</td>';
+				//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.avevolume == 0) ? 'n/a' : val.avevolume) + '</td>';
+				orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.depth + '</td>';
+				//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
+				//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.age + '</td>';
+				//orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.numutxos == 0) ? 'n/a' : val.numutxos) + '</td>';
+				orderbook_bids_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
+				orderbook_bids_tr += '<td><button class="btn btn-xs" onclick=infoOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>';
 				orderbook_bids_tr += '</tr>';
 				$('.orderbook_bids tbody').append(orderbook_bids_tr);
 			})
 
 			$('.orderbook_asks tbody').empty();
 			if (data.asks &&
-					data.asks.length) {
+				data.asks.length) {
 				$('.orderbook-asks-spinner').hide();
 			}
-			$.each(data.asks, function(index, val) {
+			$.each(data.asks, function (index, val) {
 				//console.log(index);
 				//console.log(val);
 				var colorpbk = coloredPubkey(val.pubkey);
@@ -3233,25 +2685,27 @@ function CheckOrderBookFn(sig) {
 				row_trade_data = {};
 				row_trade_data.price = val.price;
 				//row_trade_data.minvolume = val.minvolume;
-				//row_trade_data.maxvolume = val.maxvolume;
+				row_trade_data.maxvolume = val.maxvolume;
 				row_trade_data.avevolume = val.avevolume;
 				row_trade_data.numutxos = val.numutxos;
 				row_trade_data.depth = val.depth;
-				row_trade_data.maxbuy = val.avevolume / val.price;
+				row_trade_data.maxbuy = val.maxvolume / val.price;
 				row_trade_data.pubkey = val.pubkey;
 				row_trade_data.address = val.address;
+				row_trade_data.age = val.age;
 				row_trade_data.type = 'asks';
 				//row_trade_data.totalbuy = (val.avevolume / val.price) * val.numutxos;
 				var orderbook_asks_tr = '';
 				orderbook_asks_tr += '<tr ' + mytrade_true + '>';
 				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.price + '</td>';
 				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.minvolume + ' - ' + val.maxvolume + '</td>';
+				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.maxvolume + '</td>';
 				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + row_trade_data.totalbuy.toFixed(8) + '</td>';
-				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.avevolume == 0) ? '-' : val.avevolume) + '</td>';
+				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.avevolume == 0) ? 'n/a' : val.avevolume) + '</td>';
 				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.depth + '</td>';
 				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + coloraddr.firstpart + '<font style="color: #' + coloraddr.colorpart1 + '; background-color: #' + coloraddr.colorpart1 + ';">' + coloraddr.char1 + '</font><font style="color: #' + coloraddr.colorpart2 + '; background-color: #' + coloraddr.colorpart2 + ';">' + coloraddr.char2 + '</font><font style="color: #' + coloraddr.colorpart3 + '; background-color: #' + coloraddr.colorpart3 + ';">' + coloraddr.char3 + '</font>' + coloraddr.lastpart + '</td>';
-				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.age + '</td>';
-				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.numutxos + '</td>';
+				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + val.age + '</td>';
+				//orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')>' + ((val.numutxos == 0) ? 'n/a' : val.numutxos) + '</td>';
 				orderbook_asks_tr += '<td onclick=setOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> ' + val.zcredits.toFixed(2) + '</td>';
 				orderbook_asks_tr += '<td><button class="btn btn-xs" onclick=infoOrderPrice(' + JSON.stringify(row_trade_data) + ')><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>';
 				orderbook_asks_tr += '</tr>';
@@ -3259,24 +2713,24 @@ function CheckOrderBookFn(sig) {
 			})
 		}
 
-	   //$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+		//$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 	return 'Check orderbook calls stopped.';
 }
 
 
-$('.exchange_my_orders_tbl tbody').on('click', '.btn_my_prices_cancel', function() {
+$('.exchange_my_orders_tbl tbody').on('click', '.btn_my_prices_cancel', function () {
 	console.log('btn_my_prices_cancel clicked')
 	console.log($(this).data());
 
 	cancel_my_prices($(this).data());
 });
 
-function check_my_prices(sig){
+function check_my_prices(sig) {
 	if (sig == false) {
 		clearInterval(check_my_prices_Interval);
 		return
@@ -3284,35 +2738,36 @@ function check_my_prices(sig){
 		console.log('checking my prices');
 	}
 
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	console.log(coin);
 
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
 
-	if(buying_or_selling == 'buying') {
+	if (buying_or_selling == 'buying') {
 		var base_coin = coin;
 		var rel_coin = $('.trading_pair_coin').selectpicker('val');
 	}
-	if(buying_or_selling == 'selling') {
+	if (buying_or_selling == 'selling') {
 		var base_coin = $('.trading_pair_coin').selectpicker('val');
 		var rel_coin = coin;
 	}
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	//var ajax_data = {"userpass":userpass,"method":"myprice","base":base_coin,"rel":rel_coin};
-	var ajax_data = {"userpass":userpass,"method":"myprices"};
+	var ajax_data = { "userpass": userpass, "method": "myprices" };
 	console.log(ajax_data)
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    timeout: 5000, // sets timeout to 5 seconds
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 5000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (data) {
 		// If successful
-		console.log(data);
+		console.log('check_my_prices data: ' + JSON.stringify(data));
 		if (!data.userpass === false) {
 			console.log('first marketmaker api call execution after marketmaker started.')
 			sessionStorage.setItem('mm_usercoins', JSON.stringify(data.coins));
@@ -3328,7 +2783,7 @@ function check_my_prices(sig){
 			//console.log(data);
 			$('.exchange_my_orders_tbl tbody').empty();
 			if (!data.error === false) {
-				toastr.error(data.error,'My price info')
+				toastr.error(data.error, 'My price info')
 				/*if (!data.error == 'authentication error you need to make sure userpass is set') {
 					var exchange_my_orders_tr = '';
 					exchange_my_orders_tr += '<tr>';
@@ -3337,7 +2792,7 @@ function check_my_prices(sig){
 					$('.exchange_my_orders_tbl tbody').append(exchange_my_orders_tr);
 				}*/
 			} else {
-				$.each(data, function(index, val) {
+				$.each(data, function (index, val) {
 					//console.log(index);
 					//console.log(val);
 
@@ -3346,11 +2801,11 @@ function check_my_prices(sig){
 
 					var exchange_my_orders_tr = '';
 					exchange_my_orders_tr += '<tr>';
-						exchange_my_orders_tr += '<td>'+ val.base + ' (' + base_coin_name + ')</td>';
-						exchange_my_orders_tr += '<td>'+ val.rel + ' (' + rel_coin_name + ')</td>';
-						exchange_my_orders_tr += '<td>' + val.bid + '</td>';
-						exchange_my_orders_tr += '<td>' + val.ask + '</td>';
-						exchange_my_orders_tr += `<td><button class="btn btn-xs btn-danger btn_my_prices_cancel" data-base="${val.base}" data-rel="${val.rel}"><span class="glyphicon glyphicon-stop"></span></button></td>`;
+					exchange_my_orders_tr += '<td>' + val.base + ' (' + base_coin_name + ')</td>';
+					exchange_my_orders_tr += '<td>' + val.rel + ' (' + rel_coin_name + ')</td>';
+					exchange_my_orders_tr += '<td>' + val.bid + '</td>';
+					exchange_my_orders_tr += '<td>' + val.ask + '</td>';
+					exchange_my_orders_tr += `<td><button class="btn btn-xs btn-danger btn_my_prices_cancel" data-base="${val.base}" data-rel="${val.rel}"><span class="glyphicon glyphicon-stop"></span></button></td>`;
 					exchange_my_orders_tr += '</tr>';
 					$('.exchange_my_orders_tbl tbody').append(exchange_my_orders_tr);
 				});
@@ -3368,34 +2823,35 @@ function check_my_prices(sig){
 				$('.exchange_my_orders_tbl tbody').append(exchange_my_orders_tr);*/
 			}
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 }
 
-function cancel_my_prices(cancel_data){
+function cancel_my_prices(cancel_data) {
 	console.log(cancel_data);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"setprice","base":cancel_data.base,"rel":cancel_data.rel,"price":0,"broadcast":1};
+	var ajax_data = { "userpass": userpass, "method": "setprice", "base": cancel_data.base, "rel": cancel_data.rel, "price": 0, "broadcast": 1 };
 	console.log(ajax_data)
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		check_my_prices();
 		CheckOrderBookFn();
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 }
@@ -3414,10 +2870,10 @@ $('.trading_pair_coin').on('change', function (e) {
 	CheckOrderBookFn();
 
 	var charts_instruments_data = {}
-	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val')+'/'+$('.trading_pair_coin').selectpicker('val');
+	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val') + '/' + $('.trading_pair_coin').selectpicker('val');
 	charts_instruments_data.company = 'Komodo Platform';
 	ChartsInstruments(charts_instruments_data)
-	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'), $('.trading_pair_coin').selectpicker('val'));
 });
 
 
@@ -3437,10 +2893,10 @@ $('.trading_pair_coin2').on('change', function (e) {
 	sessionStorage.setItem('mm_selectedcoin', JSON.stringify(selected_coin));
 
 	$('.coin_ticker').html(coin);
-	$.each($('.coinexchange[data-coin]'), function(index, value) {
+	$.each($('.coinexchange[data-coin]'), function (index, value) {
 		$('.coinexchange[data-coin]').data('coin', coin);
 	});
-	$('.coingoal_label_coin_name').html(return_coin_details(coin).name + ' ('+coin+')');
+	$('.coingoal_label_coin_name').html(return_coin_details(coin).name + ' (' + coin + ')');
 
 	bot_screen_sellcoin_balance();
 	bot_screen_coin_balance();
@@ -3448,14 +2904,14 @@ $('.trading_pair_coin2').on('change', function (e) {
 	CheckOrderBookFn();
 
 	var charts_instruments_data = {}
-	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val')+'/'+$('.trading_pair_coin').selectpicker('val');
+	charts_instruments_data.symbol = $('.trading_pair_coin2').selectpicker('val') + '/' + $('.trading_pair_coin').selectpicker('val');
 	charts_instruments_data.company = 'Komodo Platform';
 	ChartsInstruments(charts_instruments_data)
-	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'),$('.trading_pair_coin').selectpicker('val'));
+	UpdateDexChart($('.trading_pair_coin2').selectpicker('val'), $('.trading_pair_coin').selectpicker('val'));
 
 });
 
-$('.btn-refreshtrading_pair').click(function(e){
+$('.btn-refreshtrading_pair').click(function (e) {
 	e.preventDefault();
 	console.log('btn-refreshtrading_pair clicked');
 	console.log($(this).data());
@@ -3463,7 +2919,12 @@ $('.btn-refreshtrading_pair').click(function(e){
 	//update_min_max_price_input();
 })
 
-$('input[name=trading_pair_options]').change(function() {
+$('.refresh-trades-history-icon').click(function (e) {
+	e.preventDefault();
+	toastr.info('Trade history updated')
+})
+
+$('input[name=trading_pair_options]').change(function () {
 	console.log('trading_pair_options changed');
 
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
@@ -3476,12 +2937,12 @@ $('input[name=trading_pair_options]').change(function() {
 
 	var margin_or_fixed = $('#trading_pair_coin_autoprice_mode').prop('checked');
 
-	if(buying_or_selling == 'buying') {
-		if(bot_or_manual == 'tradeportfolio') {
+	if (buying_or_selling == 'buying') {
+		if (bot_or_manual == 'tradeportfolio') {
 			$('.trading_pair_lable_text_one').html(`${default_lang.Exchange.exchange_portfolio_auto_price}`)
 			$('#trading_pair_coin_price_max_min').html('%');
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			if(margin_or_fixed == true) {
+			if (margin_or_fixed == true) {
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_buy_margin_percent);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_buy_margin_will_make);
 			} else {
@@ -3500,12 +2961,12 @@ $('input[name=trading_pair_options]').change(function() {
 		$('.btn-bot_action').attr('data-action', 'buy');
 		CheckOrderBookFn();
 	}
-	if(buying_or_selling == 'selling') {
-		if(bot_or_manual == 'tradeportfolio') {
+	if (buying_or_selling == 'selling') {
+		if (bot_or_manual == 'tradeportfolio') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			$('.trading_pair_lable_text_one').html(`${default_lang.Exchange.exchange_portfolio_auto_price}`)
 			$('#trading_pair_coin_price_max_min').html('%');
-			if(margin_or_fixed == true) {
+			if (margin_or_fixed == true) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				$('.btn-bot_action').html(default_lang.Exchange.exchange_portfolio_set_auto_sell_margin_percent);
 				$('.portfolio_info_text').html(default_lang.Exchange.exchange_portfolio_auto_sell_margin_will_make);
@@ -3535,7 +2996,7 @@ $('.trading_pair_coin').on('changed.bs.select', function (e) {
 	bot_screen_coin_balance();
 });
 
-$('.your_coins_balance_info').on('click', '.coin_balance_enable_native', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_enable_native', function () {
 	console.log('coin_balance_enable_native clicked');
 	console.log($(this).data());
 
@@ -3544,7 +3005,7 @@ $('.your_coins_balance_info').on('click', '.coin_balance_enable_native', functio
 	bot_screen_coin_balance();
 });
 
-$('.your_coins_balance_info').on('click', '.coin_balance_enable_electrum', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_enable_electrum', function () {
 	console.log('coin_balance_enable_electrum clicked');
 	console.log($(this).data());
 
@@ -3553,7 +3014,7 @@ $('.your_coins_balance_info').on('click', '.coin_balance_enable_electrum', funct
 	bot_screen_coin_balance();
 });
 
-$('.your_coins_balance_info').on('click', '.coin_balance_disable', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_disable', function () {
 	console.log('coin_balance_disable clicked');
 	console.log($(this).data());
 
@@ -3562,13 +3023,13 @@ $('.your_coins_balance_info').on('click', '.coin_balance_disable', function() {
 	bot_screen_coin_balance();
 });
 
-$('.your_coins_balance_info').on('click', '.coin_balance_receive', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_receive', function () {
 	console.log('coin_balance_receive clicked');
 	console.log($(this).data());
 	coinBalanceReceiveAddr($(this).data('coin'));
 })
 
-$('.your_coins_balance_info').on('click', '.coin_balance_send', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_send', function () {
 	console.log('coin_balance_send clicked');
 	console.log($(this).data());
 	coinBalanceSendFn($(this).data('coin'));
@@ -3579,9 +3040,10 @@ function coinBalanceReceiveAddr(coin) {
 	var coin_name = return_coin_details(coin).name;
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoin","coin": coin};
+	var ajax_data = { "userpass": userpass, "method": "getcoin", "coin": coin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 
 	$.ajax({
 		async: true,
@@ -3589,7 +3051,7 @@ function coinBalanceReceiveAddr(coin) {
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -3607,9 +3069,9 @@ function coinBalanceReceiveAddr(coin) {
 
 		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 		bootbox.dialog({
-		    //title: 'A custom dialog with init',
-		  onEscape: true,
-		  backdrop: true,
+			//title: 'A custom dialog with init',
+			onEscape: true,
+			backdrop: true,
 			message: `<div style="text-align: center; margin-top: -40px;">
 						<img src="img/cryptologo/${coin.toLowerCase()}.png" class="coin_balance_receive_coin_logo"/>
 					</div>
@@ -3624,11 +3086,11 @@ function coinBalanceReceiveAddr(coin) {
 		qrcode.makeCode(data.coin.smartaddress); // make another code.
 		$('#receive_addr_qrcode > img').removeAttr('style');
 		$('#receive_addr_qrcode > img').css('display', 'initial');
-		$('#receive_addr_qrcode > img').css('border', '9px solid #f1f1f1','border-radius','5px','margin', '5px');
-		$('#receive_addr_qrcode > img').css('border-radius','5px');
+		$('#receive_addr_qrcode > img').css('border', '9px solid #f1f1f1', 'border-radius', '5px', 'margin', '5px');
+		$('#receive_addr_qrcode > img').css('border-radius', '5px');
 		$('#receive_addr_qrcode > img').css('margin', '5px');
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
@@ -3639,19 +3101,26 @@ function coinBalanceSendFn(coin) {
 	var tx_coin = coin;
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data0 = {"userpass":userpass,"method":"getcoin","coin": tx_coin};
+	var ajax_data0 = { "userpass": userpass, "method": "getcoin", "coin": tx_coin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
 		data: JSON.stringify(ajax_data0),
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
+		console.log(JSON.stringify(data.coin));
 		console.log(data.coin.smartaddress);
 		console.log(data.coin.balance);
 		console.log(data.coin.txfee);
+
+		/*if (return_coin_details(data.coin.coin).eth == true) {
+			data.coin.txfee = 0;			
+		}*/
+
 		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 		var coin_balance_send_bootbox = bootbox.dialog({
 			onEscape: true,
@@ -3695,14 +3164,14 @@ function coinBalanceSendFn(coin) {
 				cancel: {
 					label: default_lang.Common.btn_cancel,
 					className: 'btn-default',
-					callback: function(){
+					callback: function () {
 
 					}
 				},
 				ok: {
 					label: default_lang.Portfolio.portfolio_send_tx,
 					className: 'btn-primary bot_send_action',
-					callback: function(){
+					callback: function () {
 						var to_addr = $('#bot_send_toaddr').val();
 						//var send_amount = $('#bot_send_amount').val();
 						var send_amount = $('.bot_send_total_amount').html();
@@ -3711,46 +3180,68 @@ function coinBalanceSendFn(coin) {
 
 
 						if (to_addr == data.coin.smartaddress) {
-							var output_data = [];
-							var output_data_obj = new Object();
-							output_data_obj[to_addr] = parseFloat(send_amount) + parseFloat(data.coin.txfee / 100000000);
-							output_data.push(output_data_obj);
-							console.log(output_data);
+							if (return_coin_details(data.coin.coin).eth == true) {
+								var output_data = {};
+								output_data.to_addr = to_addr;
+								output_data.send_amount = send_amount;
+								console.log(output_data);
+								console.log(JSON.stringify(output_data));
 
-							var output_data_2nd = new Object();
-							var calc_2nd_amount = (send_amount - 0.0001*2)/777
-							output_data_2nd[to_addr] = calc_2nd_amount.toFixed(8);
-							output_data.push(output_data_2nd);
-							console.log(output_data);
+								console.log(tx_coin);
+								create_sendtx(tx_coin, output_data);
+							} else {
+								var output_data = [];
+								var output_data_obj = new Object();
+								output_data_obj[to_addr] = parseFloat(send_amount) + parseFloat(data.coin.txfee / 100000000);
+								output_data.push(output_data_obj);
+								console.log(output_data);
 
-							var output_data_feetx = new Object();
-							output_data_feetx[to_addr] = 0.0001;
-							output_data.push(output_data_feetx);
-							console.log(output_data);
-							console.log(JSON.stringify(output_data));
+								var output_data_2nd = new Object();
+								var calc_2nd_amount = (send_amount - 0.0001 * 2) / 777
+								output_data_2nd[to_addr] = calc_2nd_amount.toFixed(8);
+								output_data.push(output_data_2nd);
+								console.log(output_data);
 
-							console.log(tx_coin);
-							create_sendtx(tx_coin, output_data);
+								var output_data_feetx = new Object();
+								output_data_feetx[to_addr] = 0.0001;
+								output_data.push(output_data_feetx);
+								console.log(output_data);
+								console.log(JSON.stringify(output_data));
+
+								console.log(tx_coin);
+								create_sendtx(tx_coin, output_data);
+							}
 						} else {
-							var output_data = [];
-							var output_data_obj = new Object();
-							output_data_obj[to_addr] = send_amount;
-							output_data.push(output_data_obj);
-							console.log(output_data);
-							console.log(JSON.stringify(output_data));
+							if (return_coin_details(data.coin.coin).eth == true) {
+								var output_data = {};
+								output_data.to_addr = to_addr;
+								output_data.send_amount = send_amount;
+								console.log(output_data);
+								console.log(JSON.stringify(output_data));
 
-							console.log(tx_coin);
-							create_sendtx(tx_coin, output_data);
+								console.log(tx_coin);
+								create_sendtx(tx_coin, output_data);
+							} else {
+								var output_data = [];
+								var output_data_obj = new Object();
+								output_data_obj[to_addr] = send_amount;
+								output_data.push(output_data_obj);
+								console.log(output_data);
+								console.log(JSON.stringify(output_data));
+
+								console.log(tx_coin);
+								create_sendtx(tx_coin, output_data);
+							}
 						}
 					}
 				}
 			}
 		});
-		coin_balance_send_bootbox.init(function(){
+		coin_balance_send_bootbox.init(function () {
 			console.log('coin_balance_send_bootbox dialog opened.')
 			$('.bot_send_action').attr("disabled", "disabled");
 
-			$('.bot_sending_coin_balance').click(function(){
+			$('.bot_sending_coin_balance').click(function () {
 				$('#bot_send_amount').val($('.bot_sending_coin_balance').html());
 				var send_amount = $('#bot_send_amount').val();
 				var send_txfee = $('.bot_send_txfee').html();
@@ -3759,7 +3250,7 @@ function coinBalanceSendFn(coin) {
 				console.log(send_amount);
 				console.log(subtract_txfee);
 
-				if(subtract_txfee == false) {
+				if (subtract_txfee == false) {
 					var send_amount_total = parseFloat(send_amount) + parseFloat(send_txfee);
 					$('.bot_send_total_amount').html(send_amount_total.toFixed(8));
 				} else if (subtract_txfee == true) {
@@ -3780,14 +3271,14 @@ function coinBalanceSendFn(coin) {
 				console.log(empty);
 
 
-				if (empty){
+				if (empty) {
 					$('.bot_send_action').attr("disabled", "disabled");
 				} else {
 					$('.bot_send_action').removeAttr("disabled");
 				}
 			});
 
-			$('#bot_send_amount').keyup(function() {
+			$('#bot_send_amount').keyup(function () {
 				var send_amount = $('#bot_send_amount').val();
 				var send_txfee = $('.bot_send_txfee').html();
 				var subtract_txfee = $('#bot_send_amount_txfee_checkbox').is(':checked')
@@ -3795,7 +3286,7 @@ function coinBalanceSendFn(coin) {
 				console.log(send_amount);
 				console.log(subtract_txfee);
 
-				if(subtract_txfee == false) {
+				if (subtract_txfee == false) {
 					var send_amount_total = parseFloat(send_amount) + parseFloat(send_txfee);
 					$('.bot_send_total_amount').html(send_amount_total.toFixed(8));
 				} else if (subtract_txfee == true) {
@@ -3816,7 +3307,7 @@ function coinBalanceSendFn(coin) {
 				console.log(empty);
 
 
-				if (empty){
+				if (empty) {
 					$('.bot_send_action').attr("disabled", "disabled");
 				} else {
 					$('.bot_send_action').removeAttr("disabled");
@@ -3824,7 +3315,7 @@ function coinBalanceSendFn(coin) {
 
 			});
 
-			$('#bot_send_amount_txfee_checkbox').change(function(){
+			$('#bot_send_amount_txfee_checkbox').change(function () {
 				var send_amount = $('#bot_send_amount').val();
 				var send_txfee = $('.bot_send_txfee').html();
 				var subtract_txfee = $('#bot_send_amount_txfee_checkbox').is(':checked')
@@ -3832,7 +3323,7 @@ function coinBalanceSendFn(coin) {
 				console.log(send_amount);
 				console.log(subtract_txfee);
 
-				if(subtract_txfee == false) {
+				if (subtract_txfee == false) {
 					var send_amount_total = parseFloat(send_amount) + parseFloat(send_txfee);
 					$('.bot_send_total_amount').html(send_amount_total.toFixed(8));
 				} else if (subtract_txfee == true) {
@@ -3853,7 +3344,7 @@ function coinBalanceSendFn(coin) {
 				console.log(empty);
 
 
-				if (empty){
+				if (empty) {
 					$('.bot_send_action').attr("disabled", "disabled");
 				} else {
 					$('.bot_send_action').removeAttr("disabled");
@@ -3866,13 +3357,45 @@ function coinBalanceSendFn(coin) {
 }
 
 
-$('.your_coins_balance_info').on('click', '.coin_balance_inventory', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_inventory', function () {
 	console.log('coin_balance_inventory clicked');
 	console.log($(this).data());
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	coin = $(this).data('coin');
-	addr = $(this).data('addr');
-	balance = $(this).data('balance');
+	if ($(this).data('spvinv') == true && $(this).data('ethinv') == false) {
+		coin = $(this).data('coin');
+		addr = $(this).data('addr');
+		balance = $(this).data('balance');
+
+		get_coin_info_spv_inv($(this).data());
+
+		check_coin_listunspent($(this).data());
+	} else if ($(this).data('ethinv') == true) {
+		coin = 'ETOMIC';
+		addr = _.where(JSON.parse(sessionStorage.getItem('mm_usercoins')), { "coin": "ETOMIC" })[0].smartaddress;
+
+		get_coin_info_spv_inv({ "coin": coin, "addr": addr });
+		check_coin_listunspent({ "coin": coin, "addr": addr });
+	} else {
+		coin = $(this).data('coin');
+		addr = $(this).data('addr');
+		balance = $(this).data('balance');
+
+		$('.inventory-title').html('Manage Inventory (' + balance + ' ' + coin + ')');
+		$('.inventory-title').data('coin', coin);
+		$('.inventory-title').data('balance', balance);
+		$('.btn-makeinventory').data('coin', coin);
+		$('.coininventory[data-coin]').attr('data-coin', coin);
+		//$('.coininventory[data-coin]').attr('data-pair', $(this).data('pair'));
+		$('.coininventory[data-coin]').attr('data-addr', addr);
+		$('.inventory-sliderTotalCoin').html(' ' + coin);
+
+		get_coin_info(coin);
+
+		calc_data = { "coin": coin, "balance": balance };
+		clac_coin_inventory(calc_data);
+
+		check_coin_listunspent($(this).data());
+	}
 
 
 	$('.screen-exchange').hide()
@@ -3887,26 +3410,18 @@ $('.your_coins_balance_info').on('click', '.coin_balance_inventory', function() 
 	bot_screen_sellcoin_balance(false);
 	Refresh_active_StockChart(false);
 
-	$('.inventory-title').html('Manage Inventory ('+balance+' '+coin+')');
-	$('.inventory-title').data('coin', coin);
-	$('.inventory-title').data('balance', balance);
-	$('.coininventory[data-coin]').attr('data-coin', coin);
-	//$('.coininventory[data-coin]').attr('data-pair', $(this).data('pair'));
-	$('.coininventory[data-coin]').attr('data-addr', addr);
-	$('.inventory-sliderTotalCoin').html(' '+coin);
+
 
 	$('.dex_showinv_alice_tbl tbody').html('<th><div style="text-align: center;">' + default_lang.Common.loading_wait + '</div></th>');
 	$('.dex_showlist_unspents_tbl tbody').html('<th><div style="text-align: center;">' + default_lang.Common.loading_wait + '</div></th>');
 
-	check_coin_inventory(coin);
-	check_coin_listunspent($(this).data());
+	//check_coin_inventory(coin);
 
-	calc_data = {"coin": coin, "balance": balance};
-	clac_coin_inventory(calc_data);
+
 
 });
 
-$('.your_coins_balance_info').on('click', '.coin_balance_zcredits', function() {
+$('.your_coins_balance_info').on('click', '.coin_balance_zcredits', function () {
 	console.log('coin_balance_zcredits clicked');
 	console.log($(this).data());
 });
@@ -3914,18 +3429,23 @@ $('.your_coins_balance_info').on('click', '.coin_balance_zcredits', function() {
 
 
 
-function create_sendtx(coin,tx_data){
-	
+function create_sendtx(coin, tx_data) {
+
 	console.log(tx_data);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	//var ajax_data = {"userpass":userpass,"method":"withdraw","coin": coin, "outputs": [tx_data]};
-	var ajax_data = {"userpass":userpass,"method":"withdraw","coin": coin, "outputs": tx_data};
+
+	if (return_coin_details(coin).eth == true) {
+		var ajax_data = { "userpass": userpass, "method": "eth_withdraw", "coin": coin, "to": tx_data.to_addr, "amount": tx_data.send_amount }
+	} else {
+		var ajax_data = { "userpass": userpass, "method": "withdraw", "coin": coin, "outputs": tx_data };
+	}
 	var url = "http://127.0.0.1:7783";
 
 	console.log(ajax_data);
 	console.log(JSON.stringify(ajax_data));
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 
 	$.ajax({
 		async: true,
@@ -3933,7 +3453,7 @@ function create_sendtx(coin,tx_data){
 		dataType: 'json',
 		type: 'POST',
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -3942,7 +3462,12 @@ function create_sendtx(coin,tx_data){
 			sessionStorage.setItem('mm_userpass', data.userpass);
 			sessionStorage.setItem('mm_mypubkey', data.mypubkey);
 		} else {
-			if (data.complete == true) {
+
+			if (return_coin_details(coin).eth == true) {
+				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
+				bootbox.alert(`${default_lang.Exchange.exchange_sendrawtx_tx_sent_successfully_heres_txid}:<br>
+				<a href="#" onclick="shell.openExternal('`+ return_coin_details(coin).explorer + data.tx_id + `'); return false;">` + data.tx_id + `</a>`);
+			} else if (data.complete == true) {
 				console.log(data.hex);
 				if (!data.hasOwnProperty('coin')) { data.coin = coin; }
 				bot_sendrawtx(data);
@@ -3952,24 +3477,24 @@ function create_sendtx(coin,tx_data){
 			}
 		}
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
 
-function update_min_max_price_input(){
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+function update_min_max_price_input() {
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	console.log(coin);
 
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
 
-	if(buying_or_selling == 'buying') {
+	if (buying_or_selling == 'buying') {
 		var base_coin = coin;
 		var rel_coin = $('.trading_pair_coin').selectpicker('val');
 	}
-	if(buying_or_selling == 'selling') {
+	if (buying_or_selling == 'selling') {
 		var base_coin = $('.trading_pair_coin').selectpicker('val');
 		var rel_coin = coin;
 	}
@@ -3980,16 +3505,17 @@ function update_min_max_price_input(){
 	$('.orderbook_rel_coin').html(rel_coin);
 	$('.orderbook_base_coin').html(base_coin);
 
-	var ajax_data = {"userpass":userpass,"method":"orderbook","base":base_coin,"rel":rel_coin};
+	var ajax_data = { "userpass": userpass, "method": "orderbook", "base": base_coin, "rel": rel_coin };
 	//console.log(ajax_data)
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -4006,18 +3532,18 @@ function update_min_max_price_input(){
 			//get_coins_list(data.coins);
 		} else {
 			//console.log(data.asks);
-			if(buying_or_selling == 'buying') {
+			if (buying_or_selling == 'buying') {
 				$('.trading_pair_coin_price').val(data.asks[0].price);
 			}
-			if(buying_or_selling == 'selling') {
+			if (buying_or_selling == 'selling') {
 				$('.trading_pair_coin_price').val(data.bids[0].price);
 			}
 		}
 
-	   //$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+		//$('.initcoinswap-output').html(JSON.stringify(data, null, 2));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -4029,23 +3555,24 @@ function check_bot_list(sig) {
 		console.log('checking bot list');
 	}
 
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	//console.log(coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"bot_statuslist"};
+	var ajax_data = { "userpass": userpass, "method": "bot_statuslist" };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    timeout: 11000, // sets timeout to 5 seconds
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 11000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (data) {
 		// If successful
-		console.log(data);
+		console.log('check_bot_list data: ' + JSON.stringify(data));
 
 		if (!data.userpass === false) {
 			console.log('first marketmaker api call execution after marketmaker started.')
@@ -4060,10 +3587,10 @@ function check_bot_list(sig) {
 			}
 		} else {
 			$('.exchange_bot_list_tbl tbody').empty();
-			$.each(data, function(index, val) {
+			$.each(data, function (index, val) {
 				//console.log(index);
 				//console.log(val);
-				if(!val.error === false) {
+				if (!val.error === false) {
 					var exchange_bot_list_tr = '';
 					exchange_bot_list_tr += '<tr>';
 					exchange_bot_list_tr += '<td><div>error</div></td>';
@@ -4072,14 +3599,14 @@ function check_bot_list(sig) {
 					$('.exchange_bot_list_tbl tbody').append(exchange_bot_list_tr);
 				} else {
 
-					function botProgressBar(){
+					function botProgressBar() {
 						var trades = val.trades;
 						//console.log(trades);
 						var _out = {};
 						_out.total = 0;
 						for (let i = 0; i < trades.length; i++) {
 							//console.log(_out.total);
-							if(!isNaN(trades[i].volume)){
+							if (!isNaN(trades[i].volume)) {
 								_out.total += trades[i].volume;
 							}
 						}
@@ -4104,33 +3631,33 @@ function check_bot_list(sig) {
 						var disable_stop_btn = ' ';
 					}
 
-					if (!val.minprice === false){
+					if (!val.minprice === false) {
 						var max_min_val = val.minprice;
 					}
-					if (!val.maxprice === false){
+					if (!val.maxprice === false) {
 						var max_min_val = val.maxprice;
 					}
 
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					var exchange_bot_list_tr = '';
 					exchange_bot_list_tr += '<tr>';
-						//exchange_bot_list_tr += '<td>'+val.botid+'</td>';
-						exchange_bot_list_tr += `<td style="font-size: 14px; font-weight: 200;">
-													<span><font style="font-weight: 400;">`+val.name+`</font></span><br>
-													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_max_price}:</font> `+ max_min_val +` `+val.rel+`</span><br>
-													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_total_spending}:</font> `+val.totalrelvolume+` `+val.rel+`</span>
+					//exchange_bot_list_tr += '<td>'+val.botid+'</td>';
+					exchange_bot_list_tr += `<td style="font-size: 14px; font-weight: 200;">
+													<span><font style="font-weight: 400;">`+ val.name + `</font></span><br>
+													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_max_price}:</font> ` + max_min_val + ` ` + val.rel + `</span><br>
+													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_total_spending}:</font> ` + val.totalrelvolume + ` ` + val.rel + `</span>
 												</td>`;
-						//exchange_bot_list_tr += '<td>'+val.action+'</td>';
-						//exchange_bot_list_tr += '<td>'+max_min_val+'</td>';
-						//exchange_bot_list_tr += '<td>'+val.totalrelvolume+'</td>';
-						exchange_bot_list_tr += `<td>
+					//exchange_bot_list_tr += '<td>'+val.action+'</td>';
+					//exchange_bot_list_tr += '<td>'+max_min_val+'</td>';
+					//exchange_bot_list_tr += '<td>'+val.totalrelvolume+'</td>';
+					exchange_bot_list_tr += `<td>
 													<div style="font-size: 14px; font-weight: 200;">
-													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_total_to_buy}:</font> `+val.totalbasevolume+` `+val.base+`</span><br>
-													<!--<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_total_bought}:</font> `+ bot_progress_data.total.toFixed(8) +` `+val.base+`</span><br>-->
-													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_trade_attempts}:</font> `+val.trades.length+`</span>
+													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_total_to_buy}:</font> ` + val.totalbasevolume + ` ` + val.base + `</span><br>
+													<!--<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_total_bought}:</font> ` + bot_progress_data.total.toFixed(8) + ` ` + val.base + `</span><br>-->
+													<span><font style="font-weight: 400;">${default_lang.Exchange.exchange_tradingbot_td_trade_attempts}:</font> ` + val.trades.length + `</span>
 													</div>
 												</td>`;
-						exchange_bot_list_tr += '<td style="text-align: center;"><div class="btn-group"><button class="btn btn-sm btn-info btn_bot_status" data-botid="' + val.botid + '" data-action="status"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button><button class="btn btn-sm btn-success btn_bot_resume" data-botid="' + val.botid + '" data-action="resume" ' + disable_resume_btn + '><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button><button class="btn btn-sm btn-warning btn_bot_pause" data-botid="' + val.botid + '" data-action="pause" ' + disable_pause_btn + '><span class="glyphicon glyphicon-pause" aria-hidden="true"></span></button><button class="btn btn-sm btn-danger btn_bot_stop" data-botid="' + val.botid + '" data-action="stop" ' + disable_stop_btn + '><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button></div></td>';
+					exchange_bot_list_tr += '<td style="text-align: center;"><div class="btn-group"><button class="btn btn-sm btn-info btn_bot_status" data-botid="' + val.botid + '" data-action="status"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button><button class="btn btn-sm btn-success btn_bot_resume" data-botid="' + val.botid + '" data-action="resume" ' + disable_resume_btn + '><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button><button class="btn btn-sm btn-warning btn_bot_pause" data-botid="' + val.botid + '" data-action="pause" ' + disable_pause_btn + '><span class="glyphicon glyphicon-pause" aria-hidden="true"></span></button><button class="btn btn-sm btn-danger btn_bot_stop" data-botid="' + val.botid + '" data-action="stop" ' + disable_stop_btn + '><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button></div></td>';
 					exchange_bot_list_tr += '</tr>';
 					/*exchange_bot_list_tr += '<tr>'; // bot progress bar disabled
 						exchange_bot_list_tr += '<td colspan="5" style="padding: 0;"><div class="progress progress-nomargin"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="' + bot_progress_data.percent.toFixed(2) + '" aria-valuemin="0" aria-valuemax="100" style="-webkit-transition: none !important; transition: none !important; width: ' + bot_progress_data.percent.toFixed(2) + '%; text-shadow: 0px 0px 5px rgba(150, 150, 150, 1);">' + bot_progress_data.percent.toFixed(2) + '%</div></div></td>';
@@ -4139,14 +3666,14 @@ function check_bot_list(sig) {
 				}
 			})
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
-function buy_sell_precheck(bot_data){
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+function buy_sell_precheck(bot_data) {
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	//console.log(coin);
 	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 
@@ -4159,22 +3686,23 @@ function buy_sell_precheck(bot_data){
 	console.log('BOT OR MANUAL: ' + bot_or_manual);
 	console.log('BUYING or SELLING??: ' + buying_or_selling);
 	console.log('BASE: ' + base_coin);
-	console.log('REL: '+ rel_coin);
+	console.log('REL: ' + rel_coin);
 
 	if (base_coin == 'BTC' || rel_coin == 'BTC') {
 		console.log("BTC found in trading pair. Confirming BTC tx fee before proceeding.");
 
 		var userpass = sessionStorage.getItem('mm_userpass');
-		var ajax_data0 = {"userpass":userpass,"method":"getcoin","coin": 'BTC'};
+		var ajax_data0 = { "userpass": userpass, "method": "getcoin", "coin": 'BTC' };
 		var url = "http://127.0.0.1:7783";
-
+		var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+		console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 		$.ajax({
 			async: true,
 			data: JSON.stringify(ajax_data0),
 			dataType: 'json',
 			type: 'POST',
 			url: url
-		}).done(function(data) {
+		}).done(function (data) {
 			//console.log(data.coin.txfee);
 
 			if (!data.error === true && data.error !== 'coin is disabled') {
@@ -4201,7 +3729,7 @@ function buy_sell_precheck(bot_data){
 							console.log('This was logged in the callback: ' + result);
 							var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 							if (result == true) {
-								toastr.success(`${default_lang.Exchange.exchange_precheck_okay_proceeding_with_your_order}`,`${default_lang.Exchange.exchange_toastr_order_title}`);
+								toastr.success(`${default_lang.Exchange.exchange_precheck_okay_proceeding_with_your_order}`, `${default_lang.Exchange.exchange_toastr_order_title}`);
 								if (bot_or_manual == 'tradebot') {
 									bot_buy_sell(bot_data);
 								} else if (bot_or_manual == 'trademanual') {
@@ -4241,7 +3769,7 @@ function buy_sell_precheck(bot_data){
 }
 
 function bot_buy_sell(bot_data) {
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	//console.log(coin);
 
 	var buying_or_selling = $('input[name=trading_pair_options]:checked').val();
@@ -4251,16 +3779,16 @@ function bot_buy_sell(bot_data) {
 
 	console.log('BUYING or SELLING??: ' + buying_or_selling);
 	console.log('BASE: ' + base_coin);
-	console.log('REL: '+ rel_coin);
+	console.log('REL: ' + rel_coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
 
 	if (bot_data.action == 'buy') {
-		var ajax_data = {"userpass":userpass,"method":"bot_buy","base":base_coin,"rel":rel_coin,"maxprice":bot_data.price,"relvolume":bot_data.volume};
+		var ajax_data = { "userpass": userpass, "method": "bot_buy", "base": base_coin, "rel": rel_coin, "maxprice": bot_data.price, "relvolume": bot_data.volume };
 	}
 	if (bot_data.action == 'sell') {
-		var ajax_data = {"userpass":userpass,"method":"bot_sell","base":base_coin,"rel":rel_coin,"minprice":bot_data.price,"basevolume":bot_data.volume};
+		var ajax_data = { "userpass": userpass, "method": "bot_sell", "base": base_coin, "rel": rel_coin, "minprice": bot_data.price, "basevolume": bot_data.volume };
 	}
 
 	console.log(ajax_data);
@@ -4268,14 +3796,15 @@ function bot_buy_sell(bot_data) {
 	console.log(JSON.stringify(ajax_data));
 
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(bot_output_data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (bot_output_data) {
 		// If successful
 		console.log(bot_output_data);
 
@@ -4319,9 +3848,9 @@ function bot_buy_sell(bot_data) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			toastr.success(bot_output_data.name + ' started <br> Bot ID: ' + bot_output_data.botid, `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 	check_bot_list();
@@ -4337,18 +3866,19 @@ function bot_sendrawtx(bot_sendrawtx_data) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"sendrawtransaction","coin": coin, "signedtx": (bot_sendrawtx_data.hasOwnProperty('withdraw') ? bot_sendrawtx_data.withdraw.hex : bot_sendrawtx_data.hex) };
+	var ajax_data = { "userpass": userpass, "method": "sendrawtransaction", "coin": coin, "signedtx": (bot_sendrawtx_data.hasOwnProperty('withdraw') ? bot_sendrawtx_data.withdraw.hex : bot_sendrawtx_data.hex) };
 	var url = "http://127.0.0.1:7783";
 
 	console.log(ajax_data);
 	console.log(JSON.stringify(ajax_data));
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    //dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(bot_sendrawtx_output_data) {
+		data: JSON.stringify(ajax_data),
+		//dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (bot_sendrawtx_output_data) {
 		// If successful
 		console.log(bot_sendrawtx_output_data);
 		var parsed_bot_sendrawtx_output_data = '';
@@ -4356,7 +3886,7 @@ function bot_sendrawtx(bot_sendrawtx_data) {
 			parsed_bot_sendrawtx_output_data = JSON.parse(bot_sendrawtx_output_data);
 			console.log(parsed_bot_sendrawtx_output_data);
 
-			if ( !parsed_bot_sendrawtx_output_data.hasOwnProperty('error') === false && parsed_bot_sendrawtx_output_data.error === false) {
+			if (!parsed_bot_sendrawtx_output_data.hasOwnProperty('error') === false && parsed_bot_sendrawtx_output_data.error === false) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				toastr.error(parsed_bot_sendrawtx_output_data.error.message, default_lang.Portfolio.portfolio_toastr_title_tx_info);
 			} else if (parsed_bot_sendrawtx_output_data.result == null) {
@@ -4366,15 +3896,15 @@ function bot_sendrawtx(bot_sendrawtx_data) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				toastr.info(`${default_lang.Exchange.exchange_sendrawtx_low_no_of_utxos_01}<br>${default_lang.Exchange.exchange_sendrawtx_low_no_of_utxos_02}`, 'Transaction Status');
 			}
-		} catch(e) {
+		} catch (e) {
 			console.log(e);
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			bootbox.alert(`${default_lang.Exchange.exchange_sendrawtx_tx_sent_successfully_heres_txid}:<br>
-				<a href="#" onclick="shell.openExternal('`+return_coin_details(coin).explorer+bot_sendrawtx_output_data+`'); return false;">` + bot_sendrawtx_output_data + `</a>`);
+				<a href="#" onclick="shell.openExternal('`+ return_coin_details(coin).explorer + bot_sendrawtx_output_data + `'); return false;">` + bot_sendrawtx_output_data + `</a>`);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -4387,26 +3917,27 @@ function bot_stop_pause_resume(bot_data) {
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
 
 	if (bot_data.action == 'pause') {
-		var ajax_data = {"userpass":userpass,"method":"bot_pause","botid":bot_data.botid};
+		var ajax_data = { "userpass": userpass, "method": "bot_pause", "botid": bot_data.botid };
 		var action_result = 'paused';
 	}
 	if (bot_data.action == 'resume') {
-		var ajax_data = {"userpass":userpass,"method":"bot_resume","botid":bot_data.botid};
+		var ajax_data = { "userpass": userpass, "method": "bot_resume", "botid": bot_data.botid };
 		var action_result = 'resumed';
 	}
 	if (bot_data.action == 'stop') {
-		var ajax_data = {"userpass":userpass,"method":"bot_stop","botid":bot_data.botid};
+		var ajax_data = { "userpass": userpass, "method": "bot_stop", "botid": bot_data.botid };
 		var action_result = 'stopped';
 	}
 
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -4417,9 +3948,9 @@ function bot_stop_pause_resume(bot_data) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			toastr.success('Bot ID: ' + bot_data.botid + ' ' + action_result, `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 	check_bot_list();
@@ -4430,19 +3961,20 @@ function bot_settings(bot_data) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"bot_settings","botid":bot_data.botid,"newprice":bot_data.newprice,"newvolume":bot_data.newvolume};
+	var ajax_data = { "userpass": userpass, "method": "bot_settings", "botid": bot_data.botid, "newprice": bot_data.newprice, "newvolume": bot_data.newvolume };
 
 	console.log(ajax_data);
 
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -4451,11 +3983,11 @@ function bot_settings(bot_data) {
 			toastr.error(data.error, `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
 		} else if (data.result == 'success') {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			toastr.success('Bot ID: ' + bot_data.botid + ' Updateded', `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
+			toastr.success('Bot ID: ' + bot_data.botid + ' Updated', `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 	check_bot_list();
@@ -4467,15 +3999,16 @@ function bot_status(bot_data) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"bot_status","botid":bot_data.botid};
+	var ajax_data = { "userpass": userpass, "method": "bot_status", "botid": bot_data.botid };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -4488,21 +4021,21 @@ function bot_status(bot_data) {
 
 			var max_min = null;
 			var max_min_val = null;
-			if (!data.minprice === false){
+			if (!data.minprice === false) {
 				max_min = 'Minimum';
 				max_min_val = data.minprice;
 			}
-			if (!data.maxprice === false){
+			if (!data.maxprice === false) {
 				max_min = 'Maximum';
 				max_min_val = data.maxprice;
 			}
 
 			result_answer = (data.result == 'success') ? '<h4><span class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Success</span></h4>' : '<h4><span class="label label-danger"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> ' + data.result + '</span></h4>';
-			rel_answer = '<img src="img/cryptologo/'+data.rel.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(data.rel).name + ' ('+data.rel+')';
-			base_answer = '<img src="img/cryptologo/'+data.base.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(data.base).name + ' ('+data.base+')';
+			rel_answer = '<img src="img/cryptologo/' + data.rel.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(data.rel).name + ' (' + data.rel + ')';
+			base_answer = '<img src="img/cryptologo/' + data.base.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(data.base).name + ' (' + data.base + ')';
 
-			rel_form = '<img src="img/cryptologo/'+data.rel.toLowerCase()+'.png" style="width: 50px;"> '+ data.rel;
-			base_form = '<img src="img/cryptologo/'+data.base.toLowerCase()+'.png" style="width: 50px;"> '+ data.base;
+			rel_form = '<img src="img/cryptologo/' + data.rel.toLowerCase() + '.png" style="width: 50px;"> ' + data.rel;
+			base_form = '<img src="img/cryptologo/' + data.base.toLowerCase() + '.png" style="width: 50px;"> ' + data.base;
 
 			buy_sell_text = (data.action == 'buy') ? default_lang.Exchange.exchange_botstatus_dialog_buyselltext_buy : default_lang.Exchange.exchange_botstatus_dialog_buyselltext_sell;
 			max_min_text = (data.action == 'buy') ? `${default_lang.Exchange.exchange_lbl_one_max}` : `${default_lang.Exchange.exchange_lbl_one_min}`;
@@ -4511,7 +4044,7 @@ function bot_status(bot_data) {
 
 			function renderTradeAttempts(trades) {
 				if (trades &&
-						trades.length) {
+					trades.length) {
 					let _out = {
 						request: '',
 						trade: '',
@@ -4673,14 +4206,14 @@ function bot_status(bot_data) {
 					cancel: {
 						label: `${default_lang.Common.btn_close_smallcaps}`,
 						className: 'btn-default',
-						callback: function(){
+						callback: function () {
 
 						}
 					},
 					ok: {
 						label: default_lang.Common.btn_update,
 						className: 'btn-primary btn-bot_settings_update',
-						callback: function(){
+						callback: function () {
 							//console.log($('.trading_pair_coin_newprice').val())
 							//console.log($('.trading_pair_coin_newvolume').val())
 							//console.log(data.rel);
@@ -4705,14 +4238,14 @@ function bot_status(bot_data) {
 					}
 				}
 			});
-			bot_update_bootbox.init(function(){
+			bot_update_bootbox.init(function () {
 				console.log('bot_update_settings dialog opened.')
 				$('.btn-bot_settings_update').attr("disabled", "disabled");
 				$('.trading_pair_coin_newprice').inputNumber();
 				$('.trading_pair_coin_newvolume').inputNumber();
 
 
-				$('.trading_pair_coin_newprice').keyup(function() {
+				$('.trading_pair_coin_newprice').keyup(function () {
 
 					var newmaxprice = $('.trading_pair_coin_newprice').val();
 					var newbasevol = $('.trading_pair_coin_newvolume').val();
@@ -4724,17 +4257,17 @@ function bot_status(bot_data) {
 					var max_newvolume = $('.trading_pair_coin_newvolume')
 
 					var empty = false;
-					if (max_min_newprice.val().length == 0 ) {
+					if (max_min_newprice.val().length == 0) {
 						console.log('new price is empty');
 						empty = true;
-					} else if (max_min_newprice.val().length !== 0 ) {
+					} else if (max_min_newprice.val().length !== 0) {
 						console.log('NEW PRICE IS :' + max_min_newprice.val());
 						empty = false;
 					}
 					console.log(empty);
 
 
-					if (empty){
+					if (empty) {
 						$('.btn-bot_settings_update').attr("disabled", "disabled");
 					} else {
 						$('.btn-bot_settings_update').removeAttr("disabled");
@@ -4742,7 +4275,7 @@ function bot_status(bot_data) {
 
 				});
 
-				$('.trading_pair_coin_newvolume').keyup(function() {
+				$('.trading_pair_coin_newvolume').keyup(function () {
 
 					var newmaxprice = $('.trading_pair_coin_newprice').val();
 					var newbasevol = $('.trading_pair_coin_newvolume').val();
@@ -4754,17 +4287,17 @@ function bot_status(bot_data) {
 					var max_newvolume = $('.trading_pair_coin_newvolume')
 
 					var empty = false;
-					if (max_newvolume.val().length == 0 ) {
+					if (max_newvolume.val().length == 0) {
 						console.log('new price is empty');
 						empty = true;
-					} else if (max_newvolume.val().length !== 0 ) {
+					} else if (max_newvolume.val().length !== 0) {
 						console.log('NEW PRICE IS :' + max_newvolume.val());
 						empty = false;
 					}
 					console.log(empty);
 
 
-					if (empty){
+					if (empty) {
 						$('.btn-bot_settings_update').attr("disabled", "disabled");
 					} else {
 						$('.btn-bot_settings_update').removeAttr("disabled");
@@ -4777,9 +4310,9 @@ function bot_status(bot_data) {
 
 			//toastr.success('Bot ID: ' + bot_data.botid + ' ' + bot_data.action + ' presented.', `${default_lang.Exchange.exchange_toastr_title_bot_info}`);
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 	check_bot_list();
@@ -4794,14 +4327,15 @@ function bot_screen_sellcoin_balance(sig) {
 	}
 
 	coin = $('.trading_pair_coin').selectpicker('val');
-	console.log(coin);
+	console.log('trading_pair_coin is: ' + coin);
 
 	var coin_name = return_coin_details(coin).name;
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoin","coin": coin};
+	var ajax_data = { "userpass": userpass, "method": "getcoin", "coin": coin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 
 	$.ajax({
 		async: true,
@@ -4810,7 +4344,7 @@ function bot_screen_sellcoin_balance(sig) {
 		type: 'POST',
 		timeout: 5000, // sets timeout to 5 seconds
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -4839,7 +4373,7 @@ function bot_screen_sellcoin_balance(sig) {
 					<button class="btn btn-primary btn-xs coin_balance_enable_native" style="margin-top: 6px; margin-right: 3px;" data-electrum=true data-method="enable" data-coin="` + coin + `">${default_lang.Common.btn_enable_native}</button>
 					<button class="btn btn-warning btn-xs coin_balance_enable_electrum" style="margin-top: 6px;" data-electrum=false data-method="enable" data-coin="` + coin + `">${default_lang.Common.btn_enable_electrum}</button>
 				</span>`;
-				$('.trading_sellcoin_ticker_name').html('<img src="img/cryptologo/'+coin.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(coin).name + ' ('+coin+')'+button_controls);
+				$('.trading_sellcoin_ticker_name').html('<img src="img/cryptologo/' + coin.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(coin).name + ' (' + coin + ')' + button_controls);
 				$('.trading_sellcoin_balance').html('Coin is disabled');
 				$('#balance-spinner').hide();
 				$('.balance-block').show();
@@ -4847,8 +4381,14 @@ function bot_screen_sellcoin_balance(sig) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				//console.warn(data.coin)
 				var coin_mode = '';
-				if (data.coin.hasOwnProperty('electrum')) {
+				var ethinv = false;
+				var spvinv = false;
+				if (data.coin.hasOwnProperty('electrum') || return_coin_details(coin).eth == true) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
+					if (return_coin_details(coin).eth == true) {
+						ethinv = true;
+					}
+					spvinv = true;
 					coin_mode = `<i class="fa fa-bolt" data-toggle="tooltip" data-placement="top" title="${default_lang.Common.label_enable_electrum}"></i>`
 				} else {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
@@ -4859,10 +4399,10 @@ function bot_screen_sellcoin_balance(sig) {
 					<button class="btn btn-danger btn-xs coin_balance_disable" style="margin-top: 6px;" data-electrum=true data-method="disable" data-coin="` + coin + `">${default_lang.Common.btn_disable}</button>
 					<button class="btn btn-warning btn-xs coin_balance_receive" style="margin-top: 6px;" data-coin="` + coin + `">${default_lang.Common.btn_receive}</button>
 					<button class="btn btn-success btn-xs coin_balance_send" style="margin-top: 6px;" data-coin="` + coin + `">${default_lang.Common.btn_send}</button>
-					<button class="btn btn-info btn-xs coin_balance_inventory" style="margin-top: 6px;" data-coin="` + coin + `" data-addr="` + data.coin.smartaddress + `" data-balance="` + data.coin.balance + `">${default_lang.Common.btn_inventory}</button>
+					<button class="btn btn-info btn-xs coin_balance_inventory" style="margin-top: 6px;" data-coin="` + coin + `" data-addr="` + data.coin.smartaddress + `" data-balance="` + data.coin.balance + `" data-ethinv=` + ethinv + ` data-spvinv=` + spvinv + `>${default_lang.Common.btn_inventory}</button>
 				</span>`;
-				$('.trading_sellcoin_ticker_name').html('<img src="img/cryptologo/'+coin.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(coin).name + ' ('+coin+') <small style="vertical-align: top; margin-left: 10px">' + coin_mode + '</small>'+button_controls);
-				if (data.coin.hasOwnProperty('electrum')) {
+				$('.trading_sellcoin_ticker_name').html('<img src="img/cryptologo/' + coin.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(coin).name + ' (' + coin + ') <small style="vertical-align: top; margin-left: 10px">' + coin_mode + '</small>' + button_controls);
+				if (data.coin.hasOwnProperty('electrum') || return_coin_details(coin).eth == true) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					var electrum_coin_balance_data = {};
 					electrum_coin_balance_data.baserel = 'rel';
@@ -4884,7 +4424,7 @@ function bot_screen_sellcoin_balance(sig) {
 			}
 		}
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
@@ -4904,9 +4444,10 @@ function bot_screen_coin_balance(sig) {
 	var coin_name = return_coin_details(coin).name;
 
 	var userpass = sessionStorage.getItem('mm_userpass');
-	var ajax_data = {"userpass":userpass,"method":"getcoin","coin": coin};
+	var ajax_data = { "userpass": userpass, "method": "getcoin", "coin": coin };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 
 	$.ajax({
 		async: true,
@@ -4915,7 +4456,7 @@ function bot_screen_coin_balance(sig) {
 		type: 'POST',
 		timeout: 5000, // sets timeout to 5 seconds
 		url: url
-	}).done(function(data) {
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 		if (!data.userpass === false) {
@@ -4938,14 +4479,20 @@ function bot_screen_coin_balance(sig) {
 					<button class="btn btn-primary btn-xs coin_balance_enable_native" style="margin-top: 6px; margin-right: 3px;" data-electrum=true data-method="enable" data-coin="` + coin + `">${default_lang.Common.btn_enable_native}</button>
 					<button class="btn btn-warning btn-xs coin_balance_enable_electrum" style="margin-top: 6px;" data-electrum=false data-method="enable" data-coin="` + coin + `">${default_lang.Common.btn_enable_electrum}</button>
 				</span>`;
-				$('.trading_coin_ticker_name').html('<img src="img/cryptologo/'+coin.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(coin).name + ' ('+coin+')'+button_controls);
+				$('.trading_coin_ticker_name').html('<img src="img/cryptologo/' + coin.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(coin).name + ' (' + coin + ')' + button_controls);
 				$('.trading_coin_balance').html('Coin is disabled');
 			} else {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				var coin_mode = '';
+				var ethinv = false;
+				var spvinv = false;
 				//console.warn(data.coin)
-				if (data.coin.hasOwnProperty('electrum')) {
+				if (data.coin.hasOwnProperty('electrum') || return_coin_details(coin).eth == true) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
+					if (return_coin_details(coin).eth == true) {
+						ethinv = true;
+					}
+					spvinv = true;
 					coin_mode = `<i class="fa fa-bolt" data-toggle="tooltip" data-placement="top" title="${default_lang.Common.label_enable_electrum}"></i>`
 				} else {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
@@ -4956,10 +4503,10 @@ function bot_screen_coin_balance(sig) {
 					<button class="btn btn-danger btn-xs coin_balance_disable" style="margin-top: 6px;" data-electrum=true data-method="disable" data-coin="` + coin + `">${default_lang.Common.btn_disable}</button>
 					<button class="btn btn-warning btn-xs coin_balance_receive" style="margin-top: 6px;" data-coin="` + coin + `">${default_lang.Common.btn_receive}</button>
 					<button class="btn btn-success btn-xs coin_balance_send" style="margin-top: 6px;" data-coin="` + coin + `">${default_lang.Common.btn_send}</button>
-					<button class="btn btn-info btn-xs coin_balance_inventory" style="margin-top: 6px;" data-coin="` + coin + `" data-addr="` + data.coin.smartaddress + `" data-balance="` + data.coin.balance + `">${default_lang.Common.btn_inventory}</button>
+					<button class="btn btn-info btn-xs coin_balance_inventory" style="margin-top: 6px;" data-coin="` + coin + `" data-addr="` + data.coin.smartaddress + `" data-balance="` + data.coin.balance + `" data-ethinv=` + ethinv + ` data-spvinv="` + spvinv + `">${default_lang.Common.btn_inventory}</button>
 				</span>`;
-				$('.trading_coin_ticker_name').html('<img src="img/cryptologo/'+coin.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(coin).name + ' ('+coin+') <small style="vertical-align: top; margin-left: 10px">' + coin_mode + '</small>'+button_controls);
-				if (data.coin.hasOwnProperty('electrum')) {
+				$('.trading_coin_ticker_name').html('<img src="img/cryptologo/' + coin.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(coin).name + ' (' + coin + ') <small style="vertical-align: top; margin-left: 10px">' + coin_mode + '</small>' + button_controls);
+				if (data.coin.hasOwnProperty('electrum') || return_coin_details(coin).eth == true) {
 					var electrum_coin_balance_data = {};
 					electrum_coin_balance_data.baserel = 'base';
 					electrum_coin_balance_data.coin = coin;
@@ -4980,7 +4527,7 @@ function bot_screen_coin_balance(sig) {
 			//$('.trading_coin_balance').html(data.coin.balance + ' <span style="font-size: 80%; font-weight: 100;">' + coin + '</span><br><span style="font-size: 50%; font-weight: 200;">' + data.coin.smartaddress + '</span>');
 		}
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
+	}).fail(function (jqXHR, textStatus, errorThrown) {
 		// If fail
 		console.log(textStatus + ': ' + errorThrown);
 	});
@@ -4992,17 +4539,18 @@ function electrum_coin_balance(coin_balance_data) {
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"balance","coin":coin_balance_data.coin,"address":coin_balance_data.smartaddress};
+	var ajax_data = { "userpass": userpass, "method": "balance", "coin": coin_balance_data.coin, "address": coin_balance_data.smartaddress };
 	var url = "http://127.0.0.1:7783/";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    timeout: 5000, // sets timeout to 5 seconds
-	    url: url
-	}).done(function(coin_balance_output_data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 5000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (coin_balance_output_data) {
 		// If successful
 		console.log(coin_balance_output_data);
 
@@ -5012,15 +4560,15 @@ function electrum_coin_balance(coin_balance_data) {
 			var show_zcredits = '';
 		}
 
-		if(coin_balance_data.baserel == 'base'){
+		if (coin_balance_data.baserel == 'base') {
 			$('.trading_coin_balance').html(coin_balance_output_data.balance + ' <span style="font-size: 60%; font-weight: 100;">' + coin_balance_data.coin + '</span>' + show_zcredits + '<br><span style="font-size: 50%; font-weight: 200;">' + coin_balance_data.smartaddress + '</span>');
 		}
-		if(coin_balance_data.baserel == 'rel'){
+		if (coin_balance_data.baserel == 'rel') {
 			$('.trading_sellcoin_balance').html(coin_balance_output_data.balance + ' <span style="font-size: 60%; font-weight: 100;">' + coin_balance_data.coin + '</span>' + show_zcredits + '<br><span style="font-size: 50%; font-weight: 200;">' + coin_balance_data.smartaddress + '</span>');
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 
 }
@@ -5031,12 +4579,12 @@ function electrum_coin_balance(coin_balance_data) {
 
 /* Swap Status */
 
-$('.btn-swapstatusrefresh').click(function() {
+$('.btn-swapstatusrefresh').click(function () {
 	check_swap_status();
 })
 
 
-$('.exchange_swap_status_tbl tbody').on('click', '.swapstatus_details', function() {
+$('.exchange_swap_status_tbl tbody').on('click', '.swapstatus_details', function () {
 	console.log('swapstatus details button clicked')
 	console.log($(this).data());
 
@@ -5057,10 +4605,10 @@ function check_swap_status_details(swap_status_data) {
 	//bot_screen_sellcoin_balance(false);
 
 	var options_holdon = {
-		theme:"sk-bounce",
+		theme: "sk-bounce",
 		message: default_lang.Exchange.exchange_swapstatus_getting_swap_status_detail,
 		//backgroundColor:"#1847B1",
-		textColor:"white"
+		textColor: "white"
 	};
 
 	HoldOn.open(options_holdon);
@@ -5069,16 +4617,17 @@ function check_swap_status_details(swap_status_data) {
 	var quoteid = swap_status_data.quoteid;
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"swapstatus","requestid":requestid,"quoteid":quoteid};
+	var ajax_data = { "userpass": userpass, "method": "swapstatus", "requestid": requestid, "quoteid": quoteid };
 	var url = "http://127.0.0.1:7783/";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(swap_status_output_data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (swap_status_output_data) {
 		// If successful
 		HoldOn.close();
 		console.log(swap_status_output_data);
@@ -5102,11 +4651,11 @@ function check_swap_status_details(swap_status_data) {
 		} else {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			result_answer = (swap_status_output_data.result == 'success') ? '<h4><span class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Success</span></h4>' : '<h4><span class="label label-danger"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> ' + swap_status_output_data.result + '</span></h4>';
-			alice_answer = '<img src="img/cryptologo/'+swap_status_output_data.alice.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(swap_status_output_data.alice).name + ' ('+swap_status_output_data.alice+')';
-			bob_answer = '<img src="img/cryptologo/'+swap_status_output_data.bob.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(swap_status_output_data.bob).name + ' ('+swap_status_output_data.bob+')';
+			alice_answer = '<img src="img/cryptologo/' + swap_status_output_data.alice.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(swap_status_output_data.alice).name + ' (' + swap_status_output_data.alice + ')';
+			bob_answer = '<img src="img/cryptologo/' + swap_status_output_data.bob.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(swap_status_output_data.bob).name + ' (' + swap_status_output_data.bob + ')';
 			iambob_answer = (swap_status_output_data.iambob == 0) ? default_lang.Exchange.exchange_swapstatus_iambob_buyer : default_lang.Exchange.exchange_swapstatus_iambob_seller;
 
-			var time = new Date( swap_status_output_data.expiration *1000);
+			var time = new Date(swap_status_output_data.expiration * 1000);
 			//var expiration = moment.unix(data.expiration);
 			//var now = moment();
 
@@ -5114,7 +4663,7 @@ function check_swap_status_details(swap_status_data) {
 				let _out = '';
 
 				if (values &&
-						values.length) {
+					values.length) {
 					for (let i = 0; i < values.length; i++) {
 						_out += `<div>${values[i]}</div>`;
 					}
@@ -5127,7 +4676,7 @@ function check_swap_status_details(swap_status_data) {
 			if (swap_status_output_data.iambob == 0) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				console.log("I'm Buyer.");
-				var total_sell_unit = parseFloat(swap_status_output_data.values[3])+parseFloat(swap_status_output_data.values[6]);
+				var total_sell_unit = parseFloat(swap_status_output_data.values[3]) + parseFloat(swap_status_output_data.values[6]);
 				var single_unit_price = parseFloat(swap_status_output_data.srcamount) / parseFloat(total_sell_unit);
 				var price_per_bought_unit = parseFloat(total_sell_unit) / parseFloat(swap_status_output_data.srcamount);
 				simplified_dexdetail_tr += `<tr><td colspan=2><b>${default_lang.Exchange.exchange_swapstatus_td_price_paid_in} ` + swap_status_output_data.alice + ':</b> ' + swap_status_output_data.values[3].toFixed(8) + '</td></tr>';
@@ -5141,7 +4690,7 @@ function check_swap_status_details(swap_status_data) {
 			if (swap_status_output_data.iambob == 1) {
 				var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 				console.log("I'm Seller.");
-				var total_sell_unit = parseFloat(swap_status_output_data.values[0])+parseFloat(swap_status_output_data.bobtxfee);
+				var total_sell_unit = parseFloat(swap_status_output_data.values[0]) + parseFloat(swap_status_output_data.bobtxfee);
 				var units_sold_at_price = parseFloat(swap_status_output_data.values[3]) / parseFloat(total_sell_unit);
 				simplified_dexdetail_tr += '<tr><td colspan=2><b>' + swap_status_output_data.bob + ` ${default_lang.Exchange.exchange_swapstatus_td_sold}: </b> = ` + swap_status_output_data.values[0].toFixed(8) + '</td></tr>';
 				simplified_dexdetail_tr += `<tr><td colspan=2><b>${default_lang.Exchange.exchange_swapstatus_td_fee_paid_in} ` + swap_status_output_data.bob + ': </b> = ' + swap_status_output_data.bobtxfee + '</td></tr>';
@@ -5151,9 +4700,9 @@ function check_swap_status_details(swap_status_data) {
 			}
 
 			var swap_status_details_bootbox = bootbox.dialog({
-			//onEscape: true, // DO NOT ENABLE THESE TWO LINES PLEASE. THAT DOESN'T LET THE CLOSE BUTTON ACTIONS EXECUTE IF THESE ARE ENABLED.
-			//backdrop: true,
-			message: `
+				//onEscape: true, // DO NOT ENABLE THESE TWO LINES PLEASE. THAT DOESN'T LET THE CLOSE BUTTON ACTIONS EXECUTE IF THESE ARE ENABLED.
+				//backdrop: true,
+				message: `
 					<div class="input-group col-sm-12">
 						<span class="input-group-addon" style="font-size: 20px; border: 0px;"><div class="swapdetail_bobdeposit"><span class="glyphicon glyphicon-save" aria-hidden="true"></span><br>${default_lang.Exchange.exchange_swapstatus_statusbar_seller_deposit}</div></span>
 						<span class="input-group-addon" style="font-size: 20px; border: 0px;"><div class="swapdetail_alicepayment"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span><br>${default_lang.Exchange.exchange_swapstatus_statusbar_buyer_payment}</div></span>
@@ -5205,7 +4754,7 @@ function check_swap_status_details(swap_status_data) {
 										</tr>
 										<tr>
 											<td>${default_lang.Exchange.exchange_swapstatus_td_buyer_payment}</td>
-											<td class="tbl_alicepayment">` + `<a href="#" onclick="shell.openExternal('`+return_coin_details(swap_status_output_data.alice).explorer+swap_status_output_data.alicepayment+`'); return false;">` + swap_status_output_data.alicepayment + `</a></td>
+											<td class="tbl_alicepayment">` + `<a href="#" onclick="shell.openExternal('` + return_coin_details(swap_status_output_data.alice).explorer + swap_status_output_data.alicepayment + `'); return false;">` + swap_status_output_data.alicepayment + `</a></td>
 										</tr>
 										<tr>
 											<td>${default_lang.Exchange.exchange_swapstatus_td_buyer_tx_fee}</td>
@@ -5218,11 +4767,11 @@ function check_swap_status_details(swap_status_data) {
 										</tr>
 										<tr>
 											<td>${default_lang.Exchange.exchange_swapstatus_td_seller_deposit}</td>
-											<td class="tbl_bobdeposit">` + `<a href="#" onclick="shell.openExternal('`+return_coin_details(swap_status_output_data.bob).explorer+swap_status_output_data.bobdeposit+`'); return false;">` + swap_status_output_data.bobdeposit + `</a></td>
+											<td class="tbl_bobdeposit">` + `<a href="#" onclick="shell.openExternal('` + return_coin_details(swap_status_output_data.bob).explorer + swap_status_output_data.bobdeposit + `'); return false;">` + swap_status_output_data.bobdeposit + `</a></td>
 										</tr>
 										<tr>
 											<td>${default_lang.Exchange.exchange_swapstatus_td_seller_payment}</td>
-											<td class="tbl_bobpayment"><a href="#" onclick="shell.openExternal('`+return_coin_details(swap_status_output_data.bob).explorer+swap_status_output_data.bobpayment+`'); return false;">` + swap_status_output_data.bobpayment + `</a></td>
+											<td class="tbl_bobpayment"><a href="#" onclick="shell.openExternal('`+ return_coin_details(swap_status_output_data.bob).explorer + swap_status_output_data.bobpayment + `'); return false;">` + swap_status_output_data.bobpayment + `</a></td>
 										</tr>
 										<tr>
 											<td>${default_lang.Exchange.exchange_swapstatus_td_seller_tx_fee}</td>
@@ -5232,7 +4781,7 @@ function check_swap_status_details(swap_status_data) {
 											<td rowspan=8>${default_lang.Exchange.exchange_swapstatus_td_other_info}</td>
 											<td colspan=2><b>${default_lang.Exchange.exchange_swapstatus_td_you_are}:</b> ` + iambob_answer + `</td>
 										</tr>
-										`+ simplified_dexdetail_tr +`
+										`+ simplified_dexdetail_tr + `
 										<tr>
 											<td colspan=2><b>Sent Flags:</b> <span class="tbl_sentflags">` + JSON.stringify(swap_status_output_data.sentflags, null, 2) + `</span></td>
 										</tr>
@@ -5246,7 +4795,7 @@ function check_swap_status_details(swap_status_data) {
 										</tr>
 										<tr>
 											<td>Apayment Spent</td>
-											<td class="tbl_Apaymentspent">`+swap_status_output_data.Apaymentspent+`</td>
+											<td class="tbl_Apaymentspent">`+ swap_status_output_data.Apaymentspent + `</td>
 										</tr>-->
 									</table>
 								</div>
@@ -5265,7 +4814,7 @@ function check_swap_status_details(swap_status_data) {
 					}
 				}*/
 			});
-			swap_status_details_bootbox.init(function(){
+			swap_status_details_bootbox.init(function () {
 				/*CheckOrderBookFn(false);
 				check_swap_status(false);
 				check_bot_list(false);
@@ -5274,23 +4823,24 @@ function check_swap_status_details(swap_status_data) {
 				//bot_screen_coin_balance(false);
 				//bot_screen_sellcoin_balance(false);*/
 
-				$('.btn_kickstart_stuck_trade').click(function(e) {
+				$('.btn_kickstart_stuck_trade').click(function (e) {
 					e.preventDefault();
 					console.log('btn_kickstart_stuck_trade clicked');
-					var remove_finished_swap_file_status = ShepherdIPC({"command":"remove_finished_swap_file", "requestid":swap_status_output_data.requestid, "quoteid":swap_status_output_data.quoteid});
+					var remove_finished_swap_file_status = ShepherdIPC({ "command": "remove_finished_swap_file", "requestid": swap_status_output_data.requestid, "quoteid": swap_status_output_data.quoteid });
 					if (remove_finished_swap_file_status == 'removed') {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 						console.log(`${swap_status_output_data.requestid}-${swap_status_output_data.quoteid}.finished file removed.`);
-						toastr.success(`${swap_status_output_data.requestid}-${swap_status_output_data.quoteid}.finished ${default_lang.Exchange.exchange_swapstatus_kickstart_file_removed}`,default_lang.Exchange.exchange_swapstatus_toastr_title_swap_status_update);
+						toastr.success(`${swap_status_output_data.requestid}-${swap_status_output_data.quoteid}.finished ${default_lang.Exchange.exchange_swapstatus_kickstart_file_removed}`, default_lang.Exchange.exchange_swapstatus_toastr_title_swap_status_update);
 					} else if (remove_finished_swap_file_status == 'error') {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 						console.log(`Failed to remove ${swap_status_output_data.requestid}-${swap_status_output_data.quoteid} file`);
-						toastr.error(`${default_lang.Exchange.exchange_swapstatus_kickstart_failed_to_remove} ${swap_status_output_data.requestid}-${swap_status_output_data.quoteid} ${default_lang.Exchange.exchange_swapstatus_kickstart_failed_to_remove_file}`,default_lang.Exchange.exchange_swapstatus_toastr_title_swap_status_update);
+						toastr.error(`${default_lang.Exchange.exchange_swapstatus_kickstart_failed_to_remove} ${swap_status_output_data.requestid}-${swap_status_output_data.quoteid} ${default_lang.Exchange.exchange_swapstatus_kickstart_failed_to_remove_file}`, default_lang.Exchange.exchange_swapstatus_toastr_title_swap_status_update);
 					}
 				});
 
 				var swapdetail_blinker = null;
-
+				var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+				console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 				function blinker(sig) {
 					$.ajax({
 						async: true,
@@ -5299,12 +4849,22 @@ function check_swap_status_details(swap_status_data) {
 						type: 'POST',
 						timeout: 6000, // sets timeout to 5 seconds
 						url: url
-					}).done(function(dataforblinker) {
+					}).done(function (dataforblinker) {
+						console.log(dataforblinker);
 
-						$('.tbl_alicepayment').html(`<a href="#" onclick="shell.openExternal('`+return_coin_details(swap_status_output_data.alice).explorer+dataforblinker.alicepayment+`'); return false;">` + dataforblinker.alicepayment + `</a>`);
+						if (!dataforblinker.error === false) {
+							clearInterval(swapdetail_blinker);
+							if (dataforblinker.error == 'swap never started') {
+								$('.swapdetail_info').html(`<h3><i class="fa fa-ban"></i> ${dataforblinker.error}. Please try again.</h3>`);
+							} else {
+								$('.swapdetail_info').html(`<h3><i class="fa fa-ban"></i> ${dataforblinker.error}</h3>`);
+							}
+						}
+
+						$('.tbl_alicepayment').html(`<a href="#" onclick="shell.openExternal('` + return_coin_details(swap_status_output_data.alice).explorer + dataforblinker.alicepayment + `'); return false;">` + dataforblinker.alicepayment + `</a>`);
 						$('.tbl_alicetxfee').html(dataforblinker.alicetxfee);
-						$('.tbl_bobdeposit').html(`<a href="#" onclick="shell.openExternal('`+return_coin_details(swap_status_output_data.bob).explorer+dataforblinker.bobdeposit+`'); return false;">` + dataforblinker.bobdeposit + `</a>`);
-						$('.tbl_bobpayment').html(`<a href="#" onclick="shell.openExternal('`+return_coin_details(swap_status_output_data.bob).explorer+dataforblinker.bobpayment+`'); return false;">` + dataforblinker.bobpayment + `</a>`);
+						$('.tbl_bobdeposit').html(`<a href="#" onclick="shell.openExternal('` + return_coin_details(swap_status_output_data.bob).explorer + dataforblinker.bobdeposit + `'); return false;">` + dataforblinker.bobdeposit + `</a>`);
+						$('.tbl_bobpayment').html(`<a href="#" onclick="shell.openExternal('` + return_coin_details(swap_status_output_data.bob).explorer + dataforblinker.bobpayment + `'); return false;">` + dataforblinker.bobpayment + `</a>`);
 						$('.tbl_bobtxfee').html(dataforblinker.bobtxfee);;
 						$('.tbl_sentflags').html(JSON.stringify(dataforblinker.sentflags), null, 2);
 						$('.tbl_values').html(renderValues(dataforblinker.values));
@@ -5320,7 +4880,7 @@ function check_swap_status_details(swap_status_data) {
 							console.log('swap detail BLINKING');
 						}
 
-						if(dataforblinker.bobpayment !== '0000000000000000000000000000000000000000000000000000000000000000'){
+						if (dataforblinker.bobpayment !== '0000000000000000000000000000000000000000000000000000000000000000') {
 							var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 							$('.swapdetail_info').html(`<h3><i class="fa fa-handshake-o"></i> ${default_lang.Exchange.exchange_swapstatus_state_barter_completed}</h3>`);
 							blinker(false);
@@ -5344,7 +4904,7 @@ function check_swap_status_details(swap_status_data) {
 							$('.swapdetail_info').html(`<h3>${default_lang.Exchange.exchange_swapstatus_state_seller_deposited_his_security}</h3>`);
 							$('.swapdetail_alicepayment').fadeOut(500);
 							$('.swapdetail_alicepayment').fadeIn(500);
-						} else if(current_sentflag == 'myfee'){
+						} else if (current_sentflag == 'myfee') {
 							var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 							$('.swapdetail_info').html(`<h3>${default_lang.Exchange.exchange_swapstatus_state_my_barterdex_fee_paid}</h3>`);
 							$('.swapdetail_bobdeposit').fadeOut(500);
@@ -5355,14 +4915,14 @@ function check_swap_status_details(swap_status_data) {
 
 				swapdetail_blinker = setInterval(blinker, 5000);
 
-				$('.btn_swap_status_details_close').click(function(e){
+				$('.btn_swap_status_details_close').click(function (e) {
 					e.preventDefault();
 					console.log('btn_swap_status_details_close clicked');
 					blinker(false);
 
 					CheckOrderBookFn();
-					CheckOrderbook_Interval = setInterval(CheckOrderBookFn,30000);
-					//check_swap_status_Interval = setInterval(check_swap_status,20000);
+					CheckOrderbook_Interval = setInterval(CheckOrderBookFn, 30000);
+					check_swap_status_Interval = setInterval(check_swap_status, 20000);
 					check_swap_status();
 					check_bot_list_Interval = setInterval(check_bot_list, 10000);
 					check_bot_list();
@@ -5376,26 +4936,26 @@ function check_swap_status_details(swap_status_data) {
 
 					var dexmode = sessionStorage.getItem('mm_dexmode');
 					var selected_dICO_coin = sessionStorage.getItem('mm_selected_dICO_coin');
-			if (dexmode == 'dICO') {
-				get_coin_info(selected_dICO_coin);
-			}
+					if (dexmode == 'dICO') {
+						get_coin_info(selected_dICO_coin);
+					}
 				})
 
 			});
 
 		}
 
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    HoldOn.close();
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		HoldOn.close();
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
 function get_swapstatus_step(swap_data) {
-	//console.log(swap_data.sentflags);
+	console.log(swap_data.sentflags);
 	var status = "realtime";
-	for(var i = 0; i < swap_data.sentflags.length; i++) {
+	for (var i = 0; i < swap_data.sentflags.length; i++) {
 		if (swap_data.sentflags[i] == 'alicespend') {
 			status = "alicespend";
 			return status;
@@ -5412,7 +4972,7 @@ function get_swapstatus_step(swap_data) {
 			status = "bobdeposit";
 			return status;
 			//break;
-		} else if(swap_data.sentflags[i] == 'myfee'){
+		} else if (swap_data.sentflags[i] == 'myfee') {
 			status = "myfee";
 			return status;
 			//break;
@@ -5429,22 +4989,23 @@ function check_swap_status(sig) {
 		console.log('checking swap status');
 	}
 
-	var coin = $('.trading_pair_coin2').selectpicker('val',coin);
+	var coin = $('.trading_pair_coin2').selectpicker('val', coin);
 	//console.log(coin);
 
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"swapstatus","pending":0};
+	var ajax_data = { "userpass": userpass, "method": "swapstatus", "pending": 0, "fast": 1, "limit": 30 };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    timeout: 5000, // sets timeout to 5 seconds
-	    url: url
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 5000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (data) {
 		// If successful
 		console.log(data);
 
@@ -5468,10 +5029,12 @@ function check_swap_status(sig) {
 				$('.exchange-swap-status-spinner').hide();
 			}*/
 			$('.exchange-swap-status-spinner').hide();
-			$.each(reversed_swap_list, function(index, val) {
-				//console.log(index);
-				//console.log(val);
-				if(!val.error === false) {
+			console.groupCollapsed('Swap Status Info');
+
+			$.each(reversed_swap_list, function (index, val) {
+				console.log(index); //swap #
+				console.log(val); //swap data
+				if (!val.error === false) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					var exchange_swap_status_tr = '';
 					exchange_swap_status_tr += '<tr>';
@@ -5486,7 +5049,7 @@ function check_swap_status(sig) {
 					if (val.finishtime == undefined) {
 						var fintime = '-';
 					} else {
-						var fintime = new Date( val.finishtime * 1000);
+						var fintime = new Date(val.finishtime * 1000);
 					}
 					if (val.alice == undefined) {
 						var aliceval = '-';
@@ -5499,10 +5062,10 @@ function check_swap_status(sig) {
 						var bobval = val.bob;
 					}
 
-					if(val.status !== 'realtime') {
+					if (val.status !== 'realtime') {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 						var current_sentflag = get_swapstatus_step(val);
-						if(val.bobpayment !== '0000000000000000000000000000000000000000000000000000000000000000'){
+						if (val.bobpayment !== '0000000000000000000000000000000000000000000000000000000000000000') {
 							status_color = 'color: #43a047;';
 							swap_status = '<span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>';
 						} else if (current_sentflag == 'alicespend') {
@@ -5517,7 +5080,7 @@ function check_swap_status(sig) {
 						} else if (current_sentflag == 'bobdeposit') {
 							status_color = 'color: #4527a0;';
 							swap_status = '<span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>';
-						} else if(current_sentflag == 'myfee'){
+						} else if (current_sentflag == 'myfee') {
 							status_color = 'color: #ef6c00;';
 							swap_status = '<span class="glyphicon glyphicon-random" aria-hidden="true"></span>';
 						}
@@ -5531,7 +5094,7 @@ function check_swap_status(sig) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					var exchange_swap_status_tr = '';
 					exchange_swap_status_tr += '<tr>';
-					exchange_swap_status_tr += '<td><div style="'+status_color+' font-size: 15px;">' + swap_status + ' ' + val.status +'</div></td>';
+					exchange_swap_status_tr += '<td><div style="' + status_color + ' font-size: 15px;">' + swap_status + ' ' + val.status + '</div></td>';
 					exchange_swap_status_tr += `<td><b>${default_lang.SwapStatus.swapstatus_quote_id}:</b> ${val.quoteid}<br>
 													<b>${default_lang.SwapStatus.swapstatus_request_id}:</b> ${val.requestid}
 													${pair_and_time}</td>`;
@@ -5542,10 +5105,12 @@ function check_swap_status(sig) {
 					$('.exchange_swap_status_tbl tbody').append(exchange_swap_status_tr);
 				}
 			})
+			console.groupEnd();
+
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
@@ -5556,23 +5121,23 @@ function check_swap_status(sig) {
 /* Random Color Generator */
 
 function hashCode(str) { // java String#hashCode
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
+	var hash = 0;
+	for (var i = 0; i < str.length; i++) {
+		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+	}
+	return hash;
 }
 
-function intToRGB(i){
-    var c = (i & 0x00FFFFFF)
-        .toString(16)
-        .toUpperCase();
+function intToRGB(i) {
+	var c = (i & 0x00FFFFFF)
+		.toString(16)
+		.toUpperCase();
 
-    return "00000".substring(0, 6 - c.length) + c;
+	return "00000".substring(0, 6 - c.length) + c;
 }
 
 
-function coloredPubkey(pubkey){
+function coloredPubkey(pubkey) {
 	var final_string = {};
 	final_string.firstpart = pubkey.slice(0, 3);
 	final_string.lastpart = pubkey.slice(61, 64);
@@ -5582,12 +5147,12 @@ function coloredPubkey(pubkey){
 	final_string.colorpart4 = intToRGB(hashCode(pubkey.slice(30, 40)));
 	final_string.colorpart5 = intToRGB(hashCode(pubkey.slice(40, 50)));
 	final_string.colorpart6 = intToRGB(hashCode(pubkey.slice(50, 60)));
-	final_string.char1 = final_string.colorpart1.slice(0,1);
-	final_string.char2 = final_string.colorpart2.slice(0,1);
-	final_string.char3 = final_string.colorpart3.slice(0,1);
-	final_string.char4 = final_string.colorpart4.slice(0,1);
-	final_string.char5 = final_string.colorpart5.slice(0,1);
-	final_string.char6 = final_string.colorpart6.slice(0,1);
+	final_string.char1 = final_string.colorpart1.slice(0, 1);
+	final_string.char2 = final_string.colorpart2.slice(0, 1);
+	final_string.char3 = final_string.colorpart3.slice(0, 1);
+	final_string.char4 = final_string.colorpart4.slice(0, 1);
+	final_string.char5 = final_string.colorpart5.slice(0, 1);
+	final_string.char6 = final_string.colorpart6.slice(0, 1);
 
 	return final_string;
 
@@ -5621,51 +5186,52 @@ function openTradeDetails(index, total) {
 
 // display rounding
 function formatValue(formatValue) {
-  const _valueToStr = formatValue.toString();
+	const _valueToStr = formatValue.toString();
 
-  if (_valueToStr.indexOf('.') === -1) {
-    return formatValue;
-  } else {
-    if (_valueToStr) {
-      const _decimal = _valueToStr.substr(_valueToStr.indexOf('.') + 1, _valueToStr.length);
-      let newVal = _valueToStr.substr(0, _valueToStr.indexOf('.') + 1);
+	if (_valueToStr.indexOf('.') === -1) {
+		return formatValue;
+	} else {
+		if (_valueToStr) {
+			const _decimal = _valueToStr.substr(_valueToStr.indexOf('.') + 1, _valueToStr.length);
+			let newVal = _valueToStr.substr(0, _valueToStr.indexOf('.') + 1);
 
-      for (let i = 0; i < _decimal.length; i++) {
-        if (_decimal[i] === '0') {
-          newVal = newVal + _decimal[i];
-        } else {
-          newVal = newVal + _decimal[i];
-          break;
-        }
-      }
+			for (let i = 0; i < _decimal.length; i++) {
+				if (_decimal[i] === '0') {
+					newVal = newVal + _decimal[i];
+				} else {
+					newVal = newVal + _decimal[i];
+					break;
+				}
+			}
 
-      return newVal;
-    }
-  }
+			return newVal;
+		}
+	}
 }
 
 function constructTradesHistory() {
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"swapstatus"};
+	var ajax_data = { "userpass": userpass, "method": "swapstatus" };
 	//var ajax_data = {"userpass":userpass,"method":"recentswaps","limit":100};
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-    data: JSON.stringify(ajax_data),
-    dataType: 'json',
-    type: 'POST',
-    url: url,
-	}).done(function(data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url,
+	}).done(function (data) {
 		console.log(data);
 		let out = '';
 		let tradesCounter = 0;
 
 		var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 		if (data &&
-				data.swaps &&
-				data.swaps.length) {
+			data.swaps &&
+			data.swaps.length) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 			out += `<h4 style="margin-bottom: 35px">${default_lang.TradeHistory.tradehistory_total_trades}: ${data.swaps.length}</h4>`;
 
@@ -5688,21 +5254,21 @@ function constructTradesHistory() {
 				const data = trades[i];
 
 				if (data.alice &&
-						data.bob) {
+					data.bob) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					tradesCounter++;
 					result_answer = (data.result == 'success') ? '<h4><span class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Success</span></h4>' : '<h4><span class="label label-danger"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> ' + data.result + '</span></h4>';
-					alice_answer = '<img src="img/cryptologo/'+data.alice.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(data.alice).name + ' ('+data.alice+')';
-					bob_answer = '<img src="img/cryptologo/'+data.bob.toLowerCase()+'.png" style="width: 30px;"> '+ return_coin_details(data.bob).name + ' ('+data.bob+')';
+					alice_answer = '<img src="img/cryptologo/' + data.alice.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(data.alice).name + ' (' + data.alice + ')';
+					bob_answer = '<img src="img/cryptologo/' + data.bob.toLowerCase() + '.png" style="width: 30px;"> ' + return_coin_details(data.bob).name + ' (' + data.bob + ')';
 					iambob_answer = (data.iambob == 0) ? default_lang.Exchange.exchange_botstatus_dialog_buyselltext_buy : default_lang.Exchange.exchange_botstatus_dialog_buyselltext_buy;
 
-					var time = new Date( data.expiration * 1000);
-					var fintime = new Date( data.finishtime * 1000);
+					var time = new Date(data.expiration * 1000);
+					var fintime = new Date(data.finishtime * 1000);
 
 					var simplified_dexdetail_tr = '';
 					if (data.iambob == 0) {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-						var total_sell_unit = parseFloat(data.values[3])+parseFloat(data.values[6]);
+						var total_sell_unit = parseFloat(data.values[3]) + parseFloat(data.values[6]);
 						var single_unit_price = parseFloat(data.srcamount) / parseFloat(total_sell_unit);
 						var price_per_bought_unit = parseFloat(total_sell_unit) / parseFloat(data.srcamount);
 						simplified_dexdetail_tr += `<tr><td colspan=2><b>${default_lang.Exchange.exchange_swapstatus_td_price_paid_in} ` + data.alice + ':</b> ' + data.values[3].toFixed(8) + '</td></tr>';
@@ -5715,7 +5281,7 @@ function constructTradesHistory() {
 
 					if (data.iambob == 1) {
 						var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-						var total_sell_unit = parseFloat(data.values[0])+parseFloat(data.bobtxfee);
+						var total_sell_unit = parseFloat(data.values[0]) + parseFloat(data.bobtxfee);
 						var units_sold_at_price = parseFloat(data.values[3]) / parseFloat(total_sell_unit);
 						simplified_dexdetail_tr += '<tr><td colspan=2><b>' + data.bob + ` ${default_lang.Exchange.exchange_swapstatus_td_sold}: </b> = ` + data.values[0].toFixed(8) + '</td></tr>';
 						simplified_dexdetail_tr += `<tr><td colspan=2><b>${default_lang.Exchange.exchange_swapstatus_td_fee_paid_in} ` + data.bob + ': </b> = ' + data.bobtxfee + '</td></tr>';
@@ -5731,7 +5297,7 @@ function constructTradesHistory() {
 							<td>${fintime}</td>
 							<td>
 								<i class="fa fa-arrow-${data.iambob == 0 ? 'right col-green' : 'left col-red'}"></i>&nbsp;
-								<span>${ data.iambob == 0 ? default_lang.Exchange.exchange_botstatus_dialog_buyselltext_bought : default_lang.Exchange.exchange_botstatus_dialog_buyselltext_sold }</span>
+								<span>${ data.iambob == 0 ? default_lang.Exchange.exchange_botstatus_dialog_buyselltext_bought : default_lang.Exchange.exchange_botstatus_dialog_buyselltext_sold}</span>
 							</td>
 							<td>
 								<span class="${data.iambob == 0 ? '' : 'hide'}">${data.alice} &nbsp;<i class="fa fa-exchange"></i>&nbsp; ${data.bob}</span>
@@ -5813,7 +5379,7 @@ function constructTradesHistory() {
 												</tr>
 												<tr>
 													<td>${default_lang.Exchange.exchange_swapstatus_td_buyer_payment}</td>
-													<td class="tbl_alicepayment">` + `<a href="#" onclick="shell.openExternal('`+return_coin_details(data.alice).explorer+data.alicepayment+`'); return false;">` + data.alicepayment + `</a></td>
+													<td class="tbl_alicepayment">` + `<a href="#" onclick="shell.openExternal('` + return_coin_details(data.alice).explorer + data.alicepayment + `'); return false;">` + data.alicepayment + `</a></td>
 												</tr>
 												<tr>
 													<td>${default_lang.Exchange.exchange_swapstatus_td_buyer_tx_fee}</td>
@@ -5826,11 +5392,11 @@ function constructTradesHistory() {
 												</tr>
 												<tr>
 													<td>${default_lang.Exchange.exchange_swapstatus_td_seller_deposit}</td>
-													<td class="tbl_bobdeposit">` + `<a href="#" onclick="shell.openExternal('`+return_coin_details(data.bob).explorer+data.bobdeposit+`'); return false;">` + data.bobdeposit + `</a></td>
+													<td class="tbl_bobdeposit">` + `<a href="#" onclick="shell.openExternal('` + return_coin_details(data.bob).explorer + data.bobdeposit + `'); return false;">` + data.bobdeposit + `</a></td>
 												</tr>
 												<tr>
 													<td>${default_lang.Exchange.exchange_swapstatus_td_seller_payment}</td>
-													<td class="tbl_bobpayment"><a href="#" onclick="shell.openExternal('`+return_coin_details(data.bob).explorer+data.bobpayment+`'); return false;">` + data.bobpayment + `</a></td>
+													<td class="tbl_bobpayment"><a href="#" onclick="shell.openExternal('`+ return_coin_details(data.bob).explorer + data.bobpayment + `'); return false;">` + data.bobpayment + `</a></td>
 												</tr>
 												<tr>
 													<td>${default_lang.Exchange.exchange_swapstatus_td_seller_tx_fee}</td>
@@ -5840,7 +5406,7 @@ function constructTradesHistory() {
 													<td rowspan=8>${default_lang.Exchange.exchange_swapstatus_td_other_info}</td>
 													<td colspan=2><b>${default_lang.Exchange.exchange_swapstatus_td_you_are}:</b> ` + iambob_answer + `</td>
 												</tr>
-												`+ simplified_dexdetail_tr +`
+												`+ simplified_dexdetail_tr + `
 											</table>
 										</div>
 									</div>
@@ -5869,155 +5435,25 @@ function constructTradesHistory() {
 
 /* TRADE HISTORY - CREDIT: pbca26 END*/
 
-
-
-
-
 /* ZEROCONF SETTINGS */
-
-/*$('.zeroconf_deposits_history_tbl tbody').on('click', '.zconf_deposit_txid_link', function(e) {
-	e.preventDefault();
-	console.log('zconf_deposit_txid_link clicked');
-	console.log($(this).data());
-	shell.openExternal('https://kmd.explorer.supernet.org/tx/'+$(this).data('txid'));
-});*/
-
-$('.zeroconf_deposits_history_tbl tbody').on('click', '.zconf_deposit_details', function(e) {
-	e.preventDefault();
-	console.log('zconf_deposit_details clicked');
-	console.log($(this).data());
-});
-
-$('.btn_zeroconf_claim_deposit').click(function(e) {
-	e.preventDefault();
-	console.log('btn_zeroconf_claim_deposit clicked');
-	ZeroConfClaim();
-});
-
-$('.btn_zeroconf_deposit').click(function(e){
-	e.preventDefault();
-	console.log('btn_zeroconf_deposit clicked');
-	var deposit_weeks = $('.zeroconf_weeks_select').selectpicker('val');
-	var deposit_amount = $('.zeroconf_deposit_amount').val();
-	console.log(deposit_weeks);
-	console.log(deposit_amount);
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	var zeroconf_deposit_confirm_bootbox = bootbox.dialog({
-			onEscape: true,
-			backdrop: true,
-			message: `${default_lang.ZeroConfirmation.zeroconf_please_confirm_you_want_to_send_and_lock_01} <font style="font-size: 135%;">${deposit_amount} KMD</font> ${default_lang.ZeroConfirmation.zeroconf_please_confirm_you_want_to_send_and_lock_02} <font style="font-size: 135%;">${deposit_weeks} ${default_lang.ZeroConfirmation.zeroconf_week_weeks} </font>${default_lang.ZeroConfirmation.zeroconf_please_confirm_you_want_to_send_and_lock_03}?`,
-			closeButton: false,
-			size: 'medium',
-			className: 'zeroconf_deposit_confirm_class_bootbox',
-
-			buttons: {
-				cancel: {
-					label: default_lang.Common.btn_close_smallcaps,
-					className: 'btn-default',
-					callback: function(){
-						toastr.info('Sending Speed Deposit fund is canceled.','Speed Deposit Notification')
-					}
-				},
-				ok: {
-					label: default_lang.ZeroConfirmation.zeroconf_yes_i_confirm,
-					className: 'btn-primary zeroconf_deposit_confirm_make_despoit',
-					callback: function(){
-						ZeroConfDeposit(deposit_weeks,deposit_amount);
-					}
-				}
-			}
-		});
-		zeroconf_deposit_confirm_bootbox.init(function(){
-			console.log('zeroconf_deposit_confirm_bootbox dialog opened.')
-			
-		});
-});
-
-$('.zeroconf_deposit_amount').keyup(function(){
-	var deposit_amount = $('.zeroconf_deposit_amount').val();
-	//console.log(deposit_amount);
-
-	var empty = false;
-	if (deposit_amount < 10) {
-		console.log('Send Address is empty or less than 10');
-		empty = true;
-	}
-	//console.log(empty);
-
-	if (empty){
-		$('.btn_zeroconf_deposit').attr("disabled", "disabled");
-	} else {
-		$('.btn_zeroconf_deposit').removeAttr("disabled");
-	}
-});
-
-function getZeroConfDepositHistory(){
-	var zeroconf_deposit_history_data = ShepherdIPC({"command":"read_zeroconf_log", "type":"deposit"});
-	//console.log(zeroconf_deposit_history_data);
-	var reversed_zeroconf_deposit_history_data = zeroconf_deposit_history_data.reverse();
-
-	$('.zeroconf_deposits_history_tbl tbody').empty();
-	$.each(reversed_zeroconf_deposit_history_data, function(index, val) {
-		//console.log(index);
-		//console.log(val);
-
-		if(!val.error === false) {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-			var zeroconf_deposits_history_tr = '';
-			zeroconf_deposits_history_tr += '<tr>';
-			//zeroconf_deposits_history_tr += '<td>' + index + '</td>';
-			zeroconf_deposits_history_tr += `<td><div style="color: #e53935; font-size: 15px;"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> ${default_lang.ZeroConfirmation.zeroconf_history_td_error}</div></td>`;
-			//zeroconf_deposits_history_tr += '<td>-</td>';
-			zeroconf_deposits_history_tr += '</tr>';
-			$('.zeroconf_deposits_history_tbl tbody').append(zeroconf_deposits_history_tr);
-		} else {
-			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-
-			var expiration_time = new Date( val.expiration *1000);
-
-			var zeroconf_deposits_history_tr = '';
-			zeroconf_deposits_history_tr += '<tr>';
-			//zeroconf_deposits_history_tr += '<td>' + index + '</td>';
-			zeroconf_deposits_history_tr += `<td>
-											<b>${default_lang.ZeroConfirmation.zeroconf_history_td_address}:</b> ${val.address}<br>
-											<b>${default_lang.ZeroConfirmation.zeroconf_history_td_deposit}:</b> ${val.deposit} KMD<br>
-											<b>${default_lang.ZeroConfirmation.zeroconf_history_td_expiration}:</b> ${expiration_time}<br>
-											<b>${default_lang.ZeroConfirmation.zeroconf_history_td_txid}:</b> <a class="zconf_deposit_txid_link" href="#" data-txid="${val.txid}">${default_lang.ZeroConfirmation.zeroconf_history_td_open_in_explorer}</a>
-											</td>`;
-			/*zeroconf_deposits_history_tr += `<td><button class="btn btn-xs btn-default zconf_deposit_details" data-address="` + val.address + `" data-expiration="` + val.expiration + `" style="display: none;">Details</button>
-												<button class="btn btn-xs btn-success zconf_deposit_claim" data-address="` + val.address + `" data-expiration="` + val.expiration + `" style="margin: 3px;">Claim Deposit</button>
-											</td>`;*/
-			zeroconf_deposits_history_tr += '</tr>';
-			$('.zeroconf_deposits_history_tbl tbody').append(zeroconf_deposits_history_tr);
-			
-		}
-	});
-
-	$('.zeroconf_deposits_history_tbl tbody').on('click', '.zconf_deposit_txid_link', function(e) {
-		e.preventDefault();
-		console.log('zconf_deposit_txid_link clicked');
-		console.log($(this).data());
-		shell.openExternal('https://kmd.explorer.supernet.org/tx/'+$(this).data('txid'));
-	});
-}
-
 
 function ZeroConfDeposit(deposit_weeks, deposit_amount) {
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"instantdex_deposit","weeks":deposit_weeks,"amount":deposit_amount,"broadcast": 1};
+	var ajax_data = { "userpass": userpass, "method": "instantdex_deposit", "weeks": deposit_weeks, "amount": deposit_amount, "broadcast": 1 };
 	var url = "http://127.0.0.1:7783";
 	console.log(ajax_data);
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(zconf_deposit_data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (zconf_deposit_data) {
 		console.log(zconf_deposit_data);
-		var update_deposit_log_file = ShepherdIPC({"command":"update_zeroconf_log", "data":{"logdata": JSON.stringify(zconf_deposit_data),"type":"deposit"}});
+		var update_deposit_log_file = ShepherdIPC({ "command": "update_zeroconf_log", "data": { "logdata": JSON.stringify(zconf_deposit_data), "type": "deposit" } });
 		console.log(update_deposit_log_file);
 		if (!zconf_deposit_data.error === false) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
@@ -6037,41 +5473,41 @@ function ZeroConfDeposit(deposit_weeks, deposit_amount) {
 					cancel: {
 						label: `${default_lang.Common.btn_close_smallcaps}`,
 						className: 'btn-default',
-						callback: function(){
+						callback: function () {
 						}
 					}
 				}
 			})
-			zconf_depoit_bootbox.init(function(){
-				$('.zconf_deposit_txid_bootbox').click(function(){
+			zconf_depoit_bootbox.init(function () {
+				$('.zconf_deposit_txid_bootbox').click(function () {
 					console.log($(this).data());
-					shell.openExternal('https://kmd.explorer.supernet.org/tx/'+$(this).data('txid'));
+					shell.openExternal('https://kmd.explorer.supernet.org/tx/' + $(this).data('txid'));
 				});
 			});
 			//getZeroConfDepositHistory();
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
-
 
 function ZeroConfClaim() {
 	var userpass = sessionStorage.getItem('mm_userpass');
 	var mypubkey = sessionStorage.getItem('mm_mypubkey');
-	var ajax_data = {"userpass":userpass,"method":"instantdex_claim"};
+	var ajax_data = { "userpass": userpass, "method": "instantdex_claim" };
 	var url = "http://127.0.0.1:7783";
-
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
 	$.ajax({
 		async: true,
-	    data: JSON.stringify(ajax_data),
-	    dataType: 'json',
-	    type: 'POST',
-	    url: url
-	}).done(function(zconf_claim_data) {
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		url: url
+	}).done(function (zconf_claim_data) {
 		console.log(zconf_claim_data);
-		var update_claim_log_file = ShepherdIPC({"command":"update_zeroconf_log", "data":{"logdata": JSON.stringify(zconf_claim_data),"type":"claim"}});
+		var update_claim_log_file = ShepherdIPC({ "command": "update_zeroconf_log", "data": { "logdata": JSON.stringify(zconf_claim_data), "type": "claim" } });
 		console.log(update_claim_log_file);
 		if (!zconf_claim_data.error === false) {
 			var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
@@ -6095,15 +5531,15 @@ function ZeroConfClaim() {
 					cancel: {
 						label: `${default_lang.Common.btn_close_smallcaps}`,
 						className: 'btn-default',
-						callback: function(){
+						callback: function () {
 						}
 					}
 				}
 			})
-			zconf_claim_bootbox.init(function(){
+			zconf_claim_bootbox.init(function () {
 
 				$('.zeroconf_claims_tbl tbody').empty();
-				$.each(zconf_claim_data.txids,function(index, val) {
+				$.each(zconf_claim_data.txids, function (index, val) {
 					var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
 					console.log(index);
 					console.log(val);
@@ -6126,80 +5562,17 @@ function ZeroConfClaim() {
 					$('.zeroconf_claims_tbl tbody').append(zeroconf_claims_tbl_tr);
 				});
 
-				$('.zeroconf_claims_tbl tbody').on('click', '.zconf_claim_txid_bootbox', function(e) {
+				$('.zeroconf_claims_tbl tbody').on('click', '.zconf_claim_txid_bootbox', function (e) {
 					console.log($(this).data());
-					shell.openExternal('https://kmd.explorer.supernet.org/tx/'+$(this).data('txid'));
+					shell.openExternal('https://kmd.explorer.supernet.org/tx/' + $(this).data('txid'));
 				});
 			});
 
 			//bootbox.alert();
 		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-	    // If fail
-	    console.log(textStatus + ': ' + errorThrown);
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
-
-$('.btn_zeroconf_deposit_history').click(function(e){
-	e.preventDefault();
-	console.log('info_box_for_zeroconf clicked');
-
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	var zconf_deposit_history_bootbox = bootbox.dialog({
-		title: default_lang.ZeroConfirmation.zeroconf_history_dialog_title,
-		message: `<div class="zeroconf_settings_table_div mCustomScrollbar" data-mcs-theme="minimal-dark">
-					<table class="table table-striped zeroconf_deposits_history_tbl" width="100%" style="margin-bottom: 0;">
-						<thead>
-							<!--<th>Index</th>-->
-							<th>${default_lang.ZeroConfirmation.zeroconf_history_th_deposit_history}</th>
-							<!--<th>Actions</th>-->
-						</thead>
-						<tbody></tbody>
-					</table>
-				</div>`,
-		closeButton: false,
-		size: 'medium',
-		buttons: {
-			cancel: {
-				label: `${default_lang.Common.btn_close_smallcaps}`,
-				className: 'btn-default',
-				callback: function(){
-				}
-			}
-		}
-	})
-	zconf_deposit_history_bootbox.init(function(){
-		getZeroConfDepositHistory();
-		$(".mCustomScrollbar").mCustomScrollbar();
-	});
-});
-
-
-$('.info_box_for_zeroconf').click(function(e){
-	e.preventDefault();
-	console.log('info_box_for_zeroconf clicked');
-	var default_lang = JSON.parse(sessionStorage.getItem('mm_default_lang'));
-	bootbox.alert({
-		title: `${default_lang.ZeroConfirmation.zeroconf_info_dialog_title}`,
-		message: `<p>${default_lang.ZeroConfirmation.zeroconf_info_dialog_p_01}:</p>
-			<ul>
-				<li>${default_lang.ZeroConfirmation.zeroconf_info_dialog_li_01}</li>
-				<li>${default_lang.ZeroConfirmation.zeroconf_info_dialog_li_02}</li>
-                <li>${default_lang.ZeroConfirmation.zeroconf_info_dialog_li_03}</li>
-                <li>${default_lang.ZeroConfirmation.zeroconf_info_dialog_li_04}</li>
-                <li>${default_lang.ZeroConfirmation.zeroconf_info_dialog_li_05}</li>
-                <li>${default_lang.ZeroConfirmation.zeroconf_info_dialog_li_06}</li>
-            </ul>
-			<p>${default_lang.ZeroConfirmation.zeroconf_info_dialog_p_02}</p>`,
-		size: 'large',
-		buttons: {
-			ok: {
-				label: `${default_lang.Common.btn_ok_caps}`,
-				className: 'btn-primary',
-				callback: function(){
-				}
-			}
-		}
-	});
-})
 /* ZEROCONF SETTINGS END */

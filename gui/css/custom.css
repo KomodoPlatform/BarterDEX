@@ -157,6 +157,7 @@ textarea {
 
 .orderbook_asks tr:hover td, .orderbook_bids tr:hover td {
   background: #000;
+  color: #fff;
 }
 
 .progress-nomargin {
@@ -523,4 +524,10 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: 25px;
   background-color: #fff;
   font-weight: 100;
+}
+
+
+/* Trading pair options to show info buttons next to the checkbox options closer */
+.pretty {
+  margin-right: 1px;
 }

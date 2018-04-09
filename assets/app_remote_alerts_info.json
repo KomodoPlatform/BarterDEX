@@ -1,6 +1,6 @@
 {
 	"msg_type": "info",
-  "message": "<h3>Updated version available!! Download it from <a href=\"#\" onclick=shell.openExternal('https://github.com/SuperNETorg/BarterDEX/releases'); return false; style=\"color: #ffa900;\">here</a></h3>",
+  "message": "<h3>Updated version available!! Download it from <a href=\"#\" onclick=shell.openExternal('https://github.com/KomodoPlatform/BarterDEX/releases'); return false; style=\"color: #ffa900;\">here</a></h3>",
 	"for_app_version": "0.9.0",
 	"alert_level": "marquee",
 	"style": "background-color: #337ab7; color: #fff; height: 64px;"

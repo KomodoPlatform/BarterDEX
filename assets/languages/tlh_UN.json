@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": " ",
     "portfolio_add_coins": "ADD ",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "",
     "exchange_goal_percent_for_your_portfolio": "Percentage goal for your portfolio",
     "portfolio_portfolio_coins": " Coins",
@@ -198,6 +201,7 @@
     "exchange_btn_back": "BACK",
     "exchange_th_orderbook_price_in": "Price in",
     "exchange_th_orderbook_avg_volume": "Avg. Volume",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "Depth",
     "exchange_th_orderbook_trader_pubkey": "Trader Pubkey",
     "exchange_th_orderbook_age": "Age",
@@ -398,7 +402,11 @@
     "settings_reset_settings": "Reset Settings",
     "settings_save_settings": "Save Settings",
     "settings_toastr_settings_update_processed": "Settings update processed.",
-    "settings_toastr_title": "BarterDEX Settings"
+    "settings_toastr_title": "BarterDEX Settings",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }
 

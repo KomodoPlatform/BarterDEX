@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "포트폴리오 차트",
     "portfolio_add_coins": "코인 추가하기",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "매도",
     "exchange_goal_percent_for_your_portfolio": "포트폴리오 목표 배분율",
     "portfolio_portfolio_coins": "포트폴리오 코인들",
@@ -190,6 +193,7 @@
     "exchange_buyers_caps": "매수자",
     "exchange_th_orderbook_price_in": "가격 - ",
     "exchange_th_orderbook_avg_volume": "평균 볼륨",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "누적합계",
     "exchange_th_orderbook_trader_pubkey": "트레이더 PubKey",
     "exchange_th_orderbook_age": "시간",
@@ -390,6 +394,10 @@
     "settings_reset_settings": "설정 리셋",
     "settings_save_settings": "설정 저장하기",
     "settings_toastr_settings_update_processed": "설정이 변경되었습니다.",
-    "settings_toastr_title": "BarterDEX 설정"
+    "settings_toastr_title": "BarterDEX 설정",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }

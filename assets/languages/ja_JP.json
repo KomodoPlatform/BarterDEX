@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "ポートフォリオ・チャート",
     "portfolio_add_coins": "コインを追加",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "呼び値",
     "exchange_goal_percent_for_your_portfolio": "ポートフォリオのパーセンテージ目標",
     "portfolio_portfolio_coins": "ポートフォリオ・コイン",
@@ -197,6 +200,7 @@
     "exchange_btn_back": "戻る",
     "exchange_th_orderbook_price_in": "取引価格",
     "exchange_th_orderbook_avg_volume": "平均量",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "深さ",
     "exchange_th_orderbook_trader_pubkey": "トレーダー・パブキイ",
     "exchange_th_orderbook_age": "期間",
@@ -397,6 +401,10 @@
     "settings_reset_settings": "設定をリセット",
     "settings_save_settings": "設定を保存",
     "settings_toastr_settings_update_processed": "設定の更新済",
-    "settings_toastr_title": " BarterDEX設定"
+    "settings_toastr_title": " BarterDEX設定",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }

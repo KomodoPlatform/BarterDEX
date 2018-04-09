@@ -2,5 +2,6 @@
 	"dev": false,
 	"experimentalFeatures": false,
 	"theme": "dark",
-	"deflang": "en_US"
+	"deflang": "en_US",
+	"charts": "show"
 }

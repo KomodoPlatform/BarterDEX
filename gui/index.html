@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>BarterDEX - v0.8.9-rc</title>
+    <title>BarterDEX - v1.0.0-rc</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet" id="bright_css_style">
@@ -13,11 +14,10 @@
     <link href="css/bootstrap-panelnavtabs.css" type="text/css" rel="stylesheet">
     <link href="css/bootstrap-select.min.css" type="text/css" rel="stylesheet">
     <link href="css/toastr.min.css" type="text/css" rel="stylesheet">
-    <link href="js/amcharts/plugins/export/export.css" type="text/css" rel="stylesheet"  media="all" />
+    <link href="js/amcharts/plugins/export/export.css" type="text/css" rel="stylesheet" media="all" />
     <link href="css/bootstrap-toggle.min.css" rel="stylesheet">
     <link href="css/bootstrap-slider.min.css" rel="stylesheet">
-    <link href="css/custom.css" type="text/css" rel="stylesheet">
-    <link href="css/dark-theme.css" type="text/css" rel="stylesheet" id="dark_css_style">
+    
     <link href="css/spinner.css" type="text/css" rel="stylesheet">
     <link href="js/fa/css/font-awesome.min.css" type="text/css" rel="stylesheet">
     <link href="css/jquery.mCustomScrollbar.min.css" type="text/css" rel="stylesheet">
@@ -33,37 +33,47 @@
 
     <link href="css/klingon-font.css" type="text/css" rel="stylesheet">
 
+    <link href="css/custom.css" type="text/css" rel="stylesheet">
+    <link href="css/dark-theme.css" type="text/css" rel="stylesheet" id="dark_css_style">
+
     <style type="text/css">
-      @import url('http://fonts.googleapis.com/css?family=Open+Sans');
-      @font-face{
-          font-family:'Open Sans';
-          font-style:normal;
-          font-weight:400;
-          src:local('Open Sans'),
-              local('OpenSans'),
-              url('http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff') format('woff');
-      }
-      body {
-        font-family:'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
-      }
+        @import url('http://fonts.googleapis.com/css?family=Open+Sans');
+        @font-face {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Open Sans'), local('OpenSans'), url('http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff') format('woff');
+        }
+
+        body {
+            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
+        }
     </style>
 
     <style type="text/css">
-      .table-fixed thead {
-        width: 97%;
-      }
-      .table-fixed tbody {
-        height: 230px;
-        overflow-y: auto;
-        width: 100%;
-      }
-      .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-        display: block;
-      }
-      .table-fixed tbody td, .table-fixed thead > tr> th {
-        float: left;
-        border-bottom-width: 0;
-      }
+        .table-fixed thead {
+            width: 97%;
+        }
+
+        .table-fixed tbody {
+            height: 230px;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        .table-fixed thead,
+        .table-fixed tbody,
+        .table-fixed tr,
+        .table-fixed td,
+        .table-fixed th {
+            display: block;
+        }
+
+        .table-fixed tbody td,
+        .table-fixed thead>tr>th {
+            float: left;
+            border-bottom-width: 0;
+        }
     </style>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -73,720 +83,963 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script>
-      if (typeof module === 'object') {
-        window.module = module;
-        module = undefined;
-      }
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
     </script>
 
     <script>
-      if (window.module)
-        module = window.module;
-      const templates = {};
+        if (window.module)
+            module = window.module;
+        const templates = {};
     </script>
 
-  </head>
-  <body class="mCustomScrollbar" data-mcs-theme="minimal-dark">
+</head>
+
+<body class="mCustomScrollbar" data-mcs-theme="minimal-dark">
     <div class="app_top_alert_div"></div>
 
-  <!-- LOGIN BODY -->
-  <div class="loginbody" style="display: none;">
-    <div class="container">
-      <form class="form-signin">
-        <h3 class="form-signin-heading language" style="text-align: center;" data-langstr="Welcome_to_BarterDEX"></h3>
-        <h4 class="language" data-langstr="please_login" style="text-align: center;"></h4>
+    <!-- LOGIN BODY -->
+    <div class="loginbody" style="display: none;">
+        <div class="container">
+            <form class="form-signin">
+                <h3 class="form-signin-heading language" style="text-align: center;" data-langstr="Welcome_to_BarterDEX"></h3>
+                <h4 class="language" data-langstr="please_login" style="text-align: center;"></h4>
 
-        <label for="loginPassphrase" class="sr-only language" data-langstr="login_passphrase_label"></label>
-        <div class="input-group col-sm-12" style="margin-bottom: 10px;">
-          <input type="password" id="loginPassphrase" class="form-control loginPassphrase language" data-langstr="login_passphrase_input_placeholder" placeholder="" data-toggle="password" required>
-          <!--
+                <label for="loginPassphrase" class="sr-only language" data-langstr="login_passphrase_label"></label>
+                <div class="input-group col-sm-12" style="margin-bottom: 10px;">
+                    <input type="password" id="loginPassphrase" class="form-control loginPassphrase language" data-langstr="login_passphrase_input_placeholder"
+                        placeholder="" data-toggle="password" required>
+                    <!--
           <span class="input-group-btn">
             <button class="btn btn-grey btn_login_show_passphrase" style="height: 44px; margin-bottom: 10px;"><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span></button>
           </span> -->
+                </div>
+
+                <div class="col-sm-4" style="margin-bottom: 10px; padding: 0 5px 0 0;">
+                    <span class="input-group">
+                        <span class="input-group-addon" class="language" data-langstr="">Net ID</span>
+                        <input type="number" id="loginNetid" class="form-control loginNetid language" data-langstr="login_netid_input_placeholder"
+                            placeholder="" value="0" required>
+                    </span>
+
+
+                </div>
+
+                <div class="col-sm-8" style="margin-bottom: 10px; padding: 0 0 0 5px;">
+
+                    <span class="input-group">
+                        <span class="input-group-addon" class="language" data-langstr="">Seed Node IP</span>
+                        <input type="text" id="loginSeednode" class="form-control loginSeednode language" data-langstr="login_seednode_input_placeholder"
+                            placeholder="" value="" required>
+                    </span>
+                </div>
+
+                <div class="input-group col-sm-12" style="margin-bottom: 10px;">
+                    <select class="selectpicker login_mode_options" data-hide-disabled="true" data-width="30%"></select>
+                    <span class="input-group-btn">
+                        <button class="btn btn-lg btn-primary btn-block login-btn language" data-langstr="login_btn" type="submit" style="height: 64px;"></button>
+                    </span>
+                </div>
+
+                <button class="btn btn-lg btn-default btn-block login-genpass-btn language" data-langstr="generate_a_new_passphrase" style="margin-bottom: 10px;"></button>
+
+            </form>
         </div>
-
-        <div class="col-sm-4" style="margin-bottom: 10px; padding: 0 5px 0 0;">
-          <span class="input-group">
-            <span class="input-group-addon" class="language" data-langstr="">Net ID</span>
-            <input type="number" id="loginNetid" class="form-control loginNetid language" data-langstr="login_netid_input_placeholder" placeholder="" value="0" required>
-          </span>
-
-
-        </div>
-
-        <div class="col-sm-8" style="margin-bottom: 10px; padding: 0 0 0 5px;">
-
-          <span class="input-group">
-            <span class="input-group-addon" class="language" data-langstr="">Seed Node IP</span>
-            <input type="text" id="loginSeednode" class="form-control loginSeednode language" data-langstr="login_seednode_input_placeholder" placeholder="" value="" required>
-          </span>
-        </div>
-
-        <div class="input-group col-sm-12" style="margin-bottom: 10px;">
-          <select class="selectpicker login_mode_options" data-hide-disabled="true" data-width="30%"></select>
-          <span class="input-group-btn">
-            <button class="btn btn-lg btn-primary btn-block login-btn language" data-langstr="login_btn" type="submit" style="height: 64px;"></button>
-          </span>
-        </div>
-
-        <button class="btn btn-lg btn-default btn-block login-genpass-btn language" data-langstr="generate_a_new_passphrase" style="margin-bottom: 10px;"></button>
-
-      </form>
     </div>
-  </div>
 
-  <!-- LOGIN BODY END -->
+    <!-- LOGIN BODY END -->
 
-  <!-- LOADING BODY -->
-  <div class="loadingbody" style="display: none;">
-    <div class="spinner">
-      <div class="dot1"></div>
-      <div class="dot2"></div>
-    </div>
-    <h3 class="language" data-langstr="starting_barterdex" style="text-align: center;font-weight: lighter;"></h3>
-  </div>
-  <!-- LOADING BODY END -->
-
-
-  <!-- MAIN BODY -->
-  <div class="mainbody" style="display: none;">
-
-    <!-- Section: Navigation Menu -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-brand-centered">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <div class="navbar-brand">BarterDEX</div>
+    <!-- LOADING BODY -->
+    <div class="loadingbody" style="display: none;">
+        <div class="spinner">
+            <div class="dot1"></div>
+            <div class="dot2"></div>
         </div>
+        <h3 class="language" data-langstr="starting_barterdex" style="text-align: center;font-weight: lighter;"></h3>
+    </div>
+    <!-- LOADING BODY END -->
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-brand-centered">
-          <ul class="nav navbar-nav">
-            <!--<li><a href="#">Link</a></li>
+
+    <!-- MAIN BODY -->
+    <div class="mainbody" style="display: none;">
+
+        <!-- Section: Navigation Menu -->
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-brand-centered">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">BarterDEX</div>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="navbar-brand-centered">
+                    <ul class="nav navbar-nav">
+                        <!--<li><a href="#">Link</a></li>
             <li><a href="#">Link</a></li>
             <li><a href="#">Link</a></li>-->
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <!--<li><a href="#">Link</a></li>-->
-            <li class="active"><a href="javascript:void(0)" class="dexdashboard-btn language" data-langstr="nav_dashboard"></a></li>
-            <li><a href="javascript:void(0)" class="dextradeshistory-btn language" data-langstr="nav_trade_history"></a></li>
-            <li><a href="javascript:void(0)" class="dexdebug-close-btn language" data-langstr="nav_close" style="display: none"></a></li>
-            <li><a href="javascript:void(0)" class="dexdebug-btn language" data-langstr="nav_debug"></a></li>
-            <li><a href="javascript:void(0)" class="dexsettings-btn language" data-langstr="nav_settings"></a></li>
-            <li><a href="javascript:void(0)" class="dexlogout-btn language" data-langstr="nav_logout"></a></li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-    </nav>
-    <!-- Section: Navigation Menu END -->
-    <div class="dextradeshistory" style="display: none; margin-top: 60px;">
-
-      <span class="refresh-trades-history-icon" onclick="constructTradesHistory()">
-        <i class="fa fa-refresh"></i>
-      </span>
-
-      <div id="trades-history-content">
-        <svg id="trades-history-spinner">
-          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-          <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-          <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-          <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-        </svg>
-      </div>
-    </div>
-
-    <div class="dexdebug" style="display: none; margin-top: 60px;">
-      <h4 class="language" data-langstr="debug_payload"></h4>
-      <textarea cols="50" rows="5" id="debug-payload" class="language" data-langstr="debug_playload_input_placeholder" placeholder=""></textarea>
-      <button class="btn btn-primary language" data-langstr="debug_execute" id="debug-exec"></button>
-      <hr />
-      <h4 class="language" data-langstr="debug_response"></h4>
-      <div id="debug-payload-response"></div>
-    </div>
-
-    <div class="screen-portfolio" style="margin-top: 60px;">
-
-      <div class="col-sm-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title language" data-langstr="portfolio_portfolio_chart"></h3>
-            <button class="btn btn-xs btn-info btn-activatecoins portfolio" style="float: right; margin-right: -6px; margin-top: -20px"><span class="language" data-langstr="portfolio_add_coins"></span> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-            <button class="btn btn-xs btn-refreshportfolio portfolio" style="float: right; margin-right: 6px; margin-top: -20px"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
-          </div>
-          <div class="portfolio portfolio-coinslist"> <!-- panel-body -->
-            <div class="col-sm-6" id="portfolio_chart_current" style="height: 300px;"></div>
-            <div class="col-sm-6" id="portfolio_chart_target" style="height: 300px;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title language" data-langstr="portfolio_portfolio_coins"></h3>
-            <button class="btn btn-xs btn-info btn-autogoalall portfolio language" data-langstr="portfolio_auto_goal_all_active_coins" data-auto=true style="float: right; margin-right: -6px; margin-top: -20px"></button>
-          </div>
-          <div class="portfolio portfolio-coinslist"> <!-- panel-body -->
-            <table class="table table-striped porfolio_coins_list" style="margin-bottom: 0;">
-              <thead>
-                <tr>
-                  <th class="language" data-langstr="portfolio_th_coin"></th>
-                  <th class="language" data-langstr="portfolio_th_balance"></th>
-                  <th class="language" data-langstr="portfolio_th_price"></th>
-                  <th class="language" data-langstr="portfolio_th_current_percent"></th>
-                  <th class="language" data-langstr="portfolio_th_goal_percent"></th>
-                  <th class="language" data-langstr="portfolio_th_kmdvalue"></th>
-                  <th class="language" data-langstr="portfolio_th_action" width="430px"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <th colspan="7">
-                  <div style="text-align: center; height: 100px;">
-                    <svg id="portfolio-coins-spinner">
-                      <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                      <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                      <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                      <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                    </svg>
-                  </div>
-                </th>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="screen-inventory" style="display: none; margin-top: 60px;">
-      <div class="col-sm-12" style="display: ;">
-        <p>This screen shows you option to manage your coin's inventory. What is coin inventory?</p>
-        <p>Every crypto currency wallet is very much like your regular physical wallet. Just like in your physical wallet if you have different currency notes and coins available, that means they are not spent. You can spend them. If you use the same analogy in crypto currency, these unspent notes and coins can be referred as <b><i>unspent transactions.</i></b> In tiny bit technical term it's called <b>U</b>nspent <b>T</b>ransaction <b>O</b>utput, in short <b>UTXO</b>.</p>
-        <p>The decentralised Exchange doesn't run on total balance of your crypto currency wallet. It needs small unspent transactions. So, if you have sent a big transaction to your BarterDEX smart address, you can use this screen to split your balance to number of small UTXOs.</p>
-        <p>By clicking <i>Make Inventory</i> button, it will split your smart address balance to number of UTXOs and send them back to your smart address. It will cost regular transaction fee to split your smart address balance.</p>
-
-      </div>
-      <div class="col-sm-12" style="display: ;">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title inventory-title coininventory" data-coin="COIN">Manage Inventory</h3>
-          </div>
-          <div class="panel-body">
-
-            <form class="form-horizontal">
-              <div class="form-group">
-                <div class="col-sm-1">
-                  <span id="inventory-slider1inputlabel">Balance</span>
-                </div>
-                <div class="col-sm-2">
-                  <input type="number" class="form-control" id="inventory_slider_input1">
-                </div>
-                <div class="col-sm-5">
-                  <input id="inventory-slider1" type="text" class="col-sm-8 form-control" data-slider-min="0" data-slider-max="3" data-slider-step="1" data-slider-value="3"/>
-                </div>
-                <div class="col-sm-2">
-                  <span id="inventory-slider1CurrentValLabel">No. of deposit: <span id="inventory-slider1Val" style="font-weight: bold;">3</span></span>
-                </div>
-                <div class="col-sm-2">
-                  <span id="inventory-slider1CurrentTotalLabel">Total: <span id="inventory-slider1Total" style="font-weight: bold;"></span></span>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="col-sm-1">
-                  <span id="inventory-slider2inputlabel">Balance</span>
-                </div>
-                <div class="col-sm-2">
-                  <input type="number" class="form-control" id="inventory_slider_input2">
-                </div>
-                <div class="col-sm-5">
-                  <input id="inventory-slider2" type="text" class="col-sm-8 form-control" data-slider-min="0" data-slider-max="3" data-slider-step="1" data-slider-value="3"/>
-                </div>
-                <div class="col-sm-2">
-                  <span id="inventory-slider2CurrentValLabel">No. of deposit: <span id="inventory-slider2Val" style="font-weight: bold;">3</span></span>
-                </div>
-                <div class="col-sm-2">
-                  <span id="inventory-slider2CurrentTotalLabel">Total: <span id="inventory-slider2Total" style="font-weight: bold;"></span></span>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="col-sm-1">
-                  <span id="inventory-slider3inputlabel">Balance</span>
-                </div>
-                <div class="col-sm-2">
-                  <input type="number" class="form-control" id="inventory_slider_input3">
-                </div>
-                <div class="col-sm-5">
-                  <input id="inventory-slider3" type="text" class="col-sm-8 form-control" data-slider-min="0" data-slider-max="4" data-slider-step="1" data-slider-value="4"/>
-                </div>
-                <div class="col-sm-2">
-                  <span id="inventory-slider3CurrentValLabel">No. of deposit: <span id="inventory-slider3Val" style="font-weight: bold;">4</span></span>
-                </div>
-                <div class="col-sm-2">
-                  <span id="inventory-slider3CurrentTotalLabel">Total: <span id="inventory-slider3Total" style="font-weight: bold;"></span></span>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-offset-9 col-sm-3">
-                  <span style="font-weight: 300; font-size: 25px;">Total <span class="inventory-sliderTotal" style="font-weight: 300; font-size: 25px;"></span><span class="coininventory inventory-sliderTotalCoin"></span></span>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="" style="text-align: center;">
-                  <button class="btn btn-primary coininventory btn-makeinventory" data-coin="COIN" coin-pair="NONE">Make Inventory</button>
-                </div>
-              </div>
-            </form>
-
-          </div>
-          <div class="panel-footer" style="display: none;">
-
-          </div>
-
-        </div>
-      </div>
-
-      <div class="col-sm-12">
-        <div class="panel with-nav-tabs panel-default">
-              <div class="panel-heading">
-                <!--<button class="btn btn-default btn-sm backto_dex_balances" style="float: right; font-size: 13px; padding: 8px 8px;">Back</button>-->
-                <button class="btn btn-xs btn-inventoryclose coininventory" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;">BACK</button>
-                <button class="btn btn-xs btn-inventoryrefresh coininventory" style="float: right; margin: 6px 6px 0px 3px;" data-coin="COIN"><span class="glyphicon glyphicon-refresh"></span></button>
-                <ul class="nav nav-tabs">
-                    <li style="display: none;"><a href="#AliceInventory" data-toggle="tab" class="language" data-langstr="inventory_tab_inventory"></a></li>
-                    <li class="active"><a href="#ListUnspents" data-toggle="tab" class="language" data-langstr="inventory_list_unspent_tab"></a></li>
-                    <li style="display: none;"><a href="#RawJSONInventory" data-toggle="tab">Raw JSON</a></li>
-                </ul>
-              </div>
-              <div class=""> <!-- panel-body -->
-                  <div class="tab-content">
-                      <div class="tab-pane fade" id="AliceInventory" style="display: none;">
-                        <table class="table table-striped dex_showinv_alice_tbl" style="margin-bottom: 0;">
-                          <tbody>
-                            <th><div style="text-align: center;" class="language" data-langstr="loading_wait"></div></th>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="tab-pane fade in active" id="ListUnspents">
-                        <table class="table table-striped dex_showlist_unspents_tbl" style="margin-bottom: 0;">
-                          <tbody>
-                            <th><div style="text-align: center;" class="language" data-langstr="loading_wait"></div></th>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="tab-pane fade" id="RawJSONInventory">
-                        <pre class="RawJSONInventory-output" style="margin: 0px;"></pre>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-
-    <div class="screen-exchange" style="display: none; margin-top: 60px;">
-
-
-
-      <div class="col-md-5 col-lg-4" style="padding: 2px;">
-        <div class="row">
-
-          <div class="col-sm-12 col1">
-            <div class="panel panel-default" style="margin-bottom: 5px;">
-              <div class="panel-heading">
-                <h3 class="panel-title"><strong class="language" data-langstr="exchange_your_balance"></strong></h3>
-                <button class="btn btn-xs btn-warning btn_switch_trading_coin_pairs" style="float: right; margin: -20px 20px;"><span class="language" data-langstr="exchange_switch_pairs"></span> <span class="fa fa-random" aria-hidden="true"></span></button>
-                <button class="btn btn-xs btn-trading_coin_balance_refresh coinexchange" data-coin="COIN" style="float: right; margin: -20px -8px"><span class="glyphicon glyphicon-refresh"></span></button>
-              </div>
-              <div> <!-- panel-body -->
-                <svg id="balance-spinner">
-                  <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                  <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                  <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                  <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                </svg>
-                <div class="balance-block">
-                  <div class="input-group col-sm-12 your_coins_balance_info">
-                    <span class="input-group-addon trading_sellcoin_ticker_name"></span>
-                    <span class="input-group-addon trading_sellcoin_balance"></span>
-                  </div>
-                  <div class="input-group col-sm-12 your_coins_balance_info">
-                    <span class="input-group-addon trading_coin_ticker_name"></span>
-                    <span class="input-group-addon trading_coin_balance"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-sm-12 col2">
-            <div class="panel with-nav-tabs panel-default" style="margin-bottom: 5px;">
-              <div class="panel-heading">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#exchange_trading_pair" data-toggle="tab"><span class="language" data-langstr="exchange_trading_pair"></span> <button class="btn btn-xs btn-refreshtrading_pair coinexchange" data-coin="COIN"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button></a></li>
-                    <li><a href="#exchange_zeroconf_settings" data-toggle="tab" class="language" data-langstr="exchange_speed_mode_settings"></a></li>
-                </ul>
-              </div>
-              <div class=""> <!-- panel-body -->
-                <div class="tab-content">
-
-                  <div class="tab-pane fade in active" id="exchange_trading_pair" style="padding: 15px;">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="form-group trading_buysell_options">
-                          <div class="btn-group btn-group-justified colors" data-toggle="buttons">
-                            <label class="btn btn-info active">
-                              <input type="radio" name="trading_pair_options" id="trading_pair_options_buying" value="buying" autocomplete="off" checked> <span class="language" data-langstr="exchange_btn_buy_caps"></span> <span class="coin_ticker"></span></label>
-                            <label class="btn btn-info">
-                              <input type="radio" name="trading_pair_options" id="trading_pair_options_selling" value="selling" autocomplete="off"> <span class="language" data-langstr="exchange_btn_sell_caps"></span> <span class="coin_ticker"></span></label>
-                          </div>
-                        </div>
-                        <div class="form-group trading_method_options">
-                          <div class="btn-group btn-group-justified colors" data-toggle="buttons">
-                            <label class="btn btn-warning active">
-                              <input type="radio" name="trading_mode_options" id="trading_mode_options_tradebot" value="tradebot" autocomplete="off"><span class="language" data-langstr="exchange_btn_trade_bot"></span></label>
-                            <label class="btn btn-warning">
-                              <input type="radio" name="trading_mode_options" id="trading_mode_options_trademanual" value="trademanual" autocomplete="off"><span class="language" data-langstr="exchange_btn_manual_trade"></span></label>
-                            <label class="btn btn-warning">
-                              <input type="radio" name="trading_mode_options" id="trading_mode_options_tradeportfolio" value="tradeportfolio" autocomplete="off"><span class="language" data-langstr="exchange_btn_portfolio"></span></label>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <span style="float: left; font-size: 18px;"><span class="trading_pair_lable_text_one language" data-langstr="exchange_lbl_one_max"></span> <span class="language" data-langstr="exchange_lbl_one_price_to"></span> <span class="trading_pair_lable_text_two language" data-langstr="exchange_lbl_buy_small"></span></span>
-                        </div>
-                        <div class="input-group col-sm-12">
-                          <select class="selectpicker trading_pair_coin" data-live-search="true" data-hide-disabled="true" data-width="30%"></select>
-                          <span class="input-group-addon trading_pair_coin_autoprice_mode_span" style="font-size: 0px; margin: 0; padding: 0; width: 120px; background-color: #fff; border: 0;">
-                            <div class="checkbox" style="margin: 0;">
-                              <input class="toggle_checkbox toggle_font_lg" id="trading_pair_coin_autoprice_mode" type="checkbox" checked data-toggle="toggle" data-on="Margin" data-off="Fixed" data-onstyle="primary" data-offstyle="info" data-width="100%" data-height="44px" data-class="toggle-font-lg">
-                            </div>
-                          </span>
-                          <input type="number" class="form-control trading_pair_coin_price" data-langstr="exchange_trading_pair_coin_price_input_placeholder" placeholder="" style="height: 44px; font-size: 20px;">
-                          <span class="input-group-addon language" data-langstr="exchange_coin_price_max" id="trading_pair_coin_price_max_min" style="font-size: 20px;"></span>
-                        </div>
-
-                        <div class="form-group trading_selected_trader_label" style="margin-top: 15px; margin-bottom: 0px; display: none;">
-                          <span style="font-size: 18px;" class="language" data-langstr="exchange_trade_with_selected_trader"></span>
-                        </div>
-                        <div class="input-group col-sm-12 trading_selected_trader" style="display: none;">
-                          <span class="input-group-addon">
-                            <input class="big-checkbox trading_pair_destpubkey_yesno" type="checkbox"> <span class="language" data-langstr="exchange_destpubkey_yes"></span>
-                          </span>
-                          <input type="text" class="form-control trading_pair_destpubkey" placeholder="eg. bab6ad2eebe1e666369cab504d4622b22c1f1ef718ef388e88020f30a1573e01" style="height: 44px; font-size: 20px;">
-                        </div>
-
-                        <div class="form-group buy_sell_amount_to" style="margin-top: 15px; margin-bottom: 0px;">
-                          <span style="font-size: 18px;"><span class="language" data-langstr="exchange_lbl_two_max"></span> <span class="language" data-langstr="exchange_lbl_amount_to"></span> <span class="trading_pair_lable_text_two language" data-langstr="exchange_lbl_buy_small"></span></span>
-                        </div>
-                        <div class="input-group col-sm-12">
-                          <p class="portfolio_info_text" style="font-size: 120%; font-weight: 200;"></p>
-                        </div>
-                        <div class="input-group col-sm-12 buy_sell_button_div">
-                          <!--<span class="input-group-addon coin_ticker" id="trading_pair_coin_ticker" style="font-size: 20px;"></span>-->
-                          <select class="selectpicker trading_pair_coin2" data-live-search="true" data-hide-disabled="true" data-width="30%"></select>
-                          <input type="number" class="form-control trading_pair_coin_volume" data-langstr="exchange_trading_pair_coin_volume_input_placeholder" placeholder="" style="height: 44px; font-size: 20px;">
-                          <span class="input-group-btn">
-                            <button class="btn btn-primary btn-bot_action language" data-action="buy" style="height: 44px; font-size: 20px;" data-langstr="exchange_btn_buy_caps"></button>
-                          </span>
-                        </div>
-                        <div class="input-group col-sm-12 trading_auto_repeat_trade">
-                          <!--<input class="big-checkbox trading_auto_repeat_trade_yesno" type="checkbox"> Enable auto-repeat this trade <br>-->
-                          <div class="buy_sell_advanced_options_div" style="border: 1px solid #4c4c4c; padding: 10px; border-radius: 3px; margin: 10px 0;">
-                            <div class="pretty p-default p-curve">
-                                <input type="radio" name="trading_manual_buy_sell_options" value="disabled" checked />
-                                <div class="state p-danger-o">
-                                    <label class="language" data-langstr="exchange_dont_auto_repeat_order"></label>
-                                </div>
-                            </div> <br>
-
-                            <div class="pretty p-default p-curve">
-                                <input type="radio" name="trading_manual_buy_sell_options" value="autorepeat" />
-                                <div class="state p-success-o">
-                                    <label class="language" data-langstr="exchange_enable_auto_repeat_this_trade"></label>
-                                </div>
-                            </div> <br>
-
-                            <div class="pretty p-default p-curve">
-                                <input type="radio" name="trading_manual_buy_sell_options" value="coinmarketcap" />
-                                <div class="state p-success-o">
-                                    <label class="language" data-langstr="exchange_enable_auto_repeat_coinmarketcap"></label>
-                                </div>
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div class="input-group col-sm-12">
-                          <span class="input-group-addon relvol_basevol_label language" data-langstr="exchange_itll_cost_you"></span>
-                          <span class="input-group-addon relvol_basevol_amount"><span class="relvol_basevol">0</span> <span class="relvol_basevol_coin"></span></span>
-                        </div>
-
-                        <div class="form-group coingoal_label_div" style="margin-top: 15px; margin-bottom: 0px; display: none;">
-                          <span style="font-size: 118%;"><span class="language" data-langstr="exchange_set_small"></span> <span class="coingoal_label_coin_name"></span> <span class="language" data-langstr="exchange_goal_percent_for_your_portfolio"></span></span>
-                        </div>
-                        <div class="input-group col-sm-12 coingoal_div" style="display: none;">
-                          <span class="input-group-addon coin_ticker" id="coingoal_coin_ticker" style="font-size: 20px;"></span>
-                          <input type="number" class="form-control coingoal_percentage" placeholder="e.g. 12.5" style="height: 44px; font-size: 20px;">
-                          <span class="input-group-btn">
-                            <button class="btn btn-primary btn_set_coin_goal language" data-langstr="exchange_set_gaol_caps" data-action="goal" data-auto=false style="height: 44px; font-size: 20px;"></button>
-                          </span>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="tab-pane fade" id="exchange_zeroconf_settings">
-                    <div class="row" style="padding: 15px;">
-                      <div class="col-sm-12">
-                        <p><span class="language" data-langstr="exchange_0conf_settings_text_one"></span> <span class="language" data-langstr="exchange_0conf_settings_text_two"></span> <a href="#" class="info_box_for_zeroconf language" data-langstr="exchange_0conf_settings_a"></a> <span class="language" data-langstr="exchange_0conf_settings_text_three"></span></p>
-
-                        <div class="form-group">
-                          <span style="float: left; font-size: 18px;" class="language" data-langstr="exchange_0conf_deposit_high_speed_mode_sec"></span>
-                        </div>
-                        <div class="input-group col-sm-12">
-                          <select class="selectpicker zeroconf_weeks_select" data-live-search="true" data-hide-disabled="true" data-width="30%"></select>
-                          <input type="number" class="form-control zeroconf_deposit_amount" value="10">
-                          <span class="input-group-addon">KMD</span>
-                        </div>
-
-                        <div class="form-group">
-                          <span style="float: left; font-size: 18px;"></span>
-                        </div>
-                        <div class="input-group col-sm-12">
-                          <button class="btn btn-primary btn-block btn_zeroconf_deposit language" data-langstr="exchange_0conf_make_sec_deposit"></button>
-                        </div>
-                        <div class="input-group col-sm-12" style="padding-top: 15px;">
-                          <button class="btn btn-warning btn_zeroconf_deposit_history language" data-langstr="exchange_0conf_see_deposit_history"></button>
-                          <button class="btn btn-success btn_zeroconf_claim_deposit language" data-langstr="exchange_0conf_claim_deposit" style="margin-left: 10px;"></button>
-                        </div>
-
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-
-              </div>
-            </div>
-          </div>
-
-
-
-
-          <div class="col-sm-12 col3">
-            <div class="panel with-nav-tabs panel-default" style="margin-bottom: 5px;">
-                  <div class="panel-heading">
-                    <!--<button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;">BACK</button>
-                    <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;"><span class="glyphicon glyphicon-refresh"></span></button>-->
-                    <ul class="nav nav-tabs">
-                        <li><a href="#exchange_myorders" data-toggle="tab"><span class="language" data-langstr="exchange_my_prices"></span> <button class="btn btn-xs btn-myordersrefresh coinexchange" data-coin="COIN"><span class="glyphicon glyphicon-refresh"></span></button></a></li>
-                        <li class="autobot_tab"><a href="#exchange_botlist" data-toggle="tab"><span class="language" data-langstr="exchange_auto_bot_list"></span> <button class="btn btn-xs btn-botlistrefresh coinexchange" data-coin="COIN"><span class="glyphicon glyphicon-refresh"></span></button></a></li>
-                        <li class="active"><a href="#exchange_tradestatus" data-toggle="tab"><span class="language" data-langstr="exchange_trade_status"></span> <button class="btn btn-xs btn-botlistrefresh coinexchange" data-coin="COIN"><span class="glyphicon glyphicon-refresh"></span></button></a></li>
                     </ul>
-                  </div>
-                  <div class=""> <!-- panel-body -->
-                      <div class="tab-content">
-                          <div class="tab-pane fade" id="exchange_myorders">
-
-                            <table class="table table-striped exchange_my_orders_tbl" style="margin-bottom: 0;">
-                              <thead>
-                                <th class="language" data-langstr="exchange_th_my_orders_base"></th>
-                                <th class="language" data-langstr="exchange_th_my_orders_rel"></th>
-                                <th class="language" data-langstr="exchange_th_my_orders_bid"></th>
-                                <th class="language" data-langstr="exchange_th_my_orders_ask"></th>
-                                <th>-</th>
-                              </thead>
-                              <tbody>
-                                <th><div style="text-align: center;" class="language" data-langstr="loading_wait"></div></th>
-                              </tbody>
-                            </table>
-
-                          </div>
-                          <div class="tab-pane fade" id="exchange_botlist">
-
-                            <table class="table exchange_bot_list_tbl" width="100%" style="margin-bottom: 0;">
-                              <thead>
-                                <!--<th>Bot ID</th>-->
-                                <th class="language" data-langstr="exchange_th_bot_list_tradebot_info"></th>
-                                <!--<th>Bot Action</th>-->
-                                <!--<th>Price</th>
-                                <th>Max Volume</th>-->
-                                <th class="language" data-langstr="exchange_th_bot_list_progress_info"></th>
-                                <th class="language" data-langstr="exchange_th_bot_list_actions"></th>
-                              </thead>
-                              <tbody></tbody>
-                            </table>
-                          </div>
-
-                          <div class="tab-pane fade in active" id="exchange_tradestatus">
-                            <div class="exchange_trade_status_body mCustomScrollbar" data-mcs-theme="minimal-dark">
-                              <table class="table table-striped exchange_swap_status_tbl" width="100%" style="margin-bottom: 0;">
-                                <thead>
-                                  <th class="language" data-langstr="exchange_th_swap_status_status"></th>
-                                  <th class="language" data-langstr="exchange_th_swap_status_info"></th>
-                                  <!--<th>Quote ID</th>
-                                  <th>Request ID</th>-->
-                                  <th class="language" data-langstr="exchange_th_swap_status_action"></th>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                              </table>
-                              <svg id="exchange-swap-status-spinner" class="exchange-swap-status-spinner">
-                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                                <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                                <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                                <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                              </svg>
-                            </div>
-                          </div>
-
-                      </div>
-                  </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <!--<li><a href="#">Link</a></li>-->
+                        <li class="active">
+                            <a href="javascript:void(0)" class="dexdashboard-btn language" data-langstr="nav_dashboard"></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="dextradeshistory-btn language" data-langstr="nav_trade_history"></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="dexdebug-close-btn language" data-langstr="nav_close" style="display: none"></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="dexdebug-btn language" data-langstr="nav_debug"></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="dexsettings-btn language" data-langstr="nav_settings"></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="dexlogout-btn language" data-langstr="nav_logout"></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
             </div>
-          </div>
+            <!-- /.container-fluid -->
+        </nav>
+        <!-- Section: Navigation Menu END -->
+        <div class="dextradeshistory" style="display: none; margin-top: 60px;">
 
+            <span class="refresh-trades-history-icon" onclick="constructTradesHistory()">
+                <i class="fa fa-refresh"></i>
+            </span>
+
+            <div id="trades-history-content">
+                <svg id="trades-history-spinner">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                    <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                    <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                    <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="dexdebug" style="display: none; margin-top: 60px;">
+            <h4 class="language" data-langstr="debug_payload"></h4>
+            <textarea cols="50" rows="5" id="debug-payload" class="language" data-langstr="debug_playload_input_placeholder" placeholder=""></textarea>
+            <button class="btn btn-primary language" data-langstr="debug_execute" id="debug-exec"></button>
+            <hr />
+            <h4 class="language" data-langstr="debug_response"></h4>
+            <div id="debug-payload-response"></div>
+        </div>
+
+        <div class="screen-portfolio" style="margin-top: 60px;">
+
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title language" data-langstr="portfolio_portfolio_chart"></h3>
+                        <button class="btn btn-xs btn-warning btn-managecoins portfolio" style="float: right; margin-right: -6px; margin-top: -20px">
+                            <span class="language" data-langstr="portfolio_manage_coins"></span>
+                            <span class="fa fa-cogs" aria-hidden="true"></span>
+                        </button>
+                        <button class="btn btn-xs btn-info btn-activatecoins portfolio" style="float: right; margin-right: 6px; margin-top: -20px">
+                            <span class="language" data-langstr="portfolio_add_coins"></span>
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                        <button class="btn btn-xs btn-refreshportfolio portfolio" style="float: right; margin-right: 6px; margin-top: -20px">
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="portfolio portfolio-coinslist">
+                        <!-- panel-body -->
+                        <div class="col-sm-6" id="portfolio_chart_current" style="height: 300px;"></div>
+                        <div class="col-sm-6" id="portfolio_chart_target" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title language" data-langstr="portfolio_portfolio_coins"></h3>
+                        <button class="btn btn-xs btn-info btn-autogoalall portfolio language" data-langstr="portfolio_auto_goal_all_active_coins"
+                            data-auto=true style="float: right; margin-right: -6px; margin-top: -20px"></button>
+                    </div>
+                    <div class="portfolio portfolio-coinslist">
+                        <!-- panel-body -->
+                        <table class="table table-striped porfolio_coins_list" style="margin-bottom: 0;">
+                            <thead>
+                                <tr>
+                                    <th class="language" data-langstr="portfolio_th_coin"></th>
+                                    <th class="language" data-langstr="portfolio_th_balance"></th>
+                                    <th class="language" data-langstr="portfolio_th_price"></th>
+                                    <th class="language" data-langstr="portfolio_th_current_percent"></th>
+                                    <th class="language" data-langstr="portfolio_th_goal_percent"></th>
+                                    <th class="language" data-langstr="portfolio_th_kmdvalue"></th>
+                                    <th class="language" data-langstr="portfolio_th_action" width="430px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <th colspan="7">
+                                    <div style="text-align: center; height: 100px;">
+                                        <svg id="portfolio-coins-spinner">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+                                </th>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
         </div>
-      </div>
 
-      <div class="col-md-7 col-lg-8" style="padding: 2px;">
-        <div id="chartContainer" style="z-index: 1000;"></div>
-      </div>
+        <div class="screen-managecoins" style="display: none; margin-top: 60px;">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title language" data-langstr="portfolio_add_default_startup_coins"></h3>
+                    </div>
+                    <div class="panel-body">
+                        <!-- panel-body -->
+                        <div class="col-sm-6">
+                            <select class="selectpicker addcoin_startup_select" data-live-search="true" data-hide-disabled="true" data-width="100%"></select>
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="toggle_checkbox toggle_font_lg" id="addcoin_toggle_startup_native_electrum" type="checkbox" checked data-toggle="toggle"
+                                data-on="Native Mode" data-off="Electrum Mode" data-onstyle="primary" data-offstyle="info" data-width="100%"
+                                data-height="44px">
+                        </div>
+                        <div class="col-sm-12" style="text-align: center;">
+                            <button class="btn btn-lg btn-warning btn-managecoins_add_to_startup">Add Coin to Startup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title language" data-langstr="portfolio_default_startup_coins"></h3>
+                        <button class="btn btn-xs btn-refreshmanagecoins portfolio" style="float: right; margin-right: -6px; margin-top: -20px">
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="">
+                        <!-- panel-body -->
+                        <table class="table table-striped dex_mng_coins_list" style="margin-bottom: 0px;">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen-inventory" style="display: none; margin-top: 60px;">
+            <div class="col-sm-12" style="display: block;">
+                <p>This screen shows you option to manage your coin's inventory. What is coin inventory?</p>
+                <p>Every crypto currency wallet is very much like your regular physical wallet. Just like in your physical wallet
+                    if you have different currency notes and coins available, that means they are not spent. You can spend
+                    them. If you use the same analogy in crypto currency, these unspent notes and coins can be referred as
+                    <b>
+                        <i>unspent transactions.</i>
+                    </b> In tiny bit technical term it's called
+                    <b>U</b>nspent
+                    <b>T</b>ransaction
+                    <b>O</b>utput, in short
+                    <b>UTXO</b>.</p>
+                <p>The decentralised Exchange doesn't run on total balance of your crypto currency wallet. It needs small unspent
+                    transactions. So, if you have sent a big transaction to your BarterDEX smart address, you can use this
+                    screen to split your balance to number of small UTXOs.</p>
+                <p>By clicking
+                    <i>Make Inventory</i> button, it will split your smart address balance to number of UTXOs and send them
+                    back to your smart address. It will cost regular transaction fee to split your smart address balance.</p>
+
+            </div>
+            <div class="col-sm-12" style="display: block;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title inventory-title coininventory" data-coin="COIN">Manage Inventory</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-1">
+                                    <span id="inventory-slider1inputlabel">Balance</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="inventory_slider_input1">
+                                </div>
+                                <div class="col-sm-5">
+                                    <input id="inventory-slider1" type="text" class="col-sm-8 form-control" data-slider-min="0" data-slider-max="3" data-slider-step="1"
+                                        data-slider-value="3" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <span id="inventory-slider1CurrentValLabel">No. of deposit:
+                                        <span id="inventory-slider1Val" style="font-weight: bold;">3</span>
+                                    </span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span id="inventory-slider1CurrentTotalLabel">Total:
+                                        <span id="inventory-slider1Total" style="font-weight: bold;"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-1">
+                                    <span id="inventory-slider2inputlabel">Balance</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="inventory_slider_input2">
+                                </div>
+                                <div class="col-sm-5">
+                                    <input id="inventory-slider2" type="text" class="col-sm-8 form-control" data-slider-min="0" data-slider-max="3" data-slider-step="1"
+                                        data-slider-value="3" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <span id="inventory-slider2CurrentValLabel">No. of deposit:
+                                        <span id="inventory-slider2Val" style="font-weight: bold;">3</span>
+                                    </span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span id="inventory-slider2CurrentTotalLabel">Total:
+                                        <span id="inventory-slider2Total" style="font-weight: bold;"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-1">
+                                    <span id="inventory-slider3inputlabel">Balance</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="number" class="form-control" id="inventory_slider_input3">
+                                </div>
+                                <div class="col-sm-5">
+                                    <input id="inventory-slider3" type="text" class="col-sm-8 form-control" data-slider-min="0" data-slider-max="4" data-slider-step="1"
+                                        data-slider-value="4" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <span id="inventory-slider3CurrentValLabel">No. of deposit:
+                                        <span id="inventory-slider3Val" style="font-weight: bold;">4</span>
+                                    </span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span id="inventory-slider3CurrentTotalLabel">Total:
+                                        <span id="inventory-slider3Total" style="font-weight: bold;"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-9 col-sm-3">
+                                    <span style="font-weight: 300; font-size: 25px;">Total
+                                        <span class="inventory-sliderTotal" style="font-weight: 300; font-size: 25px;"></span>
+                                        <span class="coininventory inventory-sliderTotalCoin"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="" style="text-align: center;">
+                                    <button class="btn btn-primary coininventory btn-makeinventory" data-coin="COIN" coin-pair="NONE">Make Inventory</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="panel-footer" style="display: none;">
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="panel with-nav-tabs panel-default">
+                    <div class="panel-heading">
+                        <!--<button class="btn btn-default btn-sm backto_dex_balances" style="float: right; font-size: 13px; padding: 8px 8px;">Back</button>-->
+                        <button class="btn btn-xs btn-inventoryclose coininventory" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;">BACK</button>
+                        <button class="btn btn-xs btn-inventoryrefresh coininventory" style="float: right; margin: 6px 6px 0px 3px;" data-coin="COIN">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                        </button>
+                        <ul class="nav nav-tabs">
+                            <li style="display: none;">
+                                <a href="#AliceInventory" data-toggle="tab" class="language" data-langstr="inventory_tab_inventory"></a>
+                            </li>
+                            <li class="active">
+                                <a href="#ListUnspents" data-toggle="tab" class="language" data-langstr="inventory_list_unspent_tab"></a>
+                            </li>
+                            <li style="display: none;">
+                                <a href="#RawJSONInventory" data-toggle="tab">Raw JSON</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="">
+                        <!-- panel-body -->
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="AliceInventory" style="display: none;">
+                                <table class="table table-striped dex_showinv_alice_tbl" style="margin-bottom: 0;">
+                                    <tbody>
+                                        <th>
+                                            <div style="text-align: center;" class="language" data-langstr="loading_wait"></div>
+                                        </th>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade in active" id="ListUnspents">
+                                <table class="table table-striped dex_showlist_unspents_tbl" style="margin-bottom: 0;">
+                                    <tbody>
+                                        <th>
+                                            <div style="text-align: center;" class="language" data-langstr="loading_wait"></div>
+                                        </th>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="RawJSONInventory">
+                                <pre class="RawJSONInventory-output" style="margin: 0px;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen-exchange" style="display: none; margin-top: 60px;">
 
 
-      <div class="col-md-7 col-lg-8" style="padding: 2px;">
-        <div class="row">
 
-          <div class="hidden-xs hidden-sm hidden-md col-lg-6 col-xl-6" style="padding-right: 2px;">
-            <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <span class="language" data-langstr="exchange_sellers_caps"></span>: <span class="orderbook_numasks"></span>
-                    <button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 0px -8px 0px 3px;"><span class="language" data-langstr="exchange_btn_back"></span></button>
-                    <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 0px 0px 0px 3px;"><span class="glyphicon glyphicon-refresh"></span></button>
-                  </div>
-                  <div class=""> <!-- panel-body -->
-                      <div class="mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_asks">
-                        <table class="table table-striped orderbook_asks" width="100%" style="margin-bottom: 0;">
-                          <thead><th><span class="language" data-langstr="exchange_th_orderbook_price_in"></span> <span class="orderbook_rel_coin"></span></th>
-                            <!--<th>Size(Min-Max <span class="orderbook_base_coin"></span>)</th>
+            <div class="col-md-5 col-lg-4" style="padding: 2px;">
+                <div class="row">
+
+                    <div class="col-sm-12 col1">
+                        <div class="panel panel-default" style="margin-bottom: 5px;">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <strong class="language" data-langstr="exchange_your_balance"></strong>
+                                </h3>
+                                <button class="btn btn-xs btn-warning btn_switch_trading_coin_pairs" style="float: right; margin: -20px 20px;">
+                                    <span class="language" data-langstr="exchange_switch_pairs"></span>
+                                    <span class="fa fa-random" aria-hidden="true"></span>
+                                </button>
+                                <button class="btn btn-xs btn-trading_coin_balance_refresh coinexchange" data-coin="COIN" style="float: right; margin: -20px -8px">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </button>
+                            </div>
+                            <div>
+                                <!-- panel-body -->
+                                <svg id="balance-spinner">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                    <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                    <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                    <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                </svg>
+                                <div class="balance-block">
+                                    <div class="input-group col-sm-12 your_coins_balance_info">
+                                        <span class="input-group-addon trading_sellcoin_ticker_name"></span>
+                                        <span class="input-group-addon trading_sellcoin_balance"></span>
+                                    </div>
+                                    <div class="input-group col-sm-12 your_coins_balance_info">
+                                        <span class="input-group-addon trading_coin_ticker_name"></span>
+                                        <span class="input-group-addon trading_coin_balance"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12 col2">
+                        <div class="panel with-nav-tabs panel-default" style="margin-bottom: 5px;">
+                            <div class="panel-heading">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#exchange_trading_pair" data-toggle="tab">
+                                            <span class="language" data-langstr="exchange_trading_pair"></span>
+                                            <!--<button class="btn btn-xs btn-refreshtrading_pair coinexchange" data-coin="COIN"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>-->
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#exchange_zeroconf_settings" data-toggle="tab" class="language" data-langstr="exchange_speed_mode_settings"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="">
+                                <!-- panel-body -->
+                                <div class="tab-content">
+
+                                    <div class="tab-pane fade in active" id="exchange_trading_pair" style="padding: 15px;">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group trading_buysell_options">
+                                                    <div class="btn-group btn-group-justified colors" data-toggle="buttons">
+                                                        <label class="btn btn-info active">
+                                                            <input type="radio" name="trading_pair_options" id="trading_pair_options_buying" value="buying" autocomplete="off" checked>
+                                                            <span class="language" data-langstr="exchange_btn_buy_caps"></span>
+                                                            <span class="coin_ticker"></span>
+                                                        </label>
+                                                        <label class="btn btn-info">
+                                                            <input type="radio" name="trading_pair_options" id="trading_pair_options_selling" value="selling" autocomplete="off">
+                                                            <span class="language" data-langstr="exchange_btn_sell_caps"></span>
+                                                            <span class="coin_ticker"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group trading_method_options">
+                                                    <div class="btn-group btn-group-justified colors" data-toggle="buttons">
+                                                        <label class="btn btn-warning active">
+                                                            <input type="radio" name="trading_mode_options" id="trading_mode_options_tradebot" value="tradebot" autocomplete="off">
+                                                            <span class="language" data-langstr="exchange_btn_trade_bot"></span>
+                                                        </label>
+                                                        <label class="btn btn-warning">
+                                                            <input type="radio" name="trading_mode_options" id="trading_mode_options_trademanual" value="trademanual" autocomplete="off">
+                                                            <span class="language" data-langstr="exchange_btn_manual_trade"></span>
+                                                        </label>
+                                                        <label class="btn btn-warning">
+                                                            <input type="radio" name="trading_mode_options" id="trading_mode_options_tradeportfolio" value="tradeportfolio" autocomplete="off">
+                                                            <span class="language" data-langstr="exchange_btn_portfolio"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <span style="float: left; font-size: 18px;">
+                                                        <span class="trading_pair_lable_text_one language" data-langstr="exchange_lbl_one_max"></span>
+                                                        <span class="language" data-langstr="exchange_lbl_one_price_to"></span>
+                                                        <span class="trading_pair_lable_text_two language" data-langstr="exchange_lbl_buy_small"></span>
+                                                    </span>
+                                                </div>
+                                                <div class="input-group col-sm-12">
+                                                    <select class="selectpicker trading_pair_coin" data-live-search="true" data-hide-disabled="true" data-width="30%"></select>
+                                                    <span class="input-group-addon trading_pair_coin_autoprice_mode_span" style="font-size: 0px; margin: 0; padding: 0; width: 120px; background-color: #fff; border: 0;">
+                                                        <div class="checkbox" style="margin: 0;">
+                                                            <input class="toggle_checkbox toggle_font_lg" id="trading_pair_coin_autoprice_mode" type="checkbox" checked data-toggle="toggle"
+                                                                data-on="Margin" data-off="Fixed" data-onstyle="primary" data-offstyle="info"
+                                                                data-width="100%" data-height="44px" data-class="toggle-font-lg">
+                                                        </div>
+                                                    </span>
+                                                    <input type="number" class="form-control trading_pair_coin_price" data-langstr="exchange_trading_pair_coin_price_input_placeholder"
+                                                        placeholder="" style="height: 44px; font-size: 20px;">
+                                                    <span class="input-group-addon language" data-langstr="exchange_coin_price_max" id="trading_pair_coin_price_max_min" style="font-size: 20px;"></span>
+                                                </div>
+
+                                                <div class="form-group trading_selected_trader_label" style="margin-top: 15px; margin-bottom: 0px; display: none;">
+                                                    <span style="font-size: 18px;" class="language" data-langstr="exchange_trade_with_selected_trader"></span>
+                                                </div>
+                                                <div class="input-group col-sm-12 trading_selected_trader" style="display: none;">
+                                                    <span class="input-group-addon">
+                                                        <input class="big-checkbox trading_pair_destpubkey_yesno" type="checkbox">
+                                                        <span class="language" data-langstr="exchange_destpubkey_yes"></span>
+                                                    </span>
+                                                    <input type="text" class="form-control trading_pair_destpubkey" placeholder="eg. bab6ad2eebe1e666369cab504d4622b22c1f1ef718ef388e88020f30a1573e01"
+                                                        style="height: 44px; font-size: 20px;">
+                                                </div>
+
+                                                <div class="form-group buy_sell_amount_to" style="margin-top: 15px; margin-bottom: 0px;">
+                                                    <span style="font-size: 18px;">
+                                                        <span class="language" data-langstr="exchange_lbl_two_max"></span>
+                                                        <span class="language" data-langstr="exchange_lbl_amount_to"></span>
+                                                        <span class="trading_pair_lable_text_two language" data-langstr="exchange_lbl_buy_small"></span>
+                                                    </span>
+                                                </div>
+                                                <div class="input-group col-sm-12">
+                                                    <p class="portfolio_info_text" style="font-size: 120%; font-weight: 200;"></p>
+                                                </div>
+                                                <div class="input-group col-sm-12 buy_sell_button_div">
+                                                    <!--<span class="input-group-addon coin_ticker" id="trading_pair_coin_ticker" style="font-size: 20px;"></span>-->
+                                                    <select class="selectpicker trading_pair_coin2" data-live-search="true" data-hide-disabled="true" data-width="30%"></select>
+                                                    <input type="number" class="form-control trading_pair_coin_volume" data-langstr="exchange_trading_pair_coin_volume_input_placeholder"
+                                                        placeholder="" style="height: 44px; font-size: 20px;">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-primary btn-bot_action language" data-action="buy" style="height: 44px; font-size: 20px;" data-langstr="exchange_btn_buy_caps"></button>
+                                                    </span>
+                                                </div>
+                                                <div class="input-group col-sm-12 trading_auto_repeat_trade">
+                                                    <!--<input class="big-checkbox trading_auto_repeat_trade_yesno" type="checkbox"> Enable auto-repeat this trade <br>-->
+                                                    <div class="buy_sell_advanced_options_div" style="border: 1px solid #4c4c4c; padding: 10px; border-radius: 3px; margin: 10px 0;">
+                                                        <div class="pretty p-default p-curve">
+                                                            <input type="radio" name="trading_manual_buy_sell_options" value="disabled" checked />
+                                                            <div class="state p-danger-o">
+                                                                <label class="language" data-langstr="exchange_dont_auto_repeat_order"></label>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-xs exchange_dont_auto_repeat_order_info_btn"><i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="info"></i></button>
+                                                        <br>
+
+                                                        <div class="pretty p-default p-curve">
+                                                            <input type="radio" name="trading_manual_buy_sell_options" value="autorepeat" />
+                                                            <div class="state p-success-o">
+                                                                <label class="language" data-langstr="exchange_enable_auto_repeat_this_trade"></label>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn btn-xs exchange_enable_auto_repeat_this_trade_info_btn"><i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="info"></i></button>
+                                                        <br>
+
+                                                        <div class="pretty p-default p-curve" id="cmcRadio">
+                                                            <input type="radio" name="trading_manual_buy_sell_options" value="coinmarketcap" />
+                                                            <div class="state p-success-o">
+                                                                <label class="language" data-langstr="exchange_enable_auto_repeat_coinmarketcap"></label>
+                                                            </div>
+                                                        <button class="btn btn-xs exchange_enable_auto_repeat_coinmarketcap_info_btn"><i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="info"></i></button>
+                                                    </div>
+                                                        </div>
+
+                                                </div>
+
+                                                <div class="input-group col-sm-12">
+                                                    <span class="input-group-addon relvol_basevol_label language" data-langstr="exchange_itll_cost_you"></span>
+                                                    <span class="input-group-addon relvol_basevol_amount">
+                                                        <span class="relvol_basevol">0</span>
+                                                        <span class="relvol_basevol_coin"></span>
+                                                    </span>
+                                                </div>
+
+                                                <div class="form-group coingoal_label_div" style="margin-top: 15px; margin-bottom: 0px; display: none;">
+                                                    <span style="font-size: 118%;">
+                                                        <span class="language" data-langstr="exchange_set_small"></span>
+                                                        <span class="coingoal_label_coin_name"></span>
+                                                        <span class="language" data-langstr="exchange_goal_percent_for_your_portfolio"></span>
+                                                    </span>
+                                                </div>
+                                                <div class="input-group col-sm-12 coingoal_div" style="display: none;">
+                                                    <span class="input-group-addon coin_ticker" id="coingoal_coin_ticker" style="font-size: 20px;"></span>
+                                                    <input type="number" class="form-control coingoal_percentage" placeholder="e.g. 12.5" style="height: 44px; font-size: 20px;">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-primary btn_set_coin_goal language" data-langstr="exchange_set_gaol_caps" data-action="goal" data-auto=false
+                                                            style="height: 44px; font-size: 20px;"></button>
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="exchange_zeroconf_settings">
+                                        <div class="row" style="padding: 15px;">
+                                            <div class="col-sm-12">
+                                                <p>
+                                                    <span class="language" data-langstr="exchange_0conf_settings_text_one"></span>
+                                                    <span class="language" data-langstr="exchange_0conf_settings_text_two"></span>
+                                                    <a href="#" class="info_box_for_zeroconf language" data-langstr="exchange_0conf_settings_a"></a>
+                                                    <span class="language" data-langstr="exchange_0conf_settings_text_three"></span>
+                                                </p>
+
+                                                <div class="form-group">
+                                                    <span style="float: left; font-size: 18px;" class="language" data-langstr="exchange_0conf_deposit_high_speed_mode_sec"></span>
+                                                </div>
+                                                <div class="input-group col-sm-12">
+                                                    <select class="selectpicker zeroconf_weeks_select" data-live-search="true" data-hide-disabled="true" data-width="30%"></select>
+                                                    <input type="number" class="form-control zeroconf_deposit_amount" value="10.01">
+                                                    <span class="input-group-addon">KMD</span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <span style="float: left; font-size: 18px;"></span>
+                                                </div>
+                                                <div class="input-group col-sm-12">
+                                                    <button class="btn btn-primary btn-block btn_zeroconf_deposit language" data-langstr="exchange_0conf_make_sec_deposit"></button>
+                                                </div>
+                                                <div class="input-group col-sm-12" style="padding-top: 15px;">
+                                                    <button class="btn btn-warning btn_zeroconf_deposit_history language" data-langstr="exchange_0conf_see_deposit_history"></button>
+                                                    <button class="btn btn-success btn_zeroconf_claim_deposit language" data-langstr="exchange_0conf_claim_deposit" style="margin-left: 10px;"></button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="col-sm-12 col3">
+                        <div class="panel with-nav-tabs panel-default" style="margin-bottom: 5px;">
+                            <div class="panel-heading">
+                                <!--<button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;">BACK</button>
+                    <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;"><span class="glyphicon glyphicon-refresh"></span></button>-->
+                                <ul class="nav nav-tabs">
+                                    <li>
+                                        <a href="#exchange_myorders" data-toggle="tab">
+                                            <span class="language" data-langstr="exchange_my_prices"></span>
+                                            <button class="btn btn-xs btn-myordersrefresh coinexchange" data-coin="COIN">
+                                                <span class="glyphicon glyphicon-refresh"></span>
+                                            </button>
+                                        </a>
+                                    </li>
+                                    <li class="autobot_tab">
+                                        <a href="#exchange_botlist" data-toggle="tab">
+                                            <span class="language" data-langstr="exchange_auto_bot_list"></span>
+                                            <button class="btn btn-xs btn-botlistrefresh coinexchange" data-coin="COIN">
+                                                <span class="glyphicon glyphicon-refresh"></span>
+                                            </button>
+                                        </a>
+                                    </li>
+                                    <li class="active">
+                                        <a href="#exchange_tradestatus" data-toggle="tab">
+                                            <span class="language" data-langstr="exchange_trade_status"></span>
+                                            <button class="btn btn-xs btn-botlistrefresh coinexchange" data-coin="COIN">
+                                                <span class="glyphicon glyphicon-refresh"></span>
+                                            </button>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="">
+                                <!-- panel-body -->
+                                <div class="tab-content">
+                                    <div class="tab-pane fade" id="exchange_myorders">
+
+                                        <table class="table table-striped exchange_my_orders_tbl" style="margin-bottom: 0;">
+                                            <thead>
+                                                <th class="language" data-langstr="exchange_th_my_orders_base"></th>
+                                                <th class="language" data-langstr="exchange_th_my_orders_rel"></th>
+                                                <th class="language" data-langstr="exchange_th_my_orders_bid"></th>
+                                                <th class="language" data-langstr="exchange_th_my_orders_ask"></th>
+                                                <th>-</th>
+                                            </thead>
+                                            <tbody>
+                                                <th>
+                                                    <div style="text-align: center;" class="language" data-langstr="loading_wait"></div>
+                                                </th>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                    <div class="tab-pane fade" id="exchange_botlist">
+
+                                        <table class="table exchange_bot_list_tbl" width="100%" style="margin-bottom: 0;">
+                                            <thead>
+                                                <!--<th>Bot ID</th>-->
+                                                <th class="language" data-langstr="exchange_th_bot_list_tradebot_info"></th>
+                                                <!--<th>Bot Action</th>-->
+                                                <!--<th>Price</th>
+                                <th>Max Volume</th>-->
+                                                <th class="language" data-langstr="exchange_th_bot_list_progress_info"></th>
+                                                <th class="language" data-langstr="exchange_th_bot_list_actions"></th>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="tab-pane fade in active" id="exchange_tradestatus">
+                                        <div class="exchange_trade_status_body mCustomScrollbar" data-mcs-theme="minimal-dark">
+                                            <table class="table table-striped exchange_swap_status_tbl" width="100%" style="margin-bottom: 0;">
+                                                <thead>
+                                                    <th class="language" data-langstr="exchange_th_swap_status_status"></th>
+                                                    <th class="language" data-langstr="exchange_th_swap_status_info"></th>
+                                                    <!--<th>Quote ID</th>
+                                  <th>Request ID</th>-->
+                                                    <th class="language" data-langstr="exchange_th_swap_status_action"></th>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                            <svg id="exchange-swap-status-spinner" class="exchange-swap-status-spinner">
+                                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                                <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                                <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                                <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-md-7 col-lg-8 trading_chart_div" style="padding: 2px;">
+                <div id="chartContainer" style="z-index: 1000;"></div>
+            </div>
+
+
+            <div class="col-md-7 col-lg-8" style="padding: 2px;">
+                <div class="row">
+
+                    <div class="hidden-xs hidden-sm hidden-md col-lg-6 col-xl-6" style="padding-right: 2px;">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="language" data-langstr="exchange_sellers_caps"></span>:
+                                <span class="orderbook_numasks"></span>
+                                <button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 0px -8px 0px 3px;">
+                                    <span class="language" data-langstr="exchange_btn_back"></span>
+                                </button>
+                                <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 0px 0px 0px 3px;">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </button>
+                            </div>
+                            <div class="">
+                                <!-- panel-body -->
+                                <div class="mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_asks">
+                                    <table class="table table-striped orderbook_asks" width="100%" style="margin-bottom: 0;">
+                                        <thead>
+                                            <th>
+                                                <span class="language" data-langstr="exchange_th_orderbook_price_in"></span>
+                                                <span class="orderbook_rel_coin"></span>
+                                            </th>
+                                            <!--<th>Size(Min-Max <span class="orderbook_base_coin"></span>)</th>
                             <th>Size(Min-Max <span class="orderbook_rel_coin"></span>)</th>
                             <th>Sum(<span class="orderbook_rel_coin"></span>)</th>-->
-                            <th class="language" data-langstr="exchange_th_orderbook_avg_volume"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_age"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
-                            </thead>
-                          <tbody></tbody>
-                        </table>
-                        <svg id="orderbook-asks-spinner" class="orderbook-asks-spinner">
-                          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                          <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                          <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                          <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                        </svg>
-                      </div>
-                  </div>
-            </div>
-          </div>
+                                            <th class="language" data-langstr="exchange_th_orderbook_max_volume"></th>
+                                            <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
+                                            <!--<th class="language" data-langstr="exchange_th_orderbook_age"></th>
+                            <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>-->
+                                            <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
+                                            <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <svg id="orderbook-asks-spinner" class="orderbook-asks-spinner">
+                                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                        <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                        <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                        <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-          <div class="hidden-xs hidden-sm hidden-md col-lg-6 col-xl-6" style="padding-left: 2px;">
-            <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <span class="language" data-langstr="exchange_buyers_caps"></span>: <span class="orderbook_numbids"></span>
-                    <button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 0px -8px 0px 3px;"><span class="language" data-langstr="exchange_btn_back"></span></button>
-                    <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 0px 0px 0px 3px;"><span class="glyphicon glyphicon-refresh"></span></button>
-                  </div>
-                  <div class=""> <!-- panel-body -->
-                      <div class="mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_bids">
-                        <table class="table table-striped orderbook_bids" width="100%" style="margin-bottom: 0;">
-                          <thead><th><span class="language" data-langstr="exchange_th_orderbook_price_in"></span> <span class="orderbook_rel_coin"></span></th>
-                            <!--<th>Min <span class="orderbook_rel_coin"></span></th>
+                    <div class="hidden-xs hidden-sm hidden-md col-lg-6 col-xl-6" style="padding-left: 2px;">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="language" data-langstr="exchange_buyers_caps"></span>:
+                                <span class="orderbook_numbids"></span>
+                                <button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 0px -8px 0px 3px;">
+                                    <span class="language" data-langstr="exchange_btn_back"></span>
+                                </button>
+                                <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 0px 0px 0px 3px;">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </button>
+                            </div>
+                            <div class="">
+                                <!-- panel-body -->
+                                <div class="mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_bids">
+                                    <table class="table table-striped orderbook_bids" width="100%" style="margin-bottom: 0;">
+                                        <thead>
+                                            <th>
+                                                <span class="language" data-langstr="exchange_th_orderbook_price_in"></span>
+                                                <span class="orderbook_rel_coin"></span>
+                                            </th>
+                                            <!--<th>Min <span class="orderbook_rel_coin"></span></th>
                             <th>Max <span class="orderbook_rel_coin"></span></th>-->
-                            <th class="language" data-langstr="exchange_th_orderbook_avg_volume"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_age"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
-                            <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
-                          </thead>
-                          <tbody></tbody>
-                        </table>
-                      </div>
-                  </div>
-            </div>
-          </div>
+                                            <th class="language" data-langstr="exchange_th_orderbook_max_volume"></th>
+                                            <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
+                                            <!--<th class="language" data-langstr="exchange_th_orderbook_age"></th>
+                            <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>-->
+                                            <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
+                                            <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-          <div class="col-sm-12 col-md-12 hidden-lg hidden-xl">
-            <div class="panel with-nav-tabs panel-default">
-                  <div class="panel-heading">
-                    <button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;"><span class="language" data-langstr="exchange_btn_back"></span></button>
-                    <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;"><span class="glyphicon glyphicon-refresh"></span></button>
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#exchange_coin_asks_togl" data-toggle="tab"><span class="language" data-langstr="exchange_sellers_caps"></span>: <span class="orderbook_numasks"></span></a></li>
-                        <li><a href="#exchange_coin_bids_togl" data-toggle="tab"><span class="language" data-langstr="exchange_buyers_caps"></span>: <span class="orderbook_numbids"></span></a></li>
-                    </ul>
-                  </div>
-                  <div class=""> <!-- panel-body -->
-                      <div class="tab-content">
-                          <div class="tab-pane fade in active mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_asks_togl">
+                    <div class="col-sm-12 col-md-12 hidden-lg hidden-xl">
+                        <div class="panel with-nav-tabs panel-default">
+                            <div class="panel-heading">
+                                <button class="btn btn-xs btn-exchangeclose coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;">
+                                    <span class="language" data-langstr="exchange_btn_back"></span>
+                                </button>
+                                <button class="btn btn-xs btn-exchangerefresh coinexchange" data-coin="COIN" style="float: right; margin: 6px 6px 0px 3px;">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </button>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#exchange_coin_asks_togl" data-toggle="tab">
+                                            <span class="language" data-langstr="exchange_sellers_caps"></span>:
+                                            <span class="orderbook_numasks"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#exchange_coin_bids_togl" data-toggle="tab">
+                                            <span class="language" data-langstr="exchange_buyers_caps"></span>:
+                                            <span class="orderbook_numbids"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="">
+                                <!-- panel-body -->
+                                <div class="tab-content">
+                                    <div class="tab-pane fade in active mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_asks_togl">
 
-                            <table class="table table-striped orderbook_asks" width="100%" style="margin-bottom: 0;">
-                              <thead><th><span class="language" data-langstr="exchange_th_orderbook_price_in"></span> <span class="orderbook_rel_coin"></span></th>
-                                <!--<th>Size(Min-Max <span class="orderbook_base_coin"></span>)</th>
+                                        <table class="table table-striped orderbook_asks" width="100%" style="margin-bottom: 0;">
+                                            <thead>
+                                                <th>
+                                                    <span class="language" data-langstr="exchange_th_orderbook_price_in"></span>
+                                                    <span class="orderbook_rel_coin"></span>
+                                                </th>
+                                                <!--<th>Size(Min-Max <span class="orderbook_base_coin"></span>)</th>
                                 <th>Size(Min-Max <span class="orderbook_rel_coin"></span>)</th>
                                 <th>Sum(<span class="orderbook_rel_coin"></span>)</th>-->
-                                <th class="language" data-langstr="exchange_th_orderbook_avg_volume"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_age"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
-                                </thead>
-                              <tbody></tbody>
-                            </table>
-                            <svg id="orderbook-asks-spinner" class="orderbook-asks-spinner">
-                              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                              <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                              <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                              <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-                            </svg>
-                          </div>
-                          <div class="tab-pane fade mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_bids_togl">
+                                                <th class="language" data-langstr="exchange_th_orderbook_max_volume"></th>
+                                                <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
+                                                <!--<th class="language" data-langstr="exchange_th_orderbook_age"></th>
+                                <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>-->
+                                                <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
+                                                <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <svg id="orderbook-asks-spinner" class="orderbook-asks-spinner">
+                                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            <circle class="path2" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            <circle class="path3" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                            <circle class="path4" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
+                                        </svg>
+                                    </div>
+                                    <div class="tab-pane fade mCustomScrollbar" data-mcs-theme="minimal-dark" id="exchange_coin_bids_togl">
 
-                            <table class="table table-striped orderbook_bids" width="100%" style="margin-bottom: 0;">
-                              <thead><th><span class="language" data-langstr="exchange_th_orderbook_price_in"></span> <span class="orderbook_rel_coin"></span></th>
-                                <!--<th>Min <span class="orderbook_rel_coin"></span></th>
+                                        <table class="table table-striped orderbook_bids" width="100%" style="margin-bottom: 0;">
+                                            <thead>
+                                                <th>
+                                                    <span class="language" data-langstr="exchange_th_orderbook_price_in"></span>
+                                                    <span class="orderbook_rel_coin"></span>
+                                                </th>
+                                                <!--<th>Min <span class="orderbook_rel_coin"></span></th>
                                 <th>Max <span class="orderbook_rel_coin"></span></th>-->
-                                <th class="language" data-langstr="exchange_th_orderbook_avg_volume"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_age"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
-                                <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
-                              </thead>
-                              <tbody></tbody>
-                            </table>
-                          </div>
-                      </div>
-                  </div>
-            </div>
-          </div>
+                                                <th class="language" data-langstr="exchange_th_orderbook_max_volume"></th>
+                                                <th class="language" data-langstr="exchange_th_orderbook_depth"></th>
+                                                <!--<th class="language" data-langstr="exchange_th_orderbook_age"></th>
+                                <th class="language" data-langstr="exchange_th_orderbook_utxos"></th>-->
+                                                <th class="language" data-langstr="exchange_th_orderbook_zcredits"></th>
+                                                <th class="language" data-langstr="exchange_th_orderbook_info">Info</th>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
-          <!--<div class="col-sm-12">
+                    <!--<div class="col-sm-12">
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title"><strong>Trade Status</strong></h3>
@@ -813,65 +1066,66 @@
             </div>
           </div>-->
 
+                </div>
+            </div>
+
         </div>
-      </div>
 
     </div>
-
-  </div>
-  <!-- MAIN BODY END-->
+    <!-- MAIN BODY END-->
 
 
 
 
 
-<script>
-  var ipc = require('electron').ipcRenderer;
-  if (typeof module === 'object') {
-    window.module = module; module = undefined;
-  }
-</script>
+    <script>
+        var ipc = require('electron').ipcRenderer;
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="js/jquery.min.js" type="text/javascript"></script>
-    <script src="js/charts/jquery-migrate-3.0.0.min.js" type="text/javascript"></script>
-    <script src="js/charts/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="js/coin_select_options.js" type="text/javascript"></script>
-    <script src="js/login_select_options.js" type="text/javascript"></script>
-    <script src="js/zeroconf_weeks_select_options.js" type="text/javascript"></script>
-    <script src="js/coin_names.js" type="text/javascript"></script>
-    <script src="js/ipc-actions.js" type="text/javascript"></script>
-    <script src="js/barterdexcharts.js" type="text/javascript"></script>
+    <script src="js/Plugins/jquery.min.js"></script>
+    <script src="js/charts/jquery-migrate-3.0.0.min.js"></script>
+    <script src="js/charts/jquery-ui.min.js"></script>
+    <script src="js/select_options_coin.js"></script>
+    <script src="js/select_options_login.js"></script>
+    <script src="js/select_options_zeroconf_weeks.js"></script>
+    <script src="js/coin_names.js"></script>
+    <script src="js/ipc-actions.js"></script>
+    <script src="js/dex_Charts.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="js/fuelux.min.js" type="text/javascript"></script>
-    <script src="js/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="js/bootstrap-show-password.min.js" type="text/javascript"></script>
-    <script src="js/qrcode.min.js" type="text/javascript"></script>
-    <script src="js/toastr.min.js" type="text/javascript"></script>
-    <script src="js/bootstrap-toggle.min.js" type="text/javascript"></script>
-    <script src="js/bootbox.min.js" type="text/javascript"></script>
-    <script src="js/clipboard.min.js" type="text/javascript"></script>
-    <script src="js/bootstrap-slider.min.js" type="text/javascript"></script>
-    <script src="js/number-polyfill.min.js" type="text/javascript"></script>
-    <script src="js/underscore-min.js" type="text/javascript"></script>
-    <script src="js/moment.min.js" type="text/javascript"></script>
-    <script src="js/countdown.min.js" type="text/javascript"></script>
-    <script src="js/jquery.mCustomScrollbar.concat.min.js" type="text/javascript"></script>
-    <script src="js/jquery.marquee.min.js" type="text/javascript"></script>
-    <script src="js/HoldOn.min.js" type="text/javascript"></script>
-    <script src="js/BootstrapMenu.min.js" type="text/javascript"></script>
+    <script src="js/Plugins/Bootstrap/bootstrap.min.js"></script>
+    <script src="js/Plugins/fuelux.min.js"></script>
+    <script src="js/Plugins/Bootstrap/bootstrap-select.min.js"></script>
+    <script src="js/Plugins/Bootstrap/bootstrap-show-password.min.js"></script>
+    <script src="js/Plugins/qrcode.min.js"></script>
+    <script src="js/Plugins/toastr.min.js"></script>
+    <script src="js/Plugins/Bootstrap/bootstrap-toggle.min.js"></script>
+    <script src="js/Plugins/bootbox.min.js"></script>
+    <script src="js/Plugins/clipboard.min.js"></script>
+    <script src="js/Plugins/Bootstrap/bootstrap-slider.min.js"></script>
+    <script src="js/Plugins/number-polyfill.min.js"></script>
+    <script src="js/Plugins/underscore-min.js"></script>
+    <script src="js/Plugins/moment.min.js"></script>
+    <script src="js/Plugins/countdown.min.js"></script>
+    <script src="js/Plugins/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="js/Plugins/jquery.marquee.min.js"></script>
+    <script src="js/Plugins/HoldOn.min.js"></script>
+    <script src="js/Plugins/Bootstrap/BootstrapMenu.min.js"></script>
     <!-- Crypto Dependencies -->
-    <script src="js/wordlist.js" type="text/javascript"></script>
-    <script src="js/passphrasegenerator.js" type="text/javascript"></script>
-    <script src="js/seedrandom.js" type="text/javascript"></script>
+    <script src="js/wordlist.js"></script>
+    <script src="js/passphrasegenerator.js"></script>
+    <script src="js/seedrandom.js"></script>
     <!-- amcharts libs -->
-    <script src="js/amcharts/amcharts.js" type="text/javascript"></script>
-    <script src="js/amcharts/pie.js" type="text/javascript"></script>
-    <script src="js/amcharts/plugins/animate/animate.min.js" type="text/javascript"></script>
-    <script src="js/amcharts/plugins/export/export.min.js" type="text/javascript"></script>
-    <script src="js/amcharts/plugins/responsive/responsive.min.js" type="text/javascript"></script>
-    <script src="js/amcharts/themes/light.js" type="text/javascript" id="amcharts_light_theme"></script>
-    <script src="js/amcharts/themes/black.js" type="text/javascript" id="amcharts_dark_theme"></script>
+    <script src="js/amcharts/amcharts.js"></script>
+    <script src="js/amcharts/pie.js"></script>
+    <script src="js/amcharts/plugins/animate/animate.min.js"></script>
+    <script src="js/amcharts/plugins/export/export.min.js"></script>
+    <script src="js/amcharts/plugins/responsive/responsive.min.js"></script>
+    <script src="js/amcharts/themes/light.js" id="amcharts_light_theme"></script>
+    <script src="js/amcharts/themes/black.js" id="amcharts_dark_theme"></script>
     <!-- StockCharts -->
     <script src="js/charts/ChartContextMenu_html.js"></script>
     <script src="js/charts/Navigation_html.js"></script>
@@ -887,25 +1141,31 @@
     <script src="js/charts/IndicatorsHelp_html.js"></script>
     <script src="js/charts/IndicatorSettingsDialog_html.js"></script>
     <script src="js/charts/IndicatorsDialog_html.js"></script>
-    <script src="js/charts/Intl.complete.min.js" type="text/javascript"></script>
-    <script src="js/charts/moment.min.js" type="text/javascript"></script>
-    <script src="js/charts/detectizr.min.js" type="text/javascript"></script>
-    <script src="js/charts/html2canvas.min.js" type="text/javascript"></script>
-    <script src="js/moment-duration-format.min.js" type="text/javascript"></script>
-    <!--<script src="js/charts/StockChartX-Light.min.js" charset="iso-8859-1" type="text/javascript"></script>-->
-    <script src="js/charts/StockChartX.min.js" charset="iso-8859-1" type="text/javascript"></script>
-    <script src="js/charts/StockChartX.UI.min.js" charset="iso-8859-1" type="text/javascript"></script>
-    <script src="js/charts/StockChartX.External.min.js" type="text/javascript"></script>
-    <script src="js/charts/custom-indicator.js" type="text/javascript"></script>
-    <!--<script src="js/charts/site.js" type="text/javascript"></script>-->
+    <script src="js/charts/Intl.complete.min.js"></script>
+    <script src="js/charts/moment.min.js"></script>
+    <script src="js/charts/detectizr.min.js"></script>
+    <script src="js/charts/html2canvas.min.js"></script>
+    <script src="js/Plugins/moment-duration-format.min.js"></script>
+    <!--<script src="js/charts/StockChartX-Light.min.js" charset="iso-8859-1"></script>-->
+    <script src="js/charts/StockChartX.min.js" charset="iso-8859-1"></script>
+    <script src="js/charts/StockChartX.UI.min.js" charset="iso-8859-1"></script>
+    <script src="js/charts/StockChartX.External.min.js"></script>
+    <script src="js/charts/custom-indicator.js"></script>
+    <!--<script src="js/charts/site.js"></script>-->
     <!-- custom dex actions javascript -->
-    <!--<script src="js/dexactions.js" type="text/javascript"></script>-->
-    <script src="js/simpledexactions.js" type="text/javascript"></script>
-    <script src="js/electrum_list.js" type="text/javascript"></script>
-    <script src="js/barterdex_remote_alerts.js" type="text/javascript"></script>
+    <!--<script src="js/dexactions.js"></script>-->
+    <script src="js/dex_ManipulateHTML.js"></script>
+    <script src="js/dex_FeaturesGUI.js"></script>
+    <script src="js/electrum_list.js"></script>
+    <script src="js/dex_SimpleActions.js"></script>
+    <script src="js/dex_mmCalls.js"></script>
+    <script src="js/dex_ComplexActions.js"></script>
+    <script src="js/dex_RemoteAlerts.js"></script>
+    <script src="js/dex_Help.js"></script>
 
-    <script src="js/language-codes_json.js" type="text/javascript"></script>
-    <script src="js/country_list_json.js" type="text/javascript"></script>
-    <script src="js/barterdex_localization.js" type="text/javascript"></script>
-  </body>
+    <script src="js/language-codes_json.js"></script>
+    <script src="js/country_list_json.js"></script>
+    <script src="js/dex_Localization.js"></script>
+</body>
+
 </html>

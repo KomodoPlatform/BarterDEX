@@ -1,6 +1,6 @@
 {
   "name": "BarterDEX",
-  "version": "0.8.9-rc",
+  "version": "1.0.0-rc",
   "description": "Full BarterDEX implimentation with powertools for Traders",
   "main": "main.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "author": "Satinderjit Singh",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^1.8.1"
+    "electron": "^1.8.4"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

@@ -87,6 +87,9 @@
   "Portfolio": {
     "portfolio_portfolio_chart": "Graphique Portefeuille",
     "portfolio_add_coins": "AJOUTER JETONS",
+    "portfolio_add_default_startup_coins": "Default Startup Coins",
+    "portfolio_default_startup_coins": "Default Startup Coins",
+    "portfolio_manage_coins": "MANAGE COINS",
     "exchange_set_small": "Vendre",
     "exchange_goal_percent_for_your_portfolio": "Objectif en pourcentage pour le portefeuille",
     "portfolio_portfolio_coins": "Jetons du Portefeuille",
@@ -190,6 +193,7 @@
     "exchange_buyers_caps": "ACHETEURS",
     "exchange_th_orderbook_price_in": "Prix en",
     "exchange_th_orderbook_avg_volume": "Moy. Volume",
+    "exchange_th_orderbook_max_volume": "Max UTXO size",
     "exchange_th_orderbook_depth": "Profondeur",
     "exchange_th_orderbook_trader_pubkey": "Courtier Pubkey",
     "exchange_th_orderbook_age": "Age",
@@ -390,6 +394,10 @@
     "settings_reset_settings": "Réinitialiser les Paramètres",
     "settings_save_settings": "Sauvegarder les paramètres",
     "settings_toastr_settings_update_processed": "Mise à jour des paramètres effectuée.",
-    "settings_toastr_title": "Paramètres BarterDEX"
+    "settings_toastr_title": "Paramètres BarterDEX",
+    "settings_charts": "Charts",
+    "settings_charts_show": "Show",
+    "settings_charts_hide": "Hide",
+    "settings_charts_desc": "Trading charts settings update will take affect next time you get back to Exchange screen. (Doesn't require app restart)"
   }
 }

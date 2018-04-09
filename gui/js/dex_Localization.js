@@ -58,6 +58,9 @@ function PopulateDefaultLanguage() {
 	// Populate portfolio localization
 	$('.language[data-langstr="portfolio_portfolio_chart"]').text(default_lang.Portfolio.portfolio_portfolio_chart);
 	$('.language[data-langstr="portfolio_add_coins"]').text(default_lang.Portfolio.portfolio_add_coins);
+	$('.language[data-langstr="portfolio_add_default_startup_coins"]').text(default_lang.Portfolio.portfolio_add_default_startup_coins);
+	$('.language[data-langstr="portfolio_default_startup_coins"]').text(default_lang.Portfolio.portfolio_default_startup_coins);
+	$('.language[data-langstr="portfolio_manage_coins"]').text(default_lang.Portfolio.portfolio_manage_coins);
 	$('.language[data-langstr="portfolio_portfolio_coins"]').text(default_lang.Portfolio.portfolio_portfolio_coins);
 	$('.language[data-langstr="portfolio_auto_goal_all_active_coins"]').text(default_lang.Portfolio.portfolio_auto_goal_all_active_coins);
 	$('.language[data-langstr="portfolio_th_coin"]').text(default_lang.Portfolio.portfolio_th_coin);
@@ -130,7 +133,8 @@ function PopulateDefaultLanguage() {
     $('.language[data-langstr="exchange_buyers_caps"]').text(default_lang.Exchange.exchange_buyers_caps);
     $('.language[data-langstr="exchange_btn_back"]').text(default_lang.Exchange.exchange_btn_back);
     $('.language[data-langstr="exchange_th_orderbook_price_in"]').text(default_lang.Exchange.exchange_th_orderbook_price_in);
-    $('.language[data-langstr="exchange_th_orderbook_avg_volume"]').text(default_lang.Exchange.exchange_th_orderbook_avg_volume);
+    //$('.language[data-langstr="exchange_th_orderbook_avg_volume"]').text(default_lang.Exchange.exchange_th_orderbook_avg_volume);
+    $('.language[data-langstr="exchange_th_orderbook_max_volume"]').text(default_lang.Exchange.exchange_th_orderbook_max_volume);
     $('.language[data-langstr="exchange_th_orderbook_depth"]').text(default_lang.Exchange.exchange_th_orderbook_depth);
     //$('.language[data-langstr="exchange_th_orderbook_trader_pubkey"]').text(default_lang.Exchange.exchange_th_orderbook_trader_pubkey);
     $('.language[data-langstr="exchange_th_orderbook_age"]').text(default_lang.Exchange.exchange_th_orderbook_age);
