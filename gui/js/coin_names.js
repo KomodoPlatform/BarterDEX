@@ -804,6 +804,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
+		case 'DAI':
+			coin_details.name = 'Dai Stablecoin';
+			coin_details.explorer = 'https://etherscan.io/tx/';
+			coin_details.eth = true;
+			break;
 		case 'BBT':
 			coin_details.name = 'BitBoost';
 			coin_details.explorer = 'https://etherscan.io/tx/';
