@@ -33,6 +33,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://blockchair.com/bitcoin-cash/transaction/';
 			coin_details.eth = false;
 			break;
+		case 'ORE':
+			coin_details.name = 'Galactrum';
+			coin_details.explorer = 'https://explorer.galactrum.org/tx/';
+			coin_details.eth = false;
+			break;
 		case 'PEW':
 			coin_details.name = 'BroFist';
 			coin_details.explorer = 'https://pew.overemo.com/tx/';
