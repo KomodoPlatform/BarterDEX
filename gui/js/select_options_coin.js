@@ -95,6 +95,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/smc.png' width='30px'/> SmartCoin (SMC)" data-tokens="SmartCoin SMC">SMC</option>
       <option data-content="<img src='img/cryptologo/sng.png' width='30px'/> SnowGem (SNG)" data-tokens="SnowGem SNG">SNG</option>
       <option data-content="<img src='img/cryptologo/stak.png' width='30px'/> Straks (STAK)" data-tokens="Straks STAK">STAK</option>
+      <option data-content="<img src='img/cryptologo/strat.png' width='30px'/> Stratis (STRAT)" data-tokens="Stratis STRAT">STRAT</option>
       <option data-content="<img src='img/cryptologo/sys.png' width='30px'/> Syscoin (SYS)" data-tokens="Syscoin SYS">SYS</option>
       <option data-content="<img src='img/cryptologo/trc.png' width='30px'/> Terracoin (TRC)" data-tokens="Terracoin TRC">TRC</option>
       <option data-content="<img src='img/cryptologo/ufo.png' width='30px'/> Uniform Fiscal Object (UFO)" data-tokens="Uniform Fiscal Object UFO">UFO</option>
@@ -226,7 +227,6 @@ coin_select_options = `<optgroup label="Crypto Coins">
 <option data-content="<img src='img/cryptologo/CARB.png' width='30px' disabled/> Carboncoin (CARB)" data-tokens="carb carboncoin">CARB</option>
 <option data-content="<img src='img/cryptologo/FRK.png' width='30px' disabled/> Franko (FRK)" data-tokens="Franko FRK">FRK</option>
 <option data-content="<img src='img/cryptologo/MZC.png' width='30px' disabled/> Mazacoin (MZC)" data-tokens="Mazacoin MZC">MZC</option>
-<option data-content="<img src='img/cryptologo/strat.png' width='30px'/> Stratis (STRAT)" data-tokens="Stratis STRAT">STRAT</option>
 <option data-content="<img src='img/cryptologo/UNO.png' width='30px' disabled/> Unobtanium (UNO)" data-tokens="Unobtanium UNO">UNO</option>
 <option data-content="<img src='img/cryptologo/MVP.png' width='30px' disabled/> MVP (MVP)" data-tokens="MVP MVP">MVP</option>
 <option data-content="<img src='img/cryptologo/zen.png' width='30px'/> ZenCash (ZEN)" data-tokens="ZenCash ZEN">ZEN</option>

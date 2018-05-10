@@ -575,7 +575,7 @@ function return_coin_details(coin) {
 			break;
 		case 'STRAT':
 			coin_details.name = 'Stratis';
-			coin_details.explorer = 'https://cryptobe.com/tx/';
+			coin_details.explorer = 'https://chainz.cryptoid.info/strat/tx.dws?';
 			coin_details.eth = false;
 			break;
 		case 'MUE':
