@@ -1349,11 +1349,16 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
-                case 'ZIL':
-                        coin_details.name = 'Zilliqa';
-                        coin_details.explorer = 'https://etherscan.io/tx/';
-                        coin_details.eth = true;
-                        break;
+        case 'ZIL':
+            coin_details.name = 'Zilliqa';
+            coin_details.explorer = 'https://etherscan.io/tx/';
+            coin_details.eth = true;
+			break;
+		case 'GCH':
+			coin_details.name = 'GalaxyCash';
+			coin_details.explorer = 'http://explorer.galaxypool.info/tx/';
+			coin_details.eth = false;
+			break;
 	}
 	return coin_details;
 }
