@@ -114,6 +114,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/zet.png' width='30px'/> Zetacoin (ZET)" data-tokens="Zetacoin ZET">ZET</option>
       <option data-content="<img src='img/cryptologo/zec.png' width='30px'/> Zcash (ZEC)" data-tokens="Zcash ZEC">ZEC</option>
       <option data-content="<img src='img/cryptologo/zoi.png' width='30px'/> Zoin (ZOI)" data-tokens="Zoin ZOI">ZOI</option>
+      <option data-content="<img src='img/cryptologo/gch.png' width='30px;'/> GalaxyCash (GCH)" data-tokens="GalaxyCash GCH ">GCH</option>
     </optgroup>
     <optgroup label="ETH/ERC20 Coins">
       <option data-content="<img src='img/cryptologo/jst.png' width='30px;'/> JST (TESTCOIN)" data-tokens="JST JST ">JST</option>
