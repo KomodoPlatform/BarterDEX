@@ -1249,6 +1249,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://etherscan.io/tx/';
 			coin_details.eth = true;
 			break;
+		case 'CRU':
+			coin_details.name = 'Curium';
+			coin_details.explorer = 'http://explorer.curiumofficial.com/tx/';
+			coin_details.eth = false;
+			break;			
 	}
 	return coin_details;
 }
