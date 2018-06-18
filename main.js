@@ -13,16 +13,15 @@ const electron = require('electron'),
   ipc = require('electron').ipcMain,
   fs = require('fs-extra'),
   mkdirp = require('mkdirp'),
-  killmm = require('./ipc/killmm'),
-  appBasicInfo = {
-    name: 'BarterDEX',
-    version: '1.0.2-rc'
-  };
+  killmm = require('./ipc/killmm');
+  
 var shepherd = require('./ipc/shepherd-ipc'),
   MNZdICOIcon;
 
-app.setName(appBasicInfo.name);
-app.setVersion(appBasicInfo.version);
+const package_json = fs.readJsonSync(path.join(__dirname, 'package.json'));
+
+app.setName(package_json.name);
+app.setVersion(package_json.version);
 
 if (osPlatform === 'linux') {
   process.env.ELECTRON_RUN_AS_NODE = true;

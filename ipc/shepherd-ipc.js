@@ -189,6 +189,7 @@ ipcMain.on('shepherd-command', (event, arg) => {
       });
       break;
     case 'coins_db_dl':
+      console.log(arg);
       CoinsDBDownloadFiles(arg.data);
       event.returnValue = 'CoinsDB command executed';
       break;
@@ -207,6 +208,11 @@ ipcMain.on('shepherd-command', (event, arg) => {
         console.log('Coins JSON file updated!');
         event.returnValue = 'Coins JSON file updated!';
       });
+      break;
+    case 'coins_db_read_db':
+      fs.readJson(`${CoinsDBDir}/coins`)
+        .then(coins_db_file => { event.returnValue = coins_db_file; })
+        .catch(err => { console.error(err) })
       break;
     default:
       event.returnValue = 'Command not found';
@@ -378,7 +384,8 @@ function ProcessCoinsList(coins) {
       coins = coins.replace(/USERHOME/g, `${process.env.APPDATA}`);
       coins = coins.replace(/\/\./g, '/');
       coins = path.normalize(coins);
-      coins = coins.replace(/\\/g, "\\\\");
+      // coins = coins.replace(/\\/g, "\\\\");
+      coins = coins.replace(/\\/g,'/');  // FIXED - ERROR on windows
       break;
   }
   coins = JSON.parse(coins);
@@ -455,7 +462,7 @@ CoinsDBDownloadFiles = function (action_data) {
       fs.ensureDir(CoinsDBDir)
       .then(() => {
         console.log('CoinsDB Status: Ensured CoinsDB directory exists: ' + CoinsDBDir);
-        console.log('CoinsDB Status: Downloading Coins Icons: ' + CoinsDBDir);
+        console.log('CoinsDB Status: Downloading Coins File: ' + CoinsDBDir);
             // Remove existing file and download fresh copy of coins file
             fs.remove(`${CoinsDBDir}/coins`)
             .then(() => {

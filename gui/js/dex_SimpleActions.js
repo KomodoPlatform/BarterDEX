@@ -1593,7 +1593,7 @@ function addcoins_dialog() {
 		$('.addcoin_enable_disable_selection').html(coin_select_options);
 		$('.addcoin_enable_disable_selection').selectpicker('render');
 
-		$('.toggle_checkbox').bootstrapToggle();
+		$('.toggle_checkbox').bootstrapToggle('off');
 
 		//console.log('bot_update_settings dialog opened.')
 		//$('.btn-bot_settings_update').attr("disabled", "disabled");
@@ -1739,7 +1739,7 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 		dex_portfolio_coins_tbl_tr += '<tr>';
 		dex_portfolio_coins_tbl_tr += '<td><img src="img/cryptologo/' + val.coin.toLowerCase() + '.png" width="30px;"/> ' + coin_name + ' (' + val.coin + ')</td>';
 		//dex_portfolio_coins_tbl_tr += '<td>' + val.address + '</td>';
-		dex_portfolio_coins_tbl_tr += '<td>' + val.amount + '</td>';
+		dex_portfolio_coins_tbl_tr += '<td class="porfolio_coins_list_td_amount" data-coin="' + val.coin + '" data-address="' + val.address + '">' + val.amount + '</td>';
 		dex_portfolio_coins_tbl_tr += '<td>' + val.price + '</td>';
 		dex_portfolio_coins_tbl_tr += '<td>' + val.goal + '</td>';
 		dex_portfolio_coins_tbl_tr += '<td>' + val.goalperc + '</td>';
@@ -1764,8 +1764,41 @@ function PortfolioTblDataFn(portfolio_tbl_data) {
 		dex_portfolio_coins_tbl_tr += '</tr>';
 
 		$('.porfolio_coins_list tbody').append(dex_portfolio_coins_tbl_tr);
+
+		if (val.address.substring(0, 2) == '0x') {
+			console.log(val.address);
+			portfolio_get_eth_erc20_balance({"coin":val.coin, "address":val.address});
+		}
 	})
 };
+
+
+function portfolio_get_eth_erc20_balance(etherc20_balance_data) {
+	console.log(etherc20_balance_data);
+
+	var userpass = sessionStorage.getItem('mm_userpass');
+	var mypubkey = sessionStorage.getItem('mm_mypubkey');
+	var ajax_data = { "userpass": userpass, "method": "balance", "coin": etherc20_balance_data.coin, "address": etherc20_balance_data.address };
+	var url = "http://127.0.0.1:7783/";
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
+	$.ajax({
+		async: true,
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 5000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (etherc20_balance_output_data) {
+		// If successful
+		console.log(etherc20_balance_output_data);
+		$('.porfolio_coins_list_td_amount[data-coin="' + etherc20_balance_data.coin + '"]').html(etherc20_balance_output_data.balance);
+
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
+	});
+}
 
 function PortfolioChartUpdate(chart_data) {
 	console.log(chart_data)
@@ -3113,7 +3146,7 @@ function coinBalanceSendFn(coin) {
 		url: url
 	}).done(function (data) {
 		console.log(JSON.stringify(data.coin));
-		console.log(data.coin.smartaddress);
+		//console.log(data.coin.smartaddress);
 		console.log(data.coin.balance);
 		console.log(data.coin.txfee);
 
@@ -3239,6 +3272,10 @@ function coinBalanceSendFn(coin) {
 		});
 		coin_balance_send_bootbox.init(function () {
 			console.log('coin_balance_send_bootbox dialog opened.')
+			if (data.coin.smartaddress.substring(0, 2) == '0x') {
+				console.log(data.coin.smartaddress);
+				send_btn_get_eth_erc20_balance({"coin":tx_coin, "address":data.coin.smartaddress});
+			}
 			$('.bot_send_action').attr("disabled", "disabled");
 
 			$('.bot_sending_coin_balance').click(function () {
@@ -3353,6 +3390,35 @@ function coinBalanceSendFn(coin) {
 
 
 		});
+	});
+}
+
+
+function send_btn_get_eth_erc20_balance(etherc20_balance_data) {
+	console.log(etherc20_balance_data);
+
+	var userpass = sessionStorage.getItem('mm_userpass');
+	var mypubkey = sessionStorage.getItem('mm_mypubkey');
+	var ajax_data = { "userpass": userpass, "method": "balance", "coin": etherc20_balance_data.coin, "address": etherc20_balance_data.address };
+	var url = "http://127.0.0.1:7783/";
+	var fName = arguments.callee.toString().match(/function ([^\(]+)/)[1]
+	console.warn(new Date().toLocaleTimeString() + " MM_CALL: " + fName);;
+	$.ajax({
+		async: true,
+		data: JSON.stringify(ajax_data),
+		dataType: 'json',
+		type: 'POST',
+		timeout: 5000, // sets timeout to 5 seconds
+		url: url
+	}).done(function (etherc20_balance_output_data) {
+		// If successful
+		console.log(etherc20_balance_output_data);
+		$('.bot_sending_coin_balance').html(etherc20_balance_output_data.balance)
+		//$('.porfolio_coins_list_td_amount[data-coin="' + etherc20_balance_data.coin + '"]').html(etherc20_balance_output_data.balance);
+
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		// If fail
+		console.log(textStatus + ': ' + errorThrown);
 	});
 }
 
