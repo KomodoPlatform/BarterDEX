@@ -46,6 +46,7 @@ var electrum_servers_list = {
   "PANGEA": [{"electrum2.cipig.net": 10010},{"electrum1.cipig.net": 10010}],
   "PIZZA": [{"electrum2.cipig.net": 10024},{"electrum1.cipig.net": 10024}],
   "QTUM": [{"s1.qtum.info":50001},{"s2.qtum.info":50001},{"s3.qtum.info":50001},{"s4.qtum.info":50001}],
+  "RAP": [{"electrum.our-rapture.com":50001},{"electrum2.our-rapture.com":50001}],
   "REVS": [{"electrum2.cipig.net": 10003},{"electrum1.cipig.net": 10003}],
   "SIB": [{"electrum2.cipig.net": 10050},{"electrum1.cipig.net": 10050}],
   "SNG": [{"electrumsvr2.snowgem.org": 50001},{"electrumsvr.snowgem.org": 50001}],
