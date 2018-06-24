@@ -703,6 +703,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'https://explorer.myhush.org/tx/';
 			coin_details.eth = false;
 			break;
+		case 'WAVI':
+			coin_details.name = 'Wavi';
+			coin_details.explorer = 'http://www.wavi-blockchain.cloud/tx/';
+			coin_details.eth = false;
+			break;
 		case 'XZC':
 			coin_details.name = 'ZCoin';
 			coin_details.explorer = 'http://explorer.zcoin.io/tx/';
