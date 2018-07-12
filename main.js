@@ -56,15 +56,15 @@ function createWindow(status) {
     { role: 'selectall' },
   ]);
 
-  const editMenu = Menu.buildFromTemplate([ // if editable
-    { role: 'undo' },
-    { role: 'redo' },
+  const editMenu = Menu.buildFromTemplate([
+    { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+    { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
     { type: 'separator' },
-    { role: 'cut' },
-    { role: 'copy' },
-    { role: 'paste' },
-    { type: 'separator' },
-    { role: 'selectall' },
+    { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+    { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+    { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+    { label: "Paste Special", accelerator: "Shift+CmdOrCtrl+V", selector: "paste special:"},
+    { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
   ]);
 
   // and load the index.html of the app.
