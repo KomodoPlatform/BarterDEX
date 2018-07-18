@@ -75,6 +75,7 @@ coin_select_options = `<optgroup label="Crypto Coins">
       <option data-content="<img src='img/cryptologo/mlm.png' width='30px'/> MktCoin (MLM)" data-tokens="MLM">MLM</option>
       <option data-content="<img src='img/cryptologo/mnx.png' width='30px'/> MinexCoin (MNX)" data-tokens="MinexCoin MNX">MNX</option>
       <option data-content="<img src='img/cryptologo/mona.png' width='30px'/> Monacoin (MONA)" data-tokens="Monacoin MONA">MONA</option>
+      <option data-content="<img src='img/cryptologo/mrja.png' width='30px'/> Monetary Unit (MRJA)" data-tokens="Ganjacoin MRJA">MRJA</option>
       <option data-content="<img src='img/cryptologo/mue.png' width='30px'/> Monetary Unit (MUE)" data-tokens="MonetaryUnit MUE">MUE</option>
       <option data-content="<img src='img/cryptologo/xmcc.png' width='30px'/> Monoeci (XMCC)" data-tokens="Monoeci XMCC">XMCC</option>
       <option data-content="<img src='img/cryptologo/moon.png' width='30px'/> Mooncoin (MOON)" data-tokens="Mooncoin MOON">MOON</option>

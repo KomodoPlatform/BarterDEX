@@ -913,6 +913,11 @@ function return_coin_details(coin) {
 			coin_details.explorer = 'http://207.246.65.114:3001/tx/';
 			coin_details.eth = false;
 			break;
+                case 'MRJA':
+                        coin_details.name = 'Ganjacoin';
+                        coin_details.explorer = 'http://explorer.ganjacoinpro.com/tx/';
+                        coin_details.eth = false;
+                        break;
 
 		case 'ETH':
 			coin_details.name = 'Ethereum';
