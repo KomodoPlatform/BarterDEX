@@ -61,7 +61,7 @@
     "login_passphrase_label": "Log In",
     "login_btn": "Log In",
     "generate_a_new_passphrase": "Generate a New Passphrase",
-    "login_passphrase_input_placeholder": "Passphrase",
+    "login_passphrase_input_placeholder": "Passphrase / WIF",
     "login_genpass_new_pass_label": "New Passphrase",
     "login_genpass_regen": "Regen",
     "login_genpass_verify_passphrase": "Verify Passphrase",
