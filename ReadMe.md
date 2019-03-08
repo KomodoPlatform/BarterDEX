@@ -11,8 +11,8 @@ The BarterDEX application created by Komodo Platform allows trading cryptocurren
 -matching aspect uses a low-level pubkey-to-pubkey messaging protocol, and the final settlement is executed through an atomic cross-chain swap. 
 
 [Komodo Platform Official Site](https://komodoplatform.com)  
-[Komodo BarterDEX Page](https://komodoplatform.com/decentralized-exchange)  
-[Komodo Whitepaper](https://komodoplatform.com/wp-content/uploads/2018/03/2018-03-12-Komodo-White-Paper-Full.pdf)
+[Komodo BarterDEX Support Page](https://support.komodoplatform.com/support/solutions/29000034533)  
+[Komodo Whitepaper](https://komodoplatform.com/whitepaper)
 
 
 # BarterDEX App
