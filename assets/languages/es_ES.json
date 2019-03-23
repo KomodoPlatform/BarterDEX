@@ -61,7 +61,7 @@
     "login_passphrase_label": "Iniciar Sesión ",
     "login_btn": "Iniciar Sesión ",
     "generate_a_new_passphrase": "Generar nueva frase de contraseña",
-    "login_passphrase_input_placeholder": "Frase de contraseña",
+    "login_passphrase_input_placeholder": "Frase de contraseña o WIF",
     "login_genpass_new_pass_label": "Nueva frase de contraseña",
     "login_genpass_regen": "Regen",
     "login_genpass_verify_passphrase": "Verificar Frase de Contraseña",

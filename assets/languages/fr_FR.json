@@ -61,7 +61,7 @@
     "login_passphrase_label": "Identifiant",
     "login_btn": "Connexion",
     "generate_a_new_passphrase": "Générer une nouvelle Phrase secrète",
-    "login_passphrase_input_placeholder": "Phrase secrète",
+    "login_passphrase_input_placeholder": "Phrase secrète ou WIF",
     "login_genpass_new_pass_label": "Nouvelle Phrase secrète",
     "login_genpass_regen": "Regénérer",
     "login_genpass_verify_passphrase": "Vérifier Phrase secrète",

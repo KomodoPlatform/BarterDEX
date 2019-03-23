@@ -61,7 +61,7 @@
     "login_passphrase_label": "Accesso",
     "login_btn": "Accesso",
     "generate_a_new_passphrase": "Crea una nuova frase di accesso",
-    "login_passphrase_input_placeholder": "Frase di accesso",
+    "login_passphrase_input_placeholder": "Frase di accesso o WIF",
     "login_genpass_new_pass_label": "Nuova frase di accesso",
     "login_genpass_regen": "Regen",
     "login_genpass_verify_passphrase": "Verifica la frase di accesso",
